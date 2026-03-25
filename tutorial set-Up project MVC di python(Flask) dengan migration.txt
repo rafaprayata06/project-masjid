@@ -1,0 +1,237 @@
+🚀 1. Install Package (WAJIB)
+pip install flask flask-sqlalchemy flask-migrate
+
+👉 Kenapa?
+
+flask → web framework
+flask-sqlalchemy → ORM (biar gak nulis SQL manual)
+flask-migrate → migration (kayak Laravel)
+🧱 2. Setup Database (SQLAlchemy)
+
+📄 database/db.py
+
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
+
+👉 Kenapa dipisah?
+
+biar reusable
+gak circular import
+🧠 3. Model (Database Structure)
+
+📄 models/user_model.py
+
+from database.db import db
+
+class User(db.Model):
+    __tablename__ = 'users'
+
+    nim = db.Column(db.String(20), primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    password = db.Column(db.String(255), nullable=False)
+
+👉 Kenapa pakai model?
+
+migration baca dari sini
+kayak Laravel Eloquent
+⚙️ 4. Main App (INI KUNCI ANTI ERROR)
+
+📄 main.py
+
+from flask import Flask
+from database.db import db
+from flask_migrate import Migrate
+
+# IMPORT MODEL (WAJIB ⚠️)
+from models.user_model import User
+
+# IMPORT ROUTES
+from roots.auth_routes import auth
+
+app = Flask(__name__)
+
+# CONFIG DATABASE
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# INIT
+db.init_app(app)
+migrate = Migrate(app, db)
+
+# REGISTER BLUEPRINT
+app.register_blueprint(auth)
+
+# 🔥 PENTING (hindari error migrate)
+app.app_context().push()
+
+if __name__ == "__main__":
+    app.run(debug=True)
+💣 Kenapa sering error di sini?
+
+Masalah umum:
+
+❌ gak import model → migration kosong
+❌ gak set app → flask gak nemu app
+❌ gak ada app_context
+
+👉 ini yang bikin:
+
+“No such command db” / migration kosong
+
+🛠️ 5. Migration (ANTI ERROR VERSION)
+❗ JANGAN pakai:
+flask db init ❌
+✅ Pakai ini:
+python -m flask --app main db init
+🚀 Step lengkap
+python -m flask --app main db init
+python -m flask --app main db migrate -m "init users"
+python -m flask --app main db upgrade
+💡 Hasilnya
+✔️ migrations/ folder
+✔️ database.db file
+✔️ tabel users otomatis
+⚠️ Kenapa migrate kadang kosong?
+
+Karena:
+
+from models.user_model import User
+
+👉 belum di-import ke main.py
+
+🧭 6. Struktur Folder FINAL (RECOMMENDED)
+project/
+│
+├── controllers/
+│   └── user_controller.py
+│
+├── models/
+│   └── user_model.py
+│
+├── database/
+│   └── db.py
+│
+├── roots/
+│   └── auth_routes.py
+│
+├── templates/
+│   └── auth/
+│       ├── login.html
+│       └── register.html
+│
+├── migrations/
+├── instance/
+│
+└── main.py
+🧠 Kenapa struktur ini?
+models/ → database logic
+controllers/ → logic aplikasi
+roots/ → routing (Blueprint)
+templates/ → UI (Flask bawaan)
+
+👉 clean & scalable
+
+🛣️ 7. Routing (Blueprint)
+
+📄 roots/auth_routes.py
+
+from flask import Blueprint
+from controllers.user_controller import show_register
+
+auth = Blueprint('auth', __name__)
+
+@auth.route("/register")
+def register():
+    return show_register()
+🧠 Kenapa pakai Blueprint?
+biar gak 1 file penuh
+bisa modular (auth, user, admin)
+🎮 8. Controller
+
+📄 controllers/user_controller.py
+
+from flask import render_template
+
+def show_register():
+    return render_template("auth/register.html")
+🎨 9. Template
+
+📄 templates/auth/register.html
+
+<h1>Register</h1>
+🧠 Kenapa gak pakai folder views/?
+Flask sudah pakai templates/
+views/ itu optional (gak wajib)
+🔥 FLOW AKHIR
+Browser
+  ↓
+Route (Blueprint)
+  ↓
+Controller
+  ↓
+render_template
+  ↓
+HTML tampil
+💣 ERROR YANG KITA LEWATI (DAN SOLUSI)
+❌ Flask gak nemu app
+
+✔️ pakai:
+
+python -m flask --app main ...
+❌ No such command db
+
+✔️ pastikan:
+
+install flask-migrate
+ada Migrate(app, db)
+❌ Migration kosong
+
+✔️ pastikan:
+
+from models.user_model import User
+❌ Database gak muncul
+
+✔️ jalankan:
+
+db upgrade
+
+
+
+bikin migration and models
+Misal kamu mau bikin tabel donations
+
+📄 models/donation_model.py
+
+from database.db import db
+
+class Donation(db.Model):
+    __tablename__ = 'donations'
+
+    id = db.Column(db.Integer, primary_key=True)
+    amount = db.Column(db.Integer, nullable=False)
+    donor_name = db.Column(db.String(100))
+⚠️ WAJIB (ini sering bikin error 💀)
+
+Tambahin di main.py:
+
+from models.donation_model import Donation
+
+👉 Kenapa?
+
+Flask-Migrate cuma detect model yang di-import
+kalau gak → migration kosong 😵
+🚀 Jalankan Migration
+python -m flask --app main db migrate -m "create donations table"
+python -m flask --app main db upgrade
+
+🔄 2. Update Model (Tambah Field)
+
+Misal kamu mau nambah kolom email di users
+
+📄 models/user_model.py
+
+email = db.Column(db.String(100))
+🚀 Jalankan lagi
+python -m flask --app main db migrate -m "add email to users"
+python -m flask --app main db upgrade
