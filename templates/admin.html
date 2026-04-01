@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body { overflow-x: hidden; }
+    .sidebar { height: 100vh; }
+  </style>
+</head>
+
+<body>
+
+<div class="d-flex">
+
+  <!-- SIDEBAR -->
+  <div class="bg-dark text-white p-3 sidebar" style="width: 250px;">
+    <h4>Al-Bayan Admin</h4>
+    <hr>
+
+    <ul class="nav flex-column">
+
+      <li><a href="/admin/{{ role }}" class="nav-link text-white">Dashboard</a></li>
+
+      {% if role == "super" or role == "humas" %}
+      <li><a href="/jadwal" class="nav-link text-white">Jadwal</a></li>
+      <li><a href="/berita" class="nav-link text-white">Berita</a></li>
+      <li><a href="/galeri" class="nav-link text-white">Galeri</a></li>
+      {% endif %}
+
+      {% if role == "super" or role == "keuangan" %}
+      <li><a href="/keuangan" class="nav-link text-white">Keuangan</a></li>
+      {% endif %}
+
+      {% if role == "super" %}
+      <li><a href="/profil" class="nav-link text-white">Profil</a></li>
+      <li><a href="/infaq" class="nav-link text-white">Infaq</a></li>
+      {% endif %}
+
+    </ul>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="p-4 w-100">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between">
+      <h2>Dashboard</h2>
+      <p>Login sebagai: <b>{{ role }}</b></p>
+    </div>
+
+    <hr>
+
+    <!-- CARD INFO (ROLE BASED) -->
+    <div class="row mb-4">
+
+      {% if role == "super" or role == "humas" %}
+      <div class="col-md-4">
+        <div class="card p-3">
+          <h5>Jadwal</h5>
+          <p>Kelola jadwal sholat & imam</p>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if role == "super" or role == "keuangan" %}
+      <div class="col-md-4">
+        <div class="card p-3">
+          <h5>Keuangan</h5>
+          <p>Kelola pemasukan & pengeluaran</p>
+        </div>
+      </div>
+      {% endif %}
+
+      {% if role == "super" %}
+      <div class="col-md-4">
+        <div class="card p-3">
+          <h5>Infaq</h5>
+          <p>Kelola donasi</p>
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
+
+    <!-- FORM JADWAL (HANYA HUMAS & SUPER) -->
+    {% if role == "super" or role == "humas" %}
+    <h4>Input Jadwal</h4>
+
+    <form class="mb-4">
+      <input type="text" placeholder="Hari" class="form-control mb-2">
+      <input type="text" placeholder="Imam" class="form-control mb-2">
+      <input type="time" class="form-control mb-2">
+      <button class="btn btn-primary">Simpan</button>
+    </form>
+    {% endif %}
+
+    <!-- TABLE -->
+    <h4>Data Jadwal</h4>
+
+    <table class="table table-bordered">
+      <tr>
+        <th>Hari</th>
+        <th>Imam</th>
+        <th>Waktu</th>
+      </tr>
+
+      <tr>
+        <td>Senin</td>
+        <td>Ustadz Ahmad</td>
+        <td>04:30</td>
+      </tr>
+
+    </table>
+
+  </div>
+
+</div>
+
+</body>
+</html>
