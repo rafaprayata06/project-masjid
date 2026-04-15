@@ -233,5 +233,5 @@ Misal kamu mau nambah kolom email di users
 
 email = db.Column(db.String(100))
 🚀 Jalankan lagi
-python -m flask --app main db migrate -m "add email to users"
+python -m flask --app main db migrate -m "add role to users"
 python -m flask --app main db upgrade
