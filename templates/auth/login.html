@@ -2,20 +2,101 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Register</title>
+    <title>Login - Albayan HUB</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-icons.min.css') }}">
+
+    <style>
+        body {
+            background-color: #f5f6fa;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .login-card {
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-title {
+            font-weight: 600;
+            font-size: 25px;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-login {
+            background-color: #28a745;
+            border: none;
+            border-radius: 50px;
+            padding: 10px;
+            font-weight: 500;
+        }
+
+        .btn-login:hover {
+            background-color: #218838;
+        }
+
+        .logo-box {
+            display: inline-block;
+            padding: 1px;
+            border: 2px solid orange;
+            border-radius: 10px;
+            background-color: transparent;
+        }
+
+        .logo {
+            width: 60px;
+            
+        }
+
+        .logo-albayan-img {
+            display: block;
+            margin: 0 auto;
+            width: 80px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            top: 38%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .welcome-text {
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+    </style>
+
+
 </head>
 <body>
 
-    
+
 <div class="container">
     <div class="row justify-content-center align-items-center vh-100">
         <div class="col-md-4">
 
-            <div class="card shadow">
-                <div class="card-body">
-                    <h4 class="text-center mb-4">Login Mahasiswa</h4>
+            <div class="card shadow login-card">
+                <div class="card-body p-4">
+
+                    <!-- Logo -->
+                    <div class="text-center mb-3">
+                        <h4 class="login-title mb-4">Albayan-HUB</h4>
+
+                        <div class="logo-box">
+                            <img src="{{ url_for('static', filename='img/logo-albayan.png') }}" class="logo" alt="logo"
+                            class="logo-albayan-img" mb-4>
+                            
+                        </div>
+
+                        <p class="welcome-text">Welcome back!</p>
+                    </div>
 
                     <form method="POST" action="/login">
                         
@@ -26,24 +107,57 @@
                         </div>
 
                         <!-- Password -->
-                        <div class="mb-3">
-                            <label class="form-label">Password</label>
-                            <input type="password" name="password" class="form-control" placeholder="Masukkan Password" required>
-                        </div>
+                        <div class="mb-3"><label class="form-label">Password</label>
+                        <div class="input-group">
+                        <input type="password" id="password" class="form-control" placeholder="Masukkan Password">
+                        <span class="input-group-text" onclick="togglePassword()" style="cursor:pointer;">
+                        <i class="bi bi-eye" id="toggleIcon"></i>
+                       </span>
+                 </div>
+              </div>
+
+                        <!-- Info kecil -->
+                        <small class="text-muted">
+                            Gunakan minimal 8 karakter
+                        </small>
 
                         <!-- Button -->
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Login</button>
+                        <div class="d-grid mt-3">
+                            <button type="submit" class="btn btn-login">LOG IN</button>
+                        </div>
+
+                        <!-- Link tambahan -->
+                        <div class="text-center mt-3">
+                            <a href="#" class="text-decoration-none">Lupa password?</a>
                         </div>
 
                     </form>
+
                 </div>
             </div>
 
         </div>
     </div>
 </div>
-    
+
+   <!-- Bootstrap JS -->
 <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+
+    <!-- Script toggle password -->
+<script>
+function togglePassword() {
+  var input = document.getElementById("password");
+  var icon = document.getElementById("toggleIcon");
+
+  if (input.type === "password") {
+    input.type = "text";
+    icon.classList.replace("bi-eye", "bi-eye-slash");
+  } else {
+    input.type = "password";
+    icon.classList.replace("bi-eye-slash", "bi-eye");
+  }
+}
+</script>
+
 </body>
 </html>

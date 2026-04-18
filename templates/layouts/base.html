@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/bootstrap-icons.min.css') }}" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #f5f6fa;
+}
+
+/* HEADER */
+.header {
+  height: 70px;
+  background: #ff7a00;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 25px;
+  color: white;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-left img {
+  width: 35px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-right i {
+  font-size: 26px;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 240px;
+  position: fixed;
+  top: 70px;
+  left: 0;
+  height: calc(100vh - 70px); 
+  background: white;
+  padding: 20px;
+  border-radius: 0 15px 15px 0;
+}
+
+.menu-item {
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.menu-item span {
+  white-space: nowrap;
+}
+
+.menu-item.active {
+  background: #ffe8d6;
+}
+
+/* CONTENT */
+.content {
+  margin-left: 240px;
+  padding: 30px;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600; 
+  padding: 4px 16px; 
+  border-radius: 50px;
+  min-width: 80px; 
+}
+
+/* Warna Active (Hijau) */
+.status.active {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+/* Warna Pending (Kuning/Orange) */
+.status.pending {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+/* Warna Inactive (Merah) */
+.status.inactive {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* Styling tambahan untuk Action Edit */
+.text-edit {
+  color: #3b82f6;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+</style>
+
+<title>{% block title %}{% endblock %}</title>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <img src="{{ url_for('static', filename='img/logo-albayan.png') }}">
+    <strong>Albayan-Hub</strong>
+  </div>
+
+  <div class="header-right">
+    Admin Super
+    <i class="bi bi-person-circle"></i>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="menu-item"><i class="bi bi-grid"></i> Dashboard</div>
+  <div class="menu-item active"><i class="bi bi-people"></i> Users</div>
+  <div class="menu-item"><i class="bi bi-cash"></i> Finance</div>
+  <div class="menu-item"><i class="bi bi-calendar"></i> Imam Schedules</div>
+  <div class="menu-item"><i class="bi bi-newspaper"></i> News</div>
+  <div class="menu-item"><i class="bi bi-images"></i> Gallery</div>
+</div>
+
+<!-- CONTENT DINAMIS -->
+<div class="content">
+  {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>
