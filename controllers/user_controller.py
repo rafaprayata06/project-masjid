@@ -1,7 +1,8 @@
 from flask import render_template, request, redirect, flash
-from flask_login import login_user, logout_user, login_required
+from flask_login import login_user, logout_user, login_required,current_user
 from models.user_model import User
 from database.db import db
+from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -30,7 +31,8 @@ def register_user():
         jurusan=jurusan,
         jenis_kelamin=jenis_kelamin,
         password=password,
-        active='0'
+        active= 0,
+         created_at=datetime.utcnow()
     )
 
     db.session.add(user)
@@ -43,11 +45,9 @@ def register_user():
 def show_login():
     return render_template("auth/login.html")
 
-
-# ================= LOGIN LOGIC =================
 def login_system():
     if request.method == 'POST':
-        nim = request.form.get('nim')
+        nim = str(request.form.get('nim')).strip()
         password = request.form.get('password')
 
         user = User.query.filter_by(nim=nim).first()
@@ -55,24 +55,27 @@ def login_system():
         if user and check_password_hash(user.password, password):
             login_user(user)
 
-            # 🔥 redirect sesuai role
-            if user.role == 'AS':
-                return redirect('/admin-super')
-            elif user.role == 'AK':
+            role = user.role.strip() if user.role else None
+            if user.active == 2:
+                flash("Akun Anda sedang tidak aktif!")
+                return redirect('/login')
+
+            if role == 'AS':
+                return redirect('/admin-super/users')
+            elif role == 'AK':
                 return redirect('/admin-keuangan')
-            elif user.role=='AH':
+            elif role == 'AH':
                 return redirect('/admin-humas')
             else:
-                 return redirect('/login')
+                flash("Role tidak dikenali!")
+                return redirect('/login')
+
         flash("Login gagal! NIM atau password salah")
-       
+        return redirect('/login')
 
-    # ✅ GET request
     return render_template("auth/login.html")
-
-
 # ================= LOGOUT =================
 @login_required
-def logout():
+def logout_system():
     logout_user()
     return redirect('/login')

@@ -1,0 +1,168 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Users{% endblock %}
+
+{% block content %}
+
+<div class="card-box">
+
+  <div class="d-flex justify-content-between mb-3">
+    <h5>Admin Users Management</h5>
+  </div>
+
+<form method="GET" action="/admin-super/users" class="d-flex mb-3">
+  <input type="text" 
+         name="q"
+         class="form-control me-2"
+         placeholder="Search admin..."
+         value="{{ request.args.get('q', '') }}">
+
+  <button type="submit" class="btn btn-orange">Search</button>
+</form>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>Nim</th>
+        <th>Nama</th>
+        <th>Jurusan</th>
+        <th>Jenis Kelamin</th>
+        <th>Role</th>
+        <th>Status Akun</th>
+        <th>Aksi</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      {% if is_empty %}
+<tr>
+  <td colspan="8" class="text-center">
+
+    <div style="padding:40px;">
+      <i class="bi bi-search" style="font-size:40px; color:#ccc;"></i>
+      <h5 class="mt-3">Data tidak ditemukan</h5>
+      <p style="color:#888;">
+        Tidak ada user yang cocok dengan pencarian kamu 😢
+      </p>
+    </div>
+
+  </td>
+</tr>
+{% else %}
+
+    {% for u in users %}
+  <tr>
+    <td>{{users|length - loop.index0  }}</td>
+    <td>{{ u.nim }}</td>
+    <td>{{ u.name }}</td>
+    <td>{{ u.jurusan }}</td>
+    <td>{{ u.jenis_kelamin }}</td>
+    <td>{{ u.role }}</td>
+    <td>
+    {% if u.active == 1 %}
+        <div class="status active">Active</div>
+    {% elif u.active == 0 %}
+        <div class="status pending">Pending</div>
+    {% elif u.active == 2 %}
+        <div class="status inactive">Inactive</div>
+    {% endif %}
+</td>
+    <td>
+      <a href="#" class="text-edit" data-bs-toggle="modal" data-bs-target="#modal-{{ u.nim }}">Edit</a>
+    
+    <!-- Modal edit user-->
+<div class="modal fade" id="modal-{{ u.nim }}">
+  <div class="modal-dialog">
+    <form method="POST" action="/admin/users/update/{{ u.nim }}">
+      
+      <div class="modal-content custom-modal">
+
+        <!-- HEADER -->
+        <div class="modal-header custom-header">
+          <h5 class="modal-title">Edit User</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <!-- BODY -->
+        <div class="modal-body">
+
+          <div class="mb-3">
+            <label class="form-label">Nama</label>
+            <input type="text" class="form-control" value="{{ u.name }}" disabled>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Role</label>
+            <select name="role" class="form-control">
+              <option value="">-- pilih role --</option>
+              <option value="AS" {% if u.role == 'AS' %}selected{% endif %}>Admin Super</option>
+              <option value="AK" {% if u.role == 'AK' %}selected{% endif %}>Admin Keuangan</option>
+              <option value="AH" {% if u.role == 'AH' %}selected{% endif %}>Admin Humas</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Status</label>
+            <select name="active" class="form-control">
+              <option value="0" {% if u.active == 0 %}selected{% endif %}>Pending</option>
+              <option value="1" {% if u.active == 1 %}selected{% endif %}>Active</option>
+              <option value="2" {% if u.active == 2 %}selected{% endif %}>Inactive</option>
+            </select>
+          </div>
+
+        </div>
+
+        <!-- FOOTER -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-orange">Save</button>
+        </div>
+
+      </div>
+
+    </form>
+  </div>
+</div>
+    </td>
+  </tr>
+  {% endfor %}     
+  {% endif %}
+
+    </tbody>
+  </table>
+
+</div>
+
+
+<style>
+  /* MODAL CUSTOM */
+.custom-modal {
+  border-radius: 15px;
+  border: none;
+}
+
+.custom-header {
+  background: #ff7a00;
+  color: white;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+}
+
+/* BUTTON ORANGE */
+.btn-orange {
+  background: #ff7a00;
+  color: white;
+  border: none;
+}
+
+.btn-orange:hover {
+  background: #e66a00;
+}
+
+/* INPUT STYLE */
+.modal .form-control {
+  border-radius: 10px;
+}
+</style>
+{% endblock %}

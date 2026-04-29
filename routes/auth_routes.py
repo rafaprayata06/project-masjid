@@ -1,5 +1,5 @@
 from flask import Blueprint
-from controllers.user_controller import show_register, show_login, register_user, login_system
+from controllers.user_controller import show_register, show_login, register_user, login_system,logout_system
 
 
 
@@ -22,4 +22,8 @@ def login_form():
 @auth.route("/login",methods=["POST"])
 def login_sys():
     return login_system()
+
+@auth.route("/logout",methods=["POST"])
+def logout_sys():
+    return logout_system()
 

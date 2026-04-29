@@ -1,6 +1,6 @@
 from database.db import db
 from flask_login import UserMixin  # 🔥 biar support Flask-Login
-
+from datetime import datetime
 
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
@@ -10,8 +10,12 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(255), nullable=False)
     jurusan = db.Column(db.String(100), nullable=True)
     jenis_kelamin = db.Column(db.String(20), nullable=True)
-    role = db.Column(db.Enum('AH', 'AK', 'AS'), nullable=True)
-    active = db.Column(  db.Enum('0', '1'), nullable=True, default='0')
+    role = db.Column(db.Enum('AH', 'AK', 'AS', name='role_enum'), nullable=True)
+    active = db.Column(db.Integer, nullable=True, default=0)
+    created_at = db.Column(
+    db.DateTime,
+    default=datetime.utcnow
+)
 
     # 🔥 penting karena PK bukan id
     def get_id(self):
