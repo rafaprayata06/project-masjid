@@ -1,5 +1,5 @@
 from flask import render_template, request, redirect, flash
-from flask_login import login_user, logout_user, login_required,current_user
+from flask_login import login_user, logout_user, login_required, current_user
 from models.user_model import User
 from database.db import db
 from datetime import datetime
@@ -19,7 +19,6 @@ def register_user():
     jenis_kelamin = request.form.get("jenis_kelamin")   
     raw_password = request.form.get("password")
 
-    # ⚠️ validasi sederhana
     if not nim or not name or not raw_password:
         return "Data tidak boleh kosong!"
 
@@ -31,8 +30,8 @@ def register_user():
         jurusan=jurusan,
         jenis_kelamin=jenis_kelamin,
         password=password,
-        active= 0,
-         created_at=datetime.utcnow()
+        active=0,
+        created_at=datetime.utcnow()
     )
 
     db.session.add(user)
@@ -56,24 +55,30 @@ def login_system():
             login_user(user)
 
             role = user.role.strip() if user.role else None
+
             if user.active == 2:
-                flash("Akun Anda sedang tidak aktif!")
+                flash("Akun kamu sedang tidak aktif!", "error")
                 return redirect('/login')
 
             if role == 'AS':
+                flash("Selamat datang, Admin Super!", "success")
                 return redirect('/admin-super/users')
             elif role == 'AK':
+                flash("Selamat datang, Admin Keuangan!", "success")
                 return redirect('/admin-keuangan')
             elif role == 'AH':
-                return redirect('/admin-humas')
+                flash("Selamat datang, Admin Humas!", "success")
+                return redirect('/admin-humas/news')
             else:
-                flash("Role tidak dikenali!")
+                flash("Role tidak dikenali!", "error")
                 return redirect('/login')
 
-        flash("Login gagal! NIM atau password salah")
+        flash("NIM atau password salah!", "error")
         return redirect('/login')
 
     return render_template("auth/login.html")
+
+
 # ================= LOGOUT =================
 @login_required
 def logout_system():

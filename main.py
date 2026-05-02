@@ -6,6 +6,8 @@ from routes.admin_routes import admin
 from models.user_model import User
 from flask_login import LoginManager
 from models.berita_model import Berita
+from routes.public_routes import public
+
 
 # TAMBAHAN BARU
 import os
@@ -15,6 +17,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
+app.register_blueprint(public)
 
 # ================= CONFIG =================
 app.config['SQLALCHEMY_DATABASE_URI'] = (

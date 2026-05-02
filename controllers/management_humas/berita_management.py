@@ -83,14 +83,14 @@ def store_berita():
 
         flash('Berita berhasil ditambahkan!', 'success')
 
-        return redirect("/admin-humas")
+        return redirect("/admin-humas/news")
 
     except Exception as e:
         db.session.rollback()
 
         flash(f'Gagal menambahkan berita: {str(e)}', 'danger')
 
-        return redirect("/admin-humas")
+        return redirect("/admin-humas/news")
 
 
 # ================= EDIT BERITA =================
@@ -156,11 +156,11 @@ def edit_berita(id):
 
         flash("Berita berhasil diupdate!", "success")
 
-        return redirect(url_for("admin.halaman_admin_humas"))
+        return redirect("/admin-humas/news")
 
     except Exception as e:
         db.session.rollback()
 
         flash(f"Gagal update berita: {str(e)}", "danger")
 
-        return redirect("/admin-humas")
+        return redirect("/admin-humas/news")

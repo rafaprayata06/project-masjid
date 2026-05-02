@@ -1,0 +1,128 @@
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #f5f6fa;
+}
+
+/* HEADER */
+.header {
+  height: 70px;
+  background: #ff7a00;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 25px;
+  color: white;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-left img {
+  width: 35px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.header-right i {
+  font-size: 26px;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 240px;
+  position: fixed;
+  top: 70px;
+  left: 0;
+  height: calc(100vh - 70px); 
+  background: white;
+  padding: 20px;
+  border-radius: 0 15px 15px 0;
+}
+
+.menu-item {
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  color: black;
+  text-decoration: none;
+}
+
+.menu-item.active {
+  background: #ffe8d6;
+}
+
+/* CONTENT */
+.content {
+  margin-left: 240px;
+  padding: 30px;
+}
+
+/* MODAL CUSTOM */
+.custom-modal {
+  border-radius: 15px;
+  border: none;
+}
+
+.custom-header {
+  background: #ff7a00;
+  color: white;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+}
+
+/* BUTTON ORANGE */
+.btn-orange {
+  background: #ff7a00;
+  color: white;
+  border: none;
+}
+
+.btn-orange:hover {
+  background: #e66a00;
+}
+
+/* INPUT STYLE */
+.modal .form-control {
+  border-radius: 10px;
+}
+
+/* STATUS BADGE */
+.status {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  display: inline-block;
+  font-weight: 500;
+}
+
+/* ACTIVE */
+.status.active {
+  background: #d4edda;
+  color: #28a745;
+}
+
+/* PENDING */
+.status.pending {
+  background: #fff3cd;
+  color: #ffc107;
+}
+
+/* INACTIVE */
+.status.inactive {
+  background: #f8d7da;
+  color: #dc3545;
+}
+

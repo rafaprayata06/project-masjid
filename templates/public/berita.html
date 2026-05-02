@@ -1,0 +1,65 @@
+{% extends 'layouts/public_base.html' %}
+{% block title %}Berita & Kegiatan{% endblock %}
+
+{% block content %}
+<section class="mt-5 pt-5 pb-5" style="background: #ffffff;">
+  <div class="container">
+
+    <div class="text-center mb-5">
+      <p class="text-uppercase fw-bold mb-1"
+         style="font-size: 11px; letter-spacing: 2px; color: #d97706;">
+        BERITA & KEGIATAN
+      </p>
+      <h2 class="fw-bold mb-2"
+          style="font-family: 'Playfair Display', serif; font-size: 38px; color: #1f2937;">
+        Kegiatan Masjid Al-Bayan
+      </h2>
+      <p class="text-muted" style="font-size: 14px;">
+        Info terbaru seputar kegiatan dan program masjid
+      </p>
+    </div>
+
+    <div class="row">
+      {% for b in berita %}
+      <div class="col-md-4 mb-4">
+        <div class="card berita-card shadow-sm h-100 border-0">
+
+          <div class="position-relative">
+            {% if b.thumbnail %}
+              <img src="{{ url_for('static', filename=b.thumbnail) }}" class="card-img-top">
+            {% else %}
+              <img src="{{ url_for('static', filename='img/default.jpg') }}" class="card-img-top">
+            {% endif %}
+            <span class="position-absolute top-0 start-0 m-3 badge"
+                  style="background: #d97706; font-size: 12px; padding: 6px 12px; border-radius: 20px;">
+              {{ b.kategori }}
+            </span>
+          </div>
+
+          <div class="card-body p-4">
+            <p class="text-muted mb-2" style="font-size: 13px;">
+              <i class="bi bi-calendar3" style="color: #d97706;"></i>
+              &nbsp;{{ b.tanggal_kegiatan.strftime('%d %B %Y') if b.tanggal_kegiatan }}
+            </p>
+            <h5 class="fw-bold mb-2" style="color: #1f2937; font-size: 17px; line-height: 1.4;">
+              {{ b.judul }}
+            </h5>
+            <p class="text-muted mb-3" style="font-size: 14px; line-height: 1.6;">
+              {{ b.excerpt if b.excerpt else b.isi[:100] ~ '...' }}
+            </p>
+            <a href="/berita/{{ b.id }}"
+               style="color: #d97706; font-size: 14px; font-weight: 600; text-decoration: none;">
+              Baca Selengkapnya →
+            </a>
+          </div>
+
+        </div>
+      </div>
+
+      {% endfor %}
+      
+    </div>
+
+  </div>
+</section>
+{% endblock %}

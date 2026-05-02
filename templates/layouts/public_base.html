@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/bootstrap-icons.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/public.css') }}" rel="stylesheet">
+  <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+  
+  <title>{% block title %}{% endblock %}</title>
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-lg fixed-top custom-navbar">
+  <div class="container">
+
+    
+      <a class="navbar-brand d-flex align-items-center gap-2" href="#" onclick="window.scrollTo({top:0, behavior:'smooth'}); return false;">
+      <img src="{{ url_for('static', filename='img/logo-albayan.png') }}">
+      <div>
+        <div class="brand-title">Masjid Al-Bayan</div>
+        <small class="brand-subtitle">Sistem Manajemen Masjid</small>
+      </div>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="#" onclick="window.scrollTo({top:0, behavior:'smooth'}); return false;">Beranda</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/#jadwal">Jadwal Sholat</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/#berita">Berita</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/#galeri">Galeri</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/#tentang">Tentang</a>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</nav>
+
+<main>
+  {% block content %}{% endblock %}
+</main>
+
+<footer style="background: #d97706;">
+  <div class="container py-5">
+    <div class="row g-4">
+
+      <div class="col-md-4">
+        <h5 class="fw-bold mb-3" style="color: #fff; font-family: 'Playfair Display', serif; font-size: 20px;">
+          Masjid Al-Bayan
+        </h5>
+        <p style="color: rgba(255,255,255,0.85); font-size: 14px; line-height: 1.8;">
+          Pusat ibadah, dakwah, dan pendidikan Islam yang modern dan amanah untuk seluruh umat.
+        </p>
+      </div>
+
+      <div class="col-md-4">
+        <h6 class="fw-bold mb-3" style="color: #fff; font-size: 15px;">Kontak</h6>
+        <p style="color: rgba(255,255,255,0.85); font-size: 14px; line-height: 2; margin: 0;">
+          <i class="bi bi-geo-alt me-2"></i> Jl. Masjid Al-Bayan No. 1, Jakarta, Indonesia<br>
+          <i class="bi bi-telephone me-2"></i> (021) 1234-5678<br>
+          <i class="bi bi-envelope me-2"></i> info@masjidalbayan.id
+        </p>
+      </div>
+
+      <div class="col-md-4">
+        <h6 class="fw-bold mb-3" style="color: #fff; font-size: 15px;">Jam Operasional</h6>
+        <p style="color: rgba(255,255,255,0.85); font-size: 14px; line-height: 2; margin: 0;">
+          <i class="bi bi-clock me-2"></i> Buka 24 Jam untuk Ibadah<br>
+          &nbsp;&nbsp;&nbsp;&nbsp; Sekretariat: 08.00 - 17.00 WIB<br>
+          &nbsp;&nbsp;&nbsp;&nbsp; Konsultasi: Senin - Jumat
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="border-top: 1px solid rgba(255,255,255,0.2); padding: 16px 0; text-align: center;">
+    <p class="mb-0" style="color: rgba(255,255,255,0.8); font-size: 13px;">
+      © 2026 Masjid Al-Bayan. Sistem Manajemen Masjid Digital.
+    </p>
+  </div>
+</footer>
+
+</html>
+
+
+</body>

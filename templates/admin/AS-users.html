@@ -1,4 +1,4 @@
-{% extends 'layouts/base.html' %}
+{% extends 'layouts/admin_base.html' %}
 
 {% block title %}Users{% endblock %}
 
@@ -53,7 +53,7 @@
 
     {% for u in users %}
   <tr>
-    <td>{{users|length - loop.index0  }}</td>
+    <td>{{ loop.index  }}</td>
     <td>{{ u.nim }}</td>
     <td>{{ u.name }}</td>
     <td>{{ u.jurusan }}</td>
@@ -134,35 +134,4 @@
 
 </div>
 
-
-<style>
-  /* MODAL CUSTOM */
-.custom-modal {
-  border-radius: 15px;
-  border: none;
-}
-
-.custom-header {
-  background: #ff7a00;
-  color: white;
-  border-top-left-radius: 15px;
-  border-top-right-radius: 15px;
-}
-
-/* BUTTON ORANGE */
-.btn-orange {
-  background: #ff7a00;
-  color: white;
-  border: none;
-}
-
-.btn-orange:hover {
-  background: #e66a00;
-}
-
-/* INPUT STYLE */
-.modal .form-control {
-  border-radius: 10px;
-}
-</style>
 {% endblock %}

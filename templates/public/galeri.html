@@ -1,0 +1,90 @@
+{% extends 'layouts/public_base.html' %}
+{% block title %}Galeri Kegiatan{% endblock %}
+
+{% block content %}
+<section class="mt-5 pt-5 pb-5" style="background: #f8f5f0;">
+  <div class="container">
+
+    <div class="text-center mb-5">
+      <p class="text-uppercase fw-bold mb-1"
+         style="font-size: 11px; letter-spacing: 2px; color: #d97706;">
+        GALERI
+      </p>
+      <h2 class="fw-bold mb-2"
+          style="font-family: 'Playfair Display', serif; font-size: 38px; color: #1f2937;">
+        Dokumentasi Kegiatan
+      </h2>
+      <p class="text-muted" style="font-size: 14px;">
+        Momen-momen berharga di Masjid Al-Bayan
+      </p>
+    </div>
+
+    <!-- GRID FOTO -->
+    <div class="row g-3" id="galeri-grid">
+
+      {% set fotos = [
+        {'judul': 'Interior Masjid Al-Bayan', 'kategori': 'Masjid', 'img': 'default.jpg'},
+        {'judul': 'Keindahan Malam', 'kategori': 'Masjid', 'img': 'default.jpg'},
+        {'judul': 'Sholat Berjamaah', 'kategori': 'Ibadah', 'img': 'default.jpg'},
+        {'judul': 'Kaligrafi Al-Quran', 'kategori': 'Seni', 'img': 'default.jpg'},
+        {'judul': 'Buka Puasa Bersama', 'kategori': 'Ramadan', 'img': 'default.jpg'},
+        {'judul': 'Taman Masjid', 'kategori': 'Masjid', 'img': 'default.jpg'},
+      ] %}
+
+      {% for f in fotos %}
+      <div class="col-md-4 col-6">
+        <div class="galeri-card position-relative overflow-hidden rounded-3"
+             onclick="bukaLightbox('{{ f.judul }}', '{{ f.kategori }}', '{{ url_for('static', filename='img/' ~ f.img) }}')">
+          <img src="{{ url_for('static', filename='img/' ~ f.img) }}" class="w-100">
+          <div class="galeri-overlay">
+            <span class="galeri-kategori">{{ f.kategori }}</span>
+            <p class="galeri-judul">{{ f.judul }}</p>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+
+    </div>
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" onclick="tutupLightbox()"
+     style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); 
+            z-index:9999; justify-content:center; align-items:center; flex-direction:column;">
+  <div onclick="event.stopPropagation()"
+       style="max-width:700px; width:90%; background:#fff; border-radius:16px; overflow:hidden;">
+    <img id="lightbox-img" src="" class="w-100" style="max-height:450px; object-fit:cover;">
+    <div class="p-4">
+      <span id="lightbox-kategori" class="badge mb-2"
+            style="background:#d97706; font-size:12px; padding:4px 12px; border-radius:20px;"></span>
+      <h5 id="lightbox-judul" class="fw-bold mb-0"
+          style="font-family:'Playfair Display',serif; color:#1f2937;"></h5>
+    </div>
+  </div>
+  <button onclick="tutupLightbox()" class="mt-3"
+          style="background:transparent; border:2px solid white; color:white; 
+                 border-radius:50px; padding:8px 24px; font-size:14px; cursor:pointer;">
+    ✕ Tutup
+  </button>
+</div>
+
+<script>
+function bukaLightbox(judul, kategori, img) {
+  document.getElementById('lightbox-img').src = img;
+  document.getElementById('lightbox-judul').innerText = judul;
+  document.getElementById('lightbox-kategori').innerText = kategori;
+  const lb = document.getElementById('lightbox');
+  lb.style.display = 'flex';
+  setTimeout(() => lb.style.opacity = '1', 10);
+}
+
+function tutupLightbox() {
+  document.getElementById('lightbox').style.display = 'none';
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') tutupLightbox();
+});
+</script>
+{% endblock %}

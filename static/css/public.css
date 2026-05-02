@@ -1,0 +1,464 @@
+@font-face {
+  font-family: 'Playfair Display';
+  src: url('/static/fonts/PlayfairDisplay-Bold.ttf');
+}
+
+@font-face {
+  font-family: 'Poppins Regular';
+  src: url('/static/fonts/Poppins-Regular.ttf');
+}
+
+/* ================= BASE ================= */
+body {
+  background: #f8f5f0 !important;
+  font-family: 'Poppins Regular', sans-serif;
+  margin: 0%;
+  padding: 0%;
+}
+
+section {
+  padding: 60px 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* ================= NAVBAR ================= */
+.custom-navbar {
+  background: #f97316;
+  height: 65px;
+  display: flex;
+  align-items: center;
+  z-index: 9999;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+}
+
+.custom-navbar .container {
+  max-width: 1150px;
+}
+/* container biar modern */
+.navbar .container {
+  max-width: 1200px;
+}
+
+/* BRAND */
+.navbar-brand {
+  color: white !important;
+  font-weight: 600;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* LOGO */
+.navbar-brand img {
+  width: 40px;
+}
+
+/* TEKS BRAND */
+.navbar-brand div div:first-child {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* 🔥 Judul utama pakai Playfair */
+.brand-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 21px !important;
+  font-weight: 700;
+  color: white;
+  line-height: 1.1;
+}
+
+/* 🔥 Subtitle pakai Poppins */
+.brand-subtitle {
+  font-weight: 500;
+  font-size: 11px;
+  color: rgba(255,255,255,0.8);
+  letter-spacing: 0.5px;
+}
+
+/* SUB TEXT*/
+.navbar-brand small {
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+/* MENU */
+.navbar-nav {
+  gap: 22px;
+}
+
+.navbar .nav-link {
+  color: white !important;
+  font-weight: 500;
+  font-size: 14px;
+  padding: 6px 0px;
+}
+
+.navbar .nav-link:hover {
+  color: #ffe0b2 !important;
+}
+
+.navbar-brand div {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+
+/* ================= HERO ================= */
+.hero-section {
+  background: url('/static/img/masjid-albayan.png') center/cover no-repeat;
+  min-height: 100vh;
+  position: relative;
+  margin-top: 65px; 
+}
+
+.hero-section .overlay {
+  position: absolute;
+  inset: 0;
+
+  background:
+    url('/static/img/pattern.svg'),
+    linear-gradient(
+      135deg,
+      rgba(249, 115, 22, 0.8),
+      rgba(255, 140, 40, 0.7),
+      rgba(255, 170, 70, 0.6)
+    );
+
+  background-size: 120px, cover;
+  background-repeat: repeat, no-repeat;
+  background-blend-mode: overlay;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 🔥 CONTENT */
+.hero-section .overlay > div {
+  max-width: 700px;
+  z-index: 3;
+}
+
+/* 🔥 TITLE */
+.hero-section h1 {
+  font-size: 64px;
+  font-weight: 700;
+  letter-spacing: 1px;
+
+  font-family: 'Playfair Display', serif;
+
+  text-shadow: 0 6px 25px rgba(0,0,0,0.35);
+}
+
+.hero-section h1 span {
+  background: linear-gradient(
+    45deg,
+    #fff0d0,
+    #ffb347,
+    #fff0d0
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+  font-weight: 900;
+}
+
+/* 🔥 DATE */
+.hero-section p {
+  font-size: 18px;
+  opacity: 0.95;
+  margin-top: 10px;
+}
+
+/* 🔥 BUTTON GROUP */
+.hero-section .btn {
+  border-radius: 50px;
+  padding: 12px 26px;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+  will-change: transform;
+}
+
+/* 🔥 BUTTON ORDER SESUAI MOCKUP */
+.hero-section .btn-warning {
+  background: #ffb020;
+  color: rgb(0, 0, 0);
+}
+
+.hero-section .btn-warning:hover {
+  background: #ff9800;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.btn-white {
+  background: white;
+  border: 2px solid white;
+  border-radius: 50px;
+  padding: 12px 26px;
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.25s ease;
+}
+
+/* 🔥 TEXT DISEMBUNYIKAN */
+.btn-white span {
+  color: transparent;
+  transition: all 0.25s ease;
+  opacity: 0;
+}
+
+/* 🔥 HOVER → MUNCUL */
+.btn-white:hover {
+  background: transparent;
+}
+
+.btn-white:hover span {
+  color: white;
+  opacity: 1;
+}
+
+/* efek klik */
+.btn-white:active {
+  transform: scale(0.97);
+}
+
+/* 🔥 HOVER EFFECT */
+.hero-section .btn:hover {
+  opacity: 0.95;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+
+.hero-section .btn:active {
+  transform: scale(0.97);
+}
+/* ================= CARD GLOBAL ================= */
+.card {
+  border-radius: 15px;
+  border: none;
+}
+
+/* ================= JADWAL ================= */
+.jadwal-card {
+  background: #fff;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: none !important;
+  position: relative;
+}
+
+.jadwal-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important;
+}
+
+.jadwal-card.active {
+  background-color: #d97706 !important;
+  transform: scale(0.97);
+  box-shadow: 0 8px 24px rgba(217,119,6,0.35) !important;
+}
+
+/* Arabic text */
+.jadwal-card .arabic {
+  font-size: 13px;
+  color: #bbb;
+  font-family: 'Times New Roman', serif;
+  margin-bottom: 2px;
+  direction: rtl;
+}
+
+/* Nama sholat */
+.jadwal-card .nama-sholat {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 6px;
+}
+
+/* Jam */
+.jadwal-card .jam-sholat {
+  font-size: 30px;
+  font-weight: 700;
+  color: #d97706;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+/* Imam */
+.jadwal-card .imam-sholat {
+  font-size: 11px;
+  color: #9ca3af;
+  margin-bottom: 0;
+}
+
+/* Saat aktif — semua teks jadi putih */
+.jadwal-card.active .arabic,
+.jadwal-card.active .nama-sholat,
+.jadwal-card.active .imam-sholat {
+  color: rgba(255,255,255,0.85) !important;
+}
+
+.jadwal-card.active .jam-sholat {
+  color: #fff !important;
+}
+
+/* Badge Berikutnya */
+.badge-next {
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #b45309;
+  color: white;
+  padding: 3px 14px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+/* ================= BERITA ================= */
+.berita-card {
+  border-radius: 16px;
+  background: #fff;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.berita-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px rgba(0,0,0,0.10) !important;
+}
+
+.berita-card img {
+  height: 220px;
+  object-fit: cover;
+  width: 100%;
+}
+
+.berita-card .card-body h5 {
+  font-family: 'Playfair Display', serif;
+  transition: color 0.25s ease;
+}
+
+.berita-card .card-body p,
+.berita-card .card-body small {
+  font-family: 'Poppins Regular', sans-serif;
+}
+
+.berita-card:hover .card-body h5 {
+  color: #d97706 !important;
+}
+
+.berita-card .baca-link {
+  position: relative;
+  color: #d97706;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.berita-card .baca-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: #d97706;
+  transition: width 0.3s ease;
+}
+
+.berita-card:hover .baca-link::after {
+  width: 100%;
+}
+
+/* ================= GALERI ================= */
+.galeri-card {
+  cursor: pointer;
+}
+
+.galeri-card img {
+  height: 260px;
+  object-fit: cover;
+  width: 100%;
+  transition: transform 0.4s ease;
+}
+
+.galeri-card:hover img {
+  transform: scale(1.08);
+}
+
+.galeri-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.75), transparent);
+  padding: 24px 16px 16px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.galeri-card:hover .galeri-overlay {
+  opacity: 1;
+}
+
+.galeri-judul {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 0;
+  font-family: 'Playfair Display', serif;
+}
+
+.galeri-kategori {
+  background: #d97706;
+  color: #fff;
+  font-size: 11px;
+  padding: 2px 10px;
+  border-radius: 20px;
+  display: inline-block;
+  margin-bottom: 6px;
+}
+
+/* ================= TENTANG ================= */
+.stat-card {
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.08);
+}
+
+.stat-card.active {
+  background: #d97706 !important;
+}
+
+.stat-card.active h3,
+.stat-card.active p {
+  color: #fff !important;
+}
+
+.stat-card.active .stat-icon {
+  color: #fff !important;
+}
+
+.stat-icon {
+  font-size: 32px;
+  color: #d97706;
+  transition: color 0.3s ease;
+}

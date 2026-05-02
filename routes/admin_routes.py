@@ -12,16 +12,20 @@ admin = Blueprint('admin', __name__)
 def admin_super_show():
     return admin_super()
 
-@admin.route("/admin/users/update/<string:nim>", methods=["POST"])
+@admin.route("/admin-super/users/update/<string:nim>", methods=["POST"])
 def update_user(nim):
     return update_user_controller(nim)
-@admin.route("/admin-humas", methods=["GET"])
+
+
+@admin.route("/admin-humas/news", methods=["GET"])
 def admin_humas_show():
     return admin_humas()
-@admin.route("/admin-humas", methods=["POST"])
+
+@admin.route("/admin-humas/news", methods=["POST"])
 def admin_humas_berita():
     return store_berita()
-@admin.route("/admin-humas/update/<string:id>", methods=["POST"])
+
+@admin.route("/admin-humas/news/update/<string:id>", methods=["POST"])
 def admin_humas_berita_edit(id):
     return edit_berita(id)
 
