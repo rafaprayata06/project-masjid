@@ -1,0 +1,75 @@
+{% extends 'layouts/public_base.html' %}
+{% block title %}Jadwal Sholat{% endblock %}
+
+{% block content %}
+<section class="container text-center mt-5 pt-5">
+  <p class="text-uppercase fw-bold mb-1"
+     style="font-size: 11px; letter-spacing: 2px; color: #d97706;">
+    JADWAL SHOLAT
+  </p>
+  <h2 class="fw-bold mb-2"
+      style="font-family: 'Playfair Display', serif; font-size: 38px; color: #1f2937;">
+    Waktu Sholat Hari Ini
+  </h2>
+  <p class="text-muted mb-5" style="font-size: 14px;">
+    <i class="bi bi-geo-alt-fill" style="color: #d97706;"></i> Jakarta, Indonesia &nbsp;&nbsp;
+    <i class="bi bi-clock-fill" style="color: #d97706;"></i> {{ tanggal }}
+  </p>
+
+  <div class="row justify-content-center g-4">
+    {% set arabic = {
+      'Subuh': 'الفجر',
+      'Dzuhur': 'الظهر',
+      'Ashar': 'العصر',
+      'Maghrib': 'المغرب',
+      'Isya': 'العشاء'
+    } %}
+    {% set imam = {
+      'Subuh': 'Ust. Ahmad',
+      'Dzuhur': 'Ust. Ibrahim',
+      'Ashar': 'Ust. Yusuf',
+      'Maghrib': 'Ust. Ali',
+      'Isya': 'Ust. Umar'
+    } %}
+    {% for k, v in jadwal.items() %}
+    <div class="col-md-2 col-6">
+      <div class="card jadwal-card shadow-sm p-4 border-0 position-relative text-center"
+           data-waktu="{{ v }}">
+        <span class="badge-next d-none">Berikutnya</span>
+        <p class="arabic">{{ arabic[k] }}</p>
+        <p class="nama-sholat">{{ k }}</p>
+        <h3 class="jam-sholat">{{ v }}</h3>
+        <p class="imam-sholat">Imam: {{ imam[k] }}</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <p class="mt-5 text-muted" style="font-size: 12px; opacity: 0.8;">
+    * Iqamah 10 menit setelah adzan. Data dari Aladhan API (Kementerian Agama RI).
+  </p>
+</section>
+
+<script>
+function highlightBerikutnya() {
+  const now = new Date();
+  const jamSekarang = now.getHours() * 60 + now.getMinutes();
+  const cards = document.querySelectorAll('.jadwal-card');
+  let berikutnya = null;
+  cards.forEach(card => {
+    const waktu = card.getAttribute('data-waktu');
+    if (!waktu) return;
+    const [jam, menit] = waktu.split(':').map(Number);
+    const totalMenit = jam * 60 + menit;
+    if (totalMenit > jamSekarang && !berikutnya) berikutnya = card;
+  });
+  if (!berikutnya) berikutnya = document.querySelector('.jadwal-card');
+  if (berikutnya) {
+    berikutnya.classList.add('active');
+    berikutnya.querySelector('.badge-next').classList.remove('d-none');
+  }
+}
+highlightBerikutnya();
+</script>
+
+{% endblock %}

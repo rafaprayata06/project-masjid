@@ -4,100 +4,24 @@
 {% block content %}
 
 <!-- HERO -->
-  <section class="hero-section">
+<section class="hero-section">
   <div class="overlay text-center text-white">
     <div>
       <h1>Masjid <span>Al-Bayan</span></h1>
-      <p class="mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Masjid yang modern dan amanah untuk seluruh umat.</p>
+      <p class="mt-2">"Masjid kampus yang terbuka untuk siapa saja. Dikelola langsung oleh mahasiswa Institut Teknologi Indonesia, 
+        kami menyambut hangat mahasiswa, warga sekitar, 
+        hingga teman-teman pekerja dan ojek online yang ingin beribadah atau sekadar melepas lelah sejenak."
+      </p>
       <div class="mt-4">
         <a href="#" class="btn btn-warning me-2">Donasi Sekarang</a>
-        <a href="#jadwal" class="btn btn-white"><span>Lihat Jadwal Sholat</span></a>
+        <a href="/jadwal" class="btn btn-white"><span>Lihat Jadwal Sholat</span></a>
       </div>
     </div>
   </div>
 </section>
-
-<!-- JADWAL SHOLAT -->
-<section id="jadwal" class="container text-center mt-5 pt-5">
-  <p class="text-uppercase fw-bold mb-1"
-     style="font-size: 11px; letter-spacing: 2px; color: #d97706;">
-    JADWAL SHOLAT
-  </p>
-  <h2 class="fw-bold mb-2"
-      style="font-family: 'Playfair Display', serif; font-size: 38px; color: #1f2937;">
-    Waktu Sholat Hari Ini
-  </h2>
-  <p class="text-muted mb-5" style="font-size: 14px;">
-    <i class="bi bi-geo-alt-fill" style="color: #d97706;"></i> Jakarta, Indonesia &nbsp;&nbsp;
-    <i class="bi bi-clock-fill" style="color: #d97706;"></i> {{ tanggal }}
-  </p>
-
-  <div class="row justify-content-center g-4">
-    {% set arabic = {
-      'Subuh': 'الفجر',
-      'Dzuhur': 'الظهر',
-      'Ashar': 'العصر',
-      'Maghrib': 'المغرب',
-      'Isya': 'العشاء'
-    } %}
-    {% set imam = {
-      'Subuh': 'Ust. Ahmad',
-      'Dzuhur': 'Ust. Ibrahim',
-      'Ashar': 'Ust. Yusuf',
-      'Maghrib': 'Ust. Ali',
-      'Isya': 'Ust. Umar'
-    } %}
-
-    {% for k, v in jadwal.items() %}
-    <div class="col-md-2 col-6">
-      <div class="card jadwal-card shadow-sm p-4 border-0 position-relative text-center"
-           data-waktu="{{ v }}">
-        <span class="badge-next d-none">Berikutnya</span>
-        <p class="arabic">{{ arabic[k] }}</p>
-        <p class="nama-sholat">{{ k }}</p>
-        <h3 class="jam-sholat">{{ v }}</h3>
-        <p class="imam-sholat">Imam: {{ imam[k] }}</p>
-      </div>
-    </div>
-    {% endfor %}
-  </div>
-
-  <p class="mt-5 text-muted" style="font-size: 12px; opacity: 0.8;">
-    * Iqamah 10 menit setelah adzan. Data dari Aladhan API (Kementerian Agama RI).
-  </p>
-</section>
-
-<script>
-function highlightBerikutnya() {
-  const now = new Date();
-  const jamSekarang = now.getHours() * 60 + now.getMinutes();
-  const cards = document.querySelectorAll('.jadwal-card');
-  let berikutnya = null;
-
-  cards.forEach(card => {
-    const waktu = card.getAttribute('data-waktu');
-    if (!waktu) return;
-    const [jam, menit] = waktu.split(':').map(Number);
-    const totalMenit = jam * 60 + menit;
-    if (totalMenit > jamSekarang && !berikutnya) berikutnya = card;
-  });
-
-  // Kalau udah lewat Isya, balik ke Subuh
-  if (!berikutnya) {
-    berikutnya = document.querySelector('.jadwal-card');
-  }
-
-  if (berikutnya) {
-    berikutnya.classList.add('active');
-    berikutnya.querySelector('.badge-next').classList.remove('d-none');
-  }
-}
-
-highlightBerikutnya();
-</script>
 
 <!-- BERITA -->
-<section id="berita" class="mt-5 pt-5 pb-5" style="background: #ffffff;">
+<section class="mt-5 pt-5 pb-5">
   <div class="container">
     <div class="text-center mb-5">
       <p class="text-uppercase fw-bold mb-1"
@@ -143,11 +67,19 @@ highlightBerikutnya();
       </div>
       {% endfor %}
     </div>
+
+    <div class="text-center mt-2">
+      <a href="/berita"
+         style="background: #d97706; color: white; border-radius: 50px;
+                padding: 10px 28px; text-decoration: none; font-size: 14px; font-weight: 500;">
+        Lihat Semua Berita →
+      </a>
+    </div>
   </div>
 </section>
 
 <!-- GALERI -->
-<section id="galeri" class="mt-5 py-5" style="background: #f8f5f0;">
+<section class="mt-5 py-5" style="background: #f8f5f0;">
   <div class="container">
     <div class="text-center mb-5">
       <p class="text-uppercase fw-bold mb-1"
@@ -166,11 +98,7 @@ highlightBerikutnya();
         {'judul': 'Interior Masjid Al-Bayan', 'kategori': 'Masjid', 'img': 'default.jpg'},
         {'judul': 'Keindahan Malam', 'kategori': 'Masjid', 'img': 'default.jpg'},
         {'judul': 'Sholat Berjamaah', 'kategori': 'Ibadah', 'img': 'default.jpg'},
-        {'judul': 'Kaligrafi Al-Quran', 'kategori': 'Seni', 'img': 'default.jpg'},
-        {'judul': 'Buka Puasa Bersama', 'kategori': 'Ramadan', 'img': 'default.jpg'},
-        {'judul': 'Taman Masjid', 'kategori': 'Masjid', 'img': 'default.jpg'},
       ] %}
-
       {% for f in fotos %}
       <div class="col-md-4 col-6">
         <div class="galeri-card position-relative overflow-hidden rounded-3"
@@ -229,8 +157,8 @@ function tutupLightbox() {
 document.addEventListener('keydown', e => { if (e.key === 'Escape') tutupLightbox(); });
 </script>
 
-<!-- TENTANG -->
-<section id="tentang" class="mt-5 pt-5 pb-5" style="background: #ffffff;">
+<!-- TENTANG SINGKAT -->
+<section class="mt-5 pt-5 pb-5" style="background: #ffffff;">
   <div class="container">
     <div class="text-center mb-4">
       <p class="text-uppercase fw-bold mb-1"
@@ -238,14 +166,14 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') tutupLightbo
         TENTANG KAMI
       </p>
       <h2 class="fw-bold mb-4"
-          style="font-family: 'Playfair Display', serif; font-size: 42px; color: #1f2937;">
+          style="font-family: 'Playfair Display', serif; font-size: 38px; color: #1f2937;">
         Masjid Al-Bayan
       </h2>
     </div>
 
     <div class="row justify-content-center mb-5">
       <div class="col-md-8">
-        <div class="p-4 rounded-4 text-center" style="background: #fff;">
+        <div class="p-4 rounded-4 text-center" style="background: #f8f5f0;">
           <p style="font-size: 16px; line-height: 1.9; color: #4b5563;">
             Masjid Al-Bayan hadir sebagai pusat ibadah dan dakwah yang mengedepankan
             transparansi, teknologi, dan pelayanan terbaik untuk umat. Dengan sistem manajemen
@@ -287,6 +215,13 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') tutupLightbo
       </div>
     </div>
 
+    <div class="text-center mt-4">
+      <a href="/tentang"
+         style="background: #d97706; color: white; border-radius: 50px;
+                padding: 10px 28px; text-decoration: none; font-size: 14px; font-weight: 500;">
+        Selengkapnya →
+      </a>
+    </div>
   </div>
 </section>
 

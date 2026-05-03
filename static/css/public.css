@@ -116,6 +116,7 @@ html {
   min-height: 100vh;
   position: relative;
   margin-top: 65px; 
+  overflow: hidden;
 }
 
 .hero-section .overlay {
@@ -381,6 +382,10 @@ html {
 
 .berita-card:hover .baca-link::after {
   width: 100%;
+}
+
+.section-berita {
+  background: #ffffff !important;
 }
 
 /* ================= GALERI ================= */

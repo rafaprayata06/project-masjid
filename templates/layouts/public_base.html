@@ -17,8 +17,7 @@
 <nav class="navbar navbar-expand-lg fixed-top custom-navbar">
   <div class="container">
 
-    
-      <a class="navbar-brand d-flex align-items-center gap-2" href="#" onclick="window.scrollTo({top:0, behavior:'smooth'}); return false;">
+    <a class="navbar-brand d-flex align-items-center gap-2" href="#" onclick="window.scrollTo({top:0, behavior:'smooth'}); return false;">
       <img src="{{ url_for('static', filename='img/logo-albayan.png') }}">
       <div>
         <div class="brand-title">Masjid Al-Bayan</div>
@@ -33,19 +32,19 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-          <a class="nav-link" href="#" onclick="window.scrollTo({top:0, behavior:'smooth'}); return false;">Beranda</a>
+          <a class="nav-link" href="/">Beranda</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/#jadwal">Jadwal Sholat</a>
+          <a class="nav-link" href="/jadwal">Jadwal Sholat</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/#berita">Berita</a>
+          <a class="nav-link" href="/berita">Berita</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/#galeri">Galeri</a>
+          <a class="nav-link" href="/galeri">Galeri</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/#tentang">Tentang</a>
+          <a class="nav-link" href="/tentang">Tentang</a>
         </li>
       </ul>
     </div>
@@ -63,17 +62,19 @@
 
       <div class="col-md-4">
         <h5 class="fw-bold mb-3" style="color: #fff; font-family: 'Playfair Display', serif; font-size: 20px;">
-          Masjid Al-Bayan
+          Masjid Jami' Al-Bayan
         </h5>
         <p style="color: rgba(255,255,255,0.85); font-size: 14px; line-height: 1.8;">
-          Pusat ibadah, dakwah, dan pendidikan Islam yang modern dan amanah untuk seluruh umat.
+          Pusat ibadah dan dakwah yang dikelola oleh mahasiswa Institut Teknologi Indonesia. 
+          Berlokasi strategis di tepi jalan utama, Masjid Jami' Al-Bayan hadir sebagai ruang 
+          spiritual yang inklusif serta tempat singgah yang nyaman bagi mahasiswa, pekerja, dan masyarakat umum."
         </p>
       </div>
 
       <div class="col-md-4">
         <h6 class="fw-bold mb-3" style="color: #fff; font-size: 15px;">Kontak</h6>
         <p style="color: rgba(255,255,255,0.85); font-size: 14px; line-height: 2; margin: 0;">
-          <i class="bi bi-geo-alt me-2"></i> Jl. Masjid Al-Bayan No. 1, Jakarta, Indonesia<br>
+          <i class="bi bi-geo-alt me-2"></i>Jl. Raya Puspitek No.101, Setu, Kec. Setu, Kota Tangerang Selatan, Banten 15314<br>
           <i class="bi bi-telephone me-2"></i> (021) 1234-5678<br>
           <i class="bi bi-envelope me-2"></i> info@masjidalbayan.id
         </p>
@@ -98,7 +99,5 @@
   </div>
 </footer>
 
-</html>
-
-
 </body>
+</html>

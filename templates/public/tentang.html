@@ -1,0 +1,107 @@
+{% extends 'layouts/public_base.html' %}
+{% block title %}Tentang Masjid Al-Bayan{% endblock %}
+
+{% block content %}
+
+<!-- TENTANG KAMI -->
+<section class="mt-5 pt-5 pb-5" style="background: #f8f5f0;">
+  <div class="container">
+
+    <div class="text-center mb-4">
+      <p class="text-uppercase fw-bold mb-1"
+         style="font-size: 11px; letter-spacing: 2px; color: #d97706;">
+        TENTANG KAMI
+      </p>
+      <h2 class="fw-bold mb-4"
+          style="font-family: 'Playfair Display', serif; font-size: 42px; color: #1f2937;">
+        Masjid Al-Bayan
+      </h2>
+    </div>
+
+    <!-- DESKRIPSI -->
+    <div class="row justify-content-center mb-5">
+      <div class="col-md-8">
+        <div class="p-4 rounded-4 text-center" style="background: #fff;">
+          <p style="font-size: 16px; line-height: 1.9; color: #4b5563;">
+            Masjid Al-Bayan hadir sebagai pusat ibadah dan dakwah yang mengedepankan
+            transparansi, teknologi, dan pelayanan terbaik untuk umat. Dengan sistem manajemen
+            digital, kami berkomitmen menjadikan masjid sebagai pusat peradaban Islam yang
+            modern dan amanah.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATISTIK -->
+    <div class="row justify-content-center text-center g-4 mb-5">
+      <div class="col-6 col-md-3">
+        <div class="stat-card p-4 rounded-4">
+          <i class="bi bi-people stat-icon"></i>
+          <h3 class="fw-bold mt-3 mb-1" style="font-size: 32px; color: #1f2937;">500+</h3>
+          <p class="text-muted mb-0" style="font-size: 14px;">Jamaah Aktif</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card p-4 rounded-4">
+          <i class="bi bi-calendar-event stat-icon"></i>
+          <h3 class="fw-bold mt-3 mb-1" style="font-size: 32px; color: #1f2937;">20+</h3>
+          <p class="text-muted mb-0" style="font-size: 14px;">Kegiatan/Bulan</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card p-4 rounded-4">
+          <i class="bi bi-book stat-icon"></i>
+          <h3 class="fw-bold mt-3 mb-1" style="font-size: 32px; color: #1f2937;">8x</h3>
+          <p class="text-muted mb-0" style="font-size: 14px;">Kajian Rutin</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card p-4 rounded-4">
+          <i class="bi bi-award stat-icon"></i>
+          <h3 class="fw-bold mt-3 mb-1" style="font-size: 32px; color: #1f2937;">2010</h3>
+          <p class="text-muted mb-0" style="font-size: 14px;">Tahun Berdiri</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- VISI MISI -->
+    <div class="row g-4 justify-content-center">
+      <div class="col-md-5">
+        <div class="p-4 rounded-4 h-100" style="background: #fff;">
+          <h5 class="fw-bold mb-3" style="color: #d97706; font-family: 'Playfair Display', serif;">
+            <i class="bi bi-eye me-2"></i> Visi
+          </h5>
+          <p style="font-size: 15px; color: #4b5563; line-height: 1.8;">
+            Menjadi masjid modern yang menjadi pusat peradaban Islam, 
+            dakwah, dan pemberdayaan umat yang transparan dan amanah.
+          </p>
+        </div>
+      </div>
+      <div class="col-md-5">
+        <div class="p-4 rounded-4 h-100" style="background: #fff;">
+          <h5 class="fw-bold mb-3" style="color: #d97706; font-family: 'Playfair Display', serif;">
+            <i class="bi bi-bullseye me-2"></i> Misi
+          </h5>
+          <ul style="font-size: 15px; color: #4b5563; line-height: 2; padding-left: 18px;">
+            <li>Menyelenggarakan ibadah yang tertib dan khusyuk</li>
+            <li>Mengadakan kajian dan pendidikan Islam rutin</li>
+            <li>Memberdayakan jamaah melalui program sosial</li>
+            <li>Mengelola masjid secara transparan dan digital</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+document.querySelectorAll('.stat-card').forEach(card => {
+  card.addEventListener('click', function() {
+    document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>
+
+{% endblock %}
