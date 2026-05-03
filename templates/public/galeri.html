@@ -100,16 +100,18 @@ function bukaLightbox(element) {
   document.getElementById('lightbox-img').src = img;
   document.getElementById('lightbox-judul').innerText = judul;
   document.getElementById('lightbox-kategori').innerText = kategori;
-  document.getElementById('lightbox').style.display = 'flex';
+  
+  const lb = document.getElementById('lightbox');
+  lb.style.opacity = '1';
+  lb.style.display = 'flex';
 }
+
 function tutupLightbox() {
   const lb = document.getElementById('lightbox');
-  lb.style.opacity = '0';
-
-  setTimeout(function() {
-    lb.style.display = 'none';
-  }, 300);
+  lb.style.display = 'none';
+  lb.style.opacity = '1';
 }
+
 document.addEventListener('keydown', e => { if (e.key === 'Escape') tutupLightbox(); });
 </script>
 
