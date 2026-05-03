@@ -1,27 +1,70 @@
+
+import re # Pastikan sudah di-import di bagian paling atas file
 from flask import render_template, request, redirect, flash
 from flask_login import login_user, logout_user, login_required, current_user
 from models.user_model import User
 from database.db import db
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime, timedelta
 
 
 # ================= REGISTER PAGE =================
 def show_register():
     return render_template("auth/register.html")
 
-
 # ================= REGISTER LOGIC =================
 def register_user():
+    # Ambil IP Address pendaftar untuk melacak limit
+    user_ip = request.remote_addr 
+    
+    # Hitung batas waktu (24 jam yang lalu)
+    yesterday = datetime.utcnow() - timedelta(hours=24)
+    
+    # Hitung berapa kali pendaftaran dalam 24 jam terakhir
+    reg_count = User.query.filter(
+        User.created_at >= yesterday
+    ).count()
+
+    if reg_count >= 3:
+        flash("Maaf, batas pendaftaran maksimal 3 kali dalam 24 jam telah tercapai.", "danger")
+        return redirect("/register")
+
+    # Ambil data form
     nim = request.form.get("nim")
     name = request.form.get("name")
     jurusan = request.form.get("jurusan")
     jenis_kelamin = request.form.get("jenis_kelamin")   
     raw_password = request.form.get("password")
 
-    if not nim or not name or not raw_password:
-        return "Data tidak boleh kosong!"
+    # --- VALIDASI 1: CEK DATA KOSONG ---
+    if not nim or not name or not raw_password or not jenis_kelamin or not jurusan:
+        flash("Data tidak boleh kosong!", "warning")
+        return redirect("/register")
 
+    # --- VALIDASI 2: LIMIT 3 KALI PER 24 JAM (Backend) ---
+    # Menghitung pendaftaran dalam 24 jam terakhir
+    waktu_batas = datetime.utcnow() - timedelta(hours=24)
+    jumlah_daftar = User.query.filter(User.created_at >= waktu_batas).count()
+
+    if jumlah_daftar >= 3:
+        flash("Gagal: Batas maksimal pendaftaran adalah 3 kali dalam 24 jam.", "error")
+        return redirect("/register")
+
+    # --- VALIDASI 3: SYARAT PASSWORD (Min 5, Huruf & Angka) ---
+    if len(raw_password) < 5:
+        flash("Password gagal: Minimal harus 5 karakter.", "warning")
+        return redirect("/register")
+    
+    if not (re.search("[A-Za-z]", raw_password) and re.search("[0-9]", raw_password)):
+        flash("Password gagal: Harus kombinasi huruf dan angka.", "warning")
+        return redirect("/register")
+
+    # -------------------------------------------------------
+    # Jika lolos semua validasi di atas, baru jalankan di bawah ini
+    # -------------------------------------------------------
+
+    # Hash Password
     password = generate_password_hash(raw_password)
 
     user = User(
@@ -34,11 +77,15 @@ def register_user():
         created_at=datetime.utcnow()
     )
 
-    db.session.add(user)
-    db.session.commit()
-
-    return redirect("/login")
-
+    try:
+        db.session.add(user)
+        db.session.commit()
+        flash("Registrasi berhasil! Silakan login.", "success")
+        return redirect("/login")
+    except Exception as e:
+        db.session.rollback()
+        flash("Terjadi kesalahan atau NIM sudah terdaftar.", "error")
+        return redirect("/register")
 
 # ================= LOGIN PAGE =================
 def show_login():

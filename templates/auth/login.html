@@ -100,35 +100,37 @@
                         <p class="welcome-text">Welcome back!</p>
                     </div>
 
-                    <form method="POST" action="/login">
-                        
-                        <!-- NIM -->
-                        <div class="mb-3">
-                            <label class="form-label">NIM</label>
-                            <input type="text" name="nim" class="form-control" placeholder="Masukkan NIM" required>
-                        </div>
+                   <form method="POST" action="/login" class="needs-validation" novalidate>
+    
+    <!-- NIM -->
+    <div class="mb-3">
+        <label class="form-label">NIM</label>
+        <input type="text" name="nim" class="form-control" placeholder="Masukkan NIM" required>
+        <!-- Pesan error -->
+        <div class="invalid-feedback">NIM tidak boleh kosong.</div>
+    </div>
 
-                        <!-- Password -->
-                        <div class="mb-3"><label class="form-label">Password</label>
-                        <div class="input-group">
-                        <input type="password" id="password" name="password" class="form-control" placeholder="Masukkan Password">
-                        <span class="input-group-text" onclick="togglePassword()" style="cursor:pointer;">
-                        <i class="bi bi-eye" id="toggleIcon"></i>
-                       </span>
-                 </div>
-              </div>        
-                        <!-- Button -->
-                        <div class="d-grid mt-3">
-                            <button type="submit" class="btn btn-login">LOG IN</button>
-                        </div>
+    <!-- Password -->
+    <div class="mb-3">
+        <label class="form-label">Password</label>
+        <div class="input-group has-validation"> <!-- Tambahkan 'has-validation' untuk input group -->
+            <input type="password" id="password" name="password" class="form-control" placeholder="Masukkan Password" required>
+            <span class="input-group-text" onclick="togglePassword()" style="cursor:pointer;">
+                <i class="bi bi-eye" id="toggleIcon"></i>
+            </span>
+            <!-- Pesan error -->
+            <div class="invalid-feedback">Password wajib diisi.</div>
+        </div>
+    </div>        
 
-                        <!-- Link tambahan -->
-                        <div class="text-center mt-3">
-                            <a href="#" class="text-decoration-none">Lupa password?</a>
-                        </div>
+    <!-- Button -->
+    <div class="d-grid mt-3">
+        <button type="submit" class="btn btn-login">LOG IN</button>
+    </div>
 
-                    </form>
+    <!-- Link tambahan -->
 
+</form>
                 </div>
             </div>
 
@@ -141,6 +143,25 @@
 
     <!-- Script toggle password -->
 <script>
+// --- Script Validasi Bootstrap ---
+(() => {
+  'use strict'
+
+  const forms = document.querySelectorAll('.needs-validation')
+
+  Array.from(forms).forEach(form => {
+    form.addEventListener('submit', event => {
+      if (!form.checkValidity()) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
+
+      form.classList.add('was-validated')
+    }, false)
+  })
+})()
+
+// --- Script Toggle Password (tetap sama) ---
 function togglePassword() {
   var input = document.getElementById("password");
   var icon = document.getElementById("toggleIcon");
