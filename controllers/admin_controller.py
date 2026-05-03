@@ -7,9 +7,6 @@ from flask import request, redirect, flash
 from database.db import db
 
 
-
-
-@login_required
 def admin_super():
     if current_user.role != "AS":
         return redirect("/login")

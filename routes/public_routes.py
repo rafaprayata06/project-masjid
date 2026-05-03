@@ -6,26 +6,40 @@ public = Blueprint('public', __name__)
 
 @public.route('/')
 def home():
-    url = "https://api.aladhan.com/v1/timingsByCity?city=Jakarta&country=Indonesia"
-    res = requests.get(url)
-    data = res.json()
+    list_jadwal = {}
+    tanggal = "Jadwal tidak tersedia"
 
-    all_timings = data['data']['timings']
-    
-    list_jadwal = {
-        'Subuh': all_timings['Fajr'],
-        'Dzuhur': all_timings['Dhuhr'],
-        'Ashar': all_timings['Asr'],
-        'Maghrib': all_timings['Maghrib'],
-        'Isya': all_timings['Isha']
-    }
-    
-    hijri = data['data']['date']['hijri']
-    tanggal = f"{data['data']['date']['readable']} | {hijri['day']} {hijri['month']['en']} {hijri['year']} H"
+    try:
+        url = "https://api.aladhan.com/v1/timingsByCity?city=Jakarta&country=Indonesia"
+        res = requests.get(url, timeout=10)
+        data = res.json()
+
+        all_timings = data['data']['timings']
+
+        list_jadwal = {
+            'Subuh': all_timings['Fajr'],
+            'Dzuhur': all_timings['Dhuhr'],
+            'Ashar': all_timings['Asr'],
+            'Maghrib': all_timings['Maghrib'],
+            'Isya': all_timings['Isha']
+        }
+
+        hijri = data['data']['date']['hijri']
+        tanggal = f"{data['data']['date']['readable']} | {hijri['day']} {hijri['month']['en']} {hijri['year']} H"
+
+    except requests.exceptions.RequestException:
+        list_jadwal = {
+            'Subuh': '-',
+            'Dzuhur': '-',
+            'Ashar': '-',
+            'Maghrib': '-',
+            'Isya': '-'
+        }
 
     berita_data = Berita.query.order_by(Berita.created_at.desc()).all()
-    
-    return render_template('public/home.html',
+
+    return render_template(
+        'public/home.html',
         jadwal=list_jadwal,
         tanggal=tanggal,
         berita=berita_data
@@ -64,7 +78,7 @@ def berita():
 @public.route('/berita/<int:id>')
 def berita_detail(id):
     b = Berita.query.get_or_404(id)
-    return render_template('public/berita_detail.html', berita=b)
+    return render_template('public/detail_berita.html', berita=b)
 
 
 @public.route('/galeri')

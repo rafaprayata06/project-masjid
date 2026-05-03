@@ -13,6 +13,76 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
 <title>{% block title %}{% endblock %}</title>
+<style>
+input,
+textarea,
+select {
+    box-shadow: none !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    box-shadow: none !important;
+}
+
+.form-control,
+.form-select {
+    background-image: none !important;
+    border-color: #ced4da;
+}
+
+/* FOCUS NORMAL */
+.form-control:focus,
+.form-select:focus {
+    border-color: #86b7fe !important;
+}
+
+/* REMOVE AUTOFILL STYLE */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+    box-shadow: 0 0 0px 1000px white inset !important;
+}
+
+/* DEFAULT REQUIRED */
+.custom-validate-form .required-field {
+    border-color: #ced4da !important;
+}
+
+/* INVALID */
+.custom-validate-form .required-field.is-invalid,
+.form-control.is-invalid,
+.form-select.is-invalid {
+    border-color: #dc3545 !important;
+    background-image: none !important;
+}
+
+/* VALID */
+.custom-validate-form .required-field.is-valid,
+.form-control.is-valid,
+.form-select.is-valid {
+    border-color: #198754 !important;
+    background-image: none !important;
+}
+
+/* ERROR TEXT */
+.error-text {
+    display: none;
+    font-size: 0.875rem;
+    color: #dc3545;
+}
+
+.error-text.show-error {
+    display: block;
+}
+</style>
+
+
+
 </head>
 
 <body>

@@ -21,68 +21,99 @@
     </div>
 
     <div class="card-body">
-      <form action="/admin-humas/news" method="POST" enctype="multipart/form-data">
+      <form action="/admin-humas/news" method="POST" enctype="multipart/form-data" class="row g-3 needs-validation" novalidate>
 
-        <div class="mb-3">
-          <label class="form-label">Judul Berita</label>
-          <input type="text" name="judul" class="form-control" required>
+    <!-- Judul -->
+    <div class="col-md-12">
+        <label class="form-label">Judul Berita</label>
+        <input type="text" name="judul" class="form-control" required>
+        <div class="invalid-feedback">Judul wajib diisi.</div>
+    </div>
+
+    <!-- Kategori -->
+   <!-- Kategori -->
+<div class="col-md-6">
+    <label class="form-label">Kategori</label>
+    <select name="kategori" class="form-select" required>
+        <!-- Value kosong dan disabled agar dianggap 'invalid' oleh Bootstrap jika tidak diganti -->
+        <option value="" selected disabled>-- Pilih Kategori --</option>
+        <option value="kegiatan">Kegiatan</option>
+        <option value="pengumuman">Pengumuman</option>
+        <option value="kajian">Kajian</option>
+        <option value="prestasi">Prestasi</option>
+    </select>
+    <div class="invalid-feedback">Pilih salah satu kategori.</div>
+</div>
+
+    <!-- Lokasi - SEKARANG REQUIRED -->
+    <div class="col-md-6">
+        <label class="form-label">Lokasi</label>
+        <input type="text" name="lokasi" class="form-control" required>
+        <div class="invalid-feedback">Lokasi wajib diisi.</div>
+    </div>
+
+    <!-- Gambar Berita -->
+  <div class="col-md-12">
+    <label class="form-label">Gambar Berita (Maks 2MB, JPG/PNG)</label>
+    <input type="file" name="thumbnail" class="form-control" id="fileInput" accept="image/*" required>
+    <!-- Kita kasih ID khusus 'error-msg' untuk tulisannya -->
+    <div id="fileFeedback" class="invalid-feedback">
+        <span id="error-msg">Gambar wajib diunggah.</span>
+    </div>
+    
+    <div id="previewContainer" class="mt-3 d-none position-relative" style="width: 200px;">
+        <img id="imagePreview" src="#" alt="Preview" class="img-thumbnail">
+        <button type="button" id="removeImage" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1">&times;</button>
+    </div>
+</div>
+    <!-- Ringkasan - SEKARANG REQUIRED -->
+    <div class="col-md-12">
+        <label class="form-label">Ringkasan</label>
+        <textarea name="excerpt" class="form-control" rows="2" required></textarea>
+        <div class="invalid-feedback">Ringkasan wajib diisi.</div>
+    </div>
+
+    <!-- Isi Berita -->
+    <div class="col-md-12">
+        <label class="form-label">Isi Berita</label>
+        <textarea name="isi" class="form-control" rows="5" required></textarea>
+        <div class="invalid-feedback">Konten berita tidak boleh kosong.</div>
+    </div>
+
+    <!-- Tanggal - SEKARANG REQUIRED -->
+    <div class="col-md-6">
+        <label class="form-label">Tanggal</label>
+        <input type="date" name="tanggal_kegiatan" class="form-control" required>
+        <div class="invalid-feedback">Tanggal wajib dipilih.</div>
+    </div>
+
+    <!-- Status -->
+<div class="col-md-6">
+    <label class="form-label">Status</label>
+    <select name="status" class="form-select" required>
+        <option value="" selected disabled>-- Pilih Status --</option>
+        <option value="draft">Draft</option>
+        <option value="publish">Publish</option>
+    </select>
+    <div class="invalid-feedback">Tentukan status berita.</div>
+</div>
+
+<!-- Checkbox Unggulan -->
+    <div class="col-12">
+        <div class="form-check">
+            <input type="checkbox" name="is_featured" class="form-check-input" id="checkFeatured">
+            <label class="form-check-label" for="checkFeatured">
+                Jadikan Berita Unggulan (Optional)
+            </label>
         </div>
+    </div>
 
-        <div class="mb-3">
-          <label class="form-label">Kategori</label>
-          <select name="kategori" class="form-select" required>
-            <option value="">-- Pilih Kategori --</option>
-            <option value="kegiatan">Kegiatan</option>
-            <option value="pengumuman">Pengumuman</option>
-            <option value="kajian">Kajian</option>
-            <option value="prestasi">Prestasi</option>
-          </select>
-        </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-success w-100">Simpan Berita</button>
+    </div>
 
-        <div class="mb-3">
-          <label class="form-label">Gambar Berita</label>
-          <input type="file" name="thumbnail" class="form-control">
-        </div>
+</form>
 
-        <div class="mb-3">
-          <label class="form-label">Ringkasan</label>
-          <textarea name="excerpt" class="form-control"></textarea>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label">Isi Berita</label>
-          <textarea name="isi" class="form-control" required></textarea>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label">Lokasi</label>
-          <input type="text" name="lokasi" class="form-control">
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label">Tanggal</label>
-          <input type="date" name="tanggal_kegiatan" class="form-control">
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label">Status</label>
-          <select name="status" class="form-select">
-            <option value="draft">Draft</option>
-            <option value="publish">Publish</option>
-          </select>
-        </div>
-
-        <div class="form-check mb-3">
-          <input type="checkbox" name="is_featured" class="form-check-input">
-          <label class="form-check-label">Jadikan Unggulan</label>
-        </div>
-
-        <!-- BUTTON HIJAU -->
-        <button type="submit" class="btn btn-success w-100">
-          Simpan Berita
-        </button>
-
-      </form>
     </div>
   </div>
 </div>
@@ -129,9 +160,7 @@
         Preview
       </button>
 
-      <button class="btn btn-outline-danger btn-sm">
-        Delete
-      </button>
+    
 
     </div>
 
@@ -147,74 +176,110 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
 
-        <form action="/admin-humas/news/update/{{ berita.id }}" method="POST" enctype="multipart/form-data">
+      <form action="/admin-humas/news/update/{{ berita.id }}" method="POST" enctype="multipart/form-data" class="row g-3 needs-validation" novalidate>
+    <div class="modal-body row g-3">
+        <!-- Judul -->
+        <div class="col-md-12">
+            <label class="form-label">Judul Berita</label>
+            <input type="text" name="judul" class="form-control" value="{{ berita.judul }}" required>
+            <div class="invalid-feedback">Judul wajib diisi.</div>
+        </div>
 
-          <div class="modal-body">
-
-            <div class="mb-3">
-              <label>Judul</label>
-              <input type="text" name="judul" class="form-control" value="{{ berita.judul }}">
-            </div>
-
-            <div class="mb-3">
-              <label>Kategori</label>
-              <select name="kategori" class="form-select">
+        <!-- Kategori -->
+        <div class="col-md-6">
+            <label class="form-label">Kategori</label>
+            <select name="kategori" class="form-select" required>
                 <option value="kegiatan" {% if berita.kategori=='kegiatan' %}selected{% endif %}>Kegiatan</option>
                 <option value="pengumuman" {% if berita.kategori=='pengumuman' %}selected{% endif %}>Pengumuman</option>
                 <option value="kajian" {% if berita.kategori=='kajian' %}selected{% endif %}>Kajian</option>
                 <option value="prestasi" {% if berita.kategori=='prestasi' %}selected{% endif %}>Prestasi</option>
-              </select>
-            </div>
+            </select>
+            <div class="invalid-feedback">Pilih kategori.</div>
+        </div>
 
-            <div class="mb-3">
-              <label>Gambar</label>
-              <input type="file" name="thumbnail" class="form-control">
-            </div>
+        <!-- Lokasi -->
+        <div class="col-md-6">
+            <label class="form-label">Lokasi</label>
+            <input type="text" name="lokasi" class="form-control" value="{{ berita.lokasi }}" required>
+            <div class="invalid-feedback">Lokasi wajib diisi.</div>
+        </div>
 
-            <div class="mb-3">
-              <label>Ringkasan</label>
-              <textarea name="excerpt" class="form-control">{{ berita.excerpt }}</textarea>
-            </div>
+        <!-- Gambar -->
+       <div class="col-md-12">
+    <label class="form-label">Gambar Berita (Maks 2MB, JPG/PNG)</label>
+    <input type="file" name="thumbnail" class="form-control updateFileInput" accept="image/*">
+    <div class="invalid-feedback">
+        <span class="update-error-msg">Format salah atau file terlalu besar (Maks 2MB).</span>
+    </div>
 
-            <div class="mb-3">
-              <label>Isi</label>
-              <textarea name="isi" class="form-control">{{ berita.isi }}</textarea>
-            </div>
+    <div class="d-flex gap-3 mt-3">
+        <!-- 1. PREVIEW GAMBAR LAMA (YANG SUDAH ADA) -->
+        <div class="current-image-container" style="width: 150px;">
+            <small class="text-muted d-block mb-1">Gambar Saat Ini:</small>
+            {% if berita.thumbnail %}
+            <img src="{{ url_for('static', filename=berita.thumbnail) }}" 
+     alt="Current Image" 
+     class="img-thumbnail" 
+     style="height: 100px; width: 100%; object-fit: cover;"
+     onerror="this.src='https://placehold.co/150x100?text=No+Image';">
+            {% else %}
+                <div class="img-thumbnail d-flex align-items-center justify-content-center" style="height: 100px; background: #f8f9fa;">
+                    <small class="text-muted">No Image</small>
+                </div>
+            {% endif %}
+        </div>
 
-            <div class="mb-3">
-              <label>Lokasi</label>
-              <input type="text" name="lokasi" class="form-control" value="{{ berita.lokasi }}">
-            </div>
+        <!-- 2. PREVIEW GAMBAR BARU (MUNCUL SAAT PILIH FILE) -->
+        <div class="updatePreviewContainer d-none position-relative" style="width: 150px;">
+            <small class="text-primary d-block mb-1">Preview Baru:</small>
+            <img src="#" alt="Preview" class="img-thumbnail updateImagePreview" style="height: 100px; width: 100%; object-fit: cover;">
+            <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 updateRemoveImage" style="padding: 0px 5px; line-height: 1;">&times;</button>
+        </div>
+    </div>
+</div>
+        <!-- Ringkasan -->
+        <div class="col-md-12">
+            <label class="form-label">Ringkasan</label>
+            <textarea name="excerpt" class="form-control" rows="2" required>{{ berita.excerpt }}</textarea>
+            <div class="invalid-feedback">Ringkasan wajib diisi.</div>
+        </div>
 
-            <div class="mb-3">
-              <label>Tanggal</label>
-              <input type="date" name="tanggal_kegiatan" class="form-control" value="{{ berita.tanggal_kegiatan }}">
-            </div>
+        <!-- Isi Berita -->
+        <div class="col-md-12">
+            <label class="form-label">Isi Berita</label>
+            <textarea name="isi" class="form-control" rows="5" required>{{ berita.isi }}</textarea>
+            <div class="invalid-feedback">Isi berita tidak boleh kosong.</div>
+        </div>
 
-            <div class="mb-3">
-              <label>Status</label>
-              <select name="status" class="form-select">
+        <!-- Tanggal -->
+        <div class="col-md-6">
+            <label class="form-label">Tanggal</label>
+            <input type="date" name="tanggal_kegiatan" class="form-control" value="{{ berita.tanggal_kegiatan }}" required>
+            <div class="invalid-feedback">Pilih tanggal.</div>
+        </div>
+
+        <!-- Status -->
+        <div class="col-md-6">
+            <label class="form-label">Status</label>
+            <select name="status" class="form-select" required>
                 <option value="draft" {% if berita.status=='draft' %}selected{% endif %}>Draft</option>
                 <option value="publish" {% if berita.status=='publish' %}selected{% endif %}>Publish</option>
-              </select>
-            </div>
+            </select>
+        </div>
 
+        <!-- Checkbox -->
+        <div class="col-12">
             <div class="form-check">
-              <input type="checkbox" name="is_featured" class="form-check-input"
-              {% if berita.is_featured %}checked{% endif %}>
-              <label class="form-check-label">Unggulan</label>
+                <input type="checkbox" name="is_featured" class="form-check-input" id="updateFeatured{{ berita.id }}" {% if berita.is_featured %}checked{% endif %}>
+                <label class="form-check-label" for="updateFeatured{{ berita.id }}">Jadikan Unggulan</label>
             </div>
+        </div>
+    </div>
 
-          </div>
-
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-success">
-              Update Berita
-            </button>
-          </div>
-
-        </form>
-
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-success w-100">Update Berita</button>
+    </div>
+</form>
       </div>
     </div>
   </div>
@@ -222,5 +287,153 @@
   {% endfor %}
 
 </div>
+<script>
+(() => {
+    'use strict'
+
+    // --- Inisialisasi Elemen Form Create ---
+    const forms = document.querySelectorAll('.needs-validation')
+    const createFileInput = document.getElementById('fileInput')
+    const createPreviewContainer = document.getElementById('previewContainer')
+    const createImagePreview = document.getElementById('imagePreview')
+    const createRemoveImage = document.getElementById('removeImage')
+    const createErrorMsg = document.getElementById('error-msg')
+
+    // --- 1. Validasi Global saat Submit ---
+   // --- 1. Validasi Global saat Submit ---
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+            let isFileValid = true;
+            
+            // A. CEK VALIDASI HTML5 BAWAAN (Required, dll)
+            const isHtmlValid = form.checkValidity();
+
+            // B. CEK VALIDASI FILE KHUSUS UNTUK FORM CREATE
+            if (form.querySelector('#fileInput')) {
+                isFileValid = validateCreateFile();
+            }
+
+            // C. CEK VALIDASI FILE UNTUK FORM UPDATE (Jika ada file yang salah format/ukuran)
+            const updateInput = form.querySelector('.updateFileInput');
+            if (updateInput && updateInput.files.length > 0) {
+                if (updateInput.classList.contains('is-invalid')) {
+                    isFileValid = false;
+                }
+            }
+
+            // GABUNGKAN SEMUA VALIDASI
+            // Jika HTML tidak valid (ada text kosong) ATAU file tidak valid, maka STOP.
+            if (!isHtmlValid || !isFileValid) {
+                event.preventDefault();
+                event.stopPropagation();
+                
+                // Jika modal, pastikan modal tidak tertutup (biasanya otomatis teratasi oleh preventDefault)
+            }
+
+            form.classList.add('was-validated');
+        }, false)
+    })
+    // --- 2. Logika Khusus Form CREATE ---
+    if (createFileInput) {
+        createFileInput.addEventListener('change', validateCreateFile);
+
+        createRemoveImage.addEventListener('click', function() {
+            createFileInput.value = '';
+            createPreviewContainer.classList.add('d-none');
+            createImagePreview.src = '#';
+            createFileInput.classList.remove('is-valid');
+            createFileInput.classList.remove('is-invalid');
+        });
+    }
+
+    function validateCreateFile() {
+        const file = createFileInput.files[0];
+        const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.webp)$/i;
+        const maxSize = 2 * 1024 * 1024;
+
+        if (file) {
+            if (!allowedExtensions.exec(file.name)) {
+                createErrorMsg.innerText = "Format file salah! Harus JPG, PNG, atau WebP.";
+                resetCreateInput();
+                return false;
+            } else if (file.size > maxSize) {
+                createErrorMsg.innerText = "File terlalu besar! Maksimal ukuran adalah 2MB.";
+                resetCreateInput();
+                return false;
+            } else {
+                createFileInput.classList.remove('is-invalid');
+                createFileInput.classList.add('is-valid');
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    createImagePreview.src = e.target.result;
+                    createPreviewContainer.classList.remove('d-none');
+                }
+                reader.readAsDataURL(file);
+                return true;
+            }
+        } else {
+            createErrorMsg.innerText = "Gambar wajib diunggah.";
+            return false;
+        }
+    }
+
+    function resetCreateInput() {
+        createFileInput.value = '';
+        createPreviewContainer.classList.add('d-none');
+        createFileInput.classList.add('is-invalid');
+    }
+
+    // --- 3. Logika Khusus Form UPDATE (Multi-Modal) ---
+    const updateFiles = document.querySelectorAll('.updateFileInput');
+    updateFiles.forEach(input => {
+        input.addEventListener('change', function() {
+            const file = this.files[0];
+            const container = this.closest('.col-md-12');
+            const previewContainer = container.querySelector('.updatePreviewContainer');
+            const imagePreview = container.querySelector('.updateImagePreview');
+            const errorMsg = container.querySelector('.update-error-msg');
+            
+            const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.webp)$/i;
+            const maxSize = 2 * 1024 * 1024;
+
+            if (file) {
+                if (!allowedExtensions.exec(file.name)) {
+                    errorMsg.innerText = "Format salah! Harus JPG, PNG, atau WebP.";
+                    this.value = '';
+                    this.classList.add('is-invalid');
+                    previewContainer.classList.add('d-none');
+                } else if (file.size > maxSize) {
+                    errorMsg.innerText = "File terlalu besar! Maksimal 2MB.";
+                    this.value = '';
+                    this.classList.add('is-invalid');
+                    previewContainer.classList.add('d-none');
+                } else {
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        imagePreview.src = e.target.result;
+                        previewContainer.classList.remove('d-none');
+                    }
+                    reader.readAsDataURL(file);
+                }
+            }
+        });
+    });
+
+    document.querySelectorAll('.updateRemoveImage').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const container = this.closest('.col-md-12');
+            const input = container.querySelector('.updateFileInput');
+            const preview = container.querySelector('.updatePreviewContainer');
+            input.value = '';
+            preview.classList.add('d-none');
+            input.classList.remove('is-valid');
+            input.classList.remove('is-invalid');
+        });
+    });
+
+})()
+</script>
 
 {% endblock %}
