@@ -10,7 +10,7 @@
       <h1>Masjid <span>Al-Bayan</span></h1>
       <p class="mt-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Masjid yang modern dan amanah untuk seluruh umat.</p>
       <div class="mt-4">
-        <a href="#jadwal" class="btn btn-warning me-2">Donasi Sekarang</a>
+        <a href="#" class="btn btn-warning me-2">Donasi Sekarang</a>
         <a href="#jadwal" class="btn btn-white"><span>Lihat Jadwal Sholat</span></a>
       </div>
     </div>
@@ -73,6 +73,7 @@ function highlightBerikutnya() {
   const jamSekarang = now.getHours() * 60 + now.getMinutes();
   const cards = document.querySelectorAll('.jadwal-card');
   let berikutnya = null;
+
   cards.forEach(card => {
     const waktu = card.getAttribute('data-waktu');
     if (!waktu) return;
@@ -80,22 +81,19 @@ function highlightBerikutnya() {
     const totalMenit = jam * 60 + menit;
     if (totalMenit > jamSekarang && !berikutnya) berikutnya = card;
   });
+
+  // Kalau udah lewat Isya, balik ke Subuh
+  if (!berikutnya) {
+    berikutnya = document.querySelector('.jadwal-card');
+  }
+
   if (berikutnya) {
     berikutnya.classList.add('active');
     berikutnya.querySelector('.badge-next').classList.remove('d-none');
   }
 }
+
 highlightBerikutnya();
-document.querySelectorAll('.jadwal-card').forEach(card => {
-  card.addEventListener('click', function () {
-    document.querySelectorAll('.jadwal-card').forEach(c => {
-      c.classList.remove('active');
-      c.querySelector('.badge-next').classList.add('d-none');
-    });
-    this.classList.add('active');
-    this.querySelector('.badge-next').classList.remove('d-none');
-  });
-});
 </script>
 
 <!-- BERITA -->
