@@ -1,128 +1,1259 @@
-
+,/* ==========================================================================
+   LAYOUT UTAMA CORE — GRID & SIDEBAR MASJID AL-BAYAN
+   ========================================================================== */
 body {
-  font-family: 'Poppins', sans-serif;
-  background: #f5f6fa;
+    background-color: #FDFBF9;
+    font-family: 'Inter', 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
 }
 
-/* HEADER */
-.header {
-  height: 70px;
-  background: #ff7a00;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 25px;
-  color: white;
+.admin-wrapper {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
 }
 
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.header-left img {
-  width: 35px;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-}
-
-.header-right i {
-  font-size: 26px;
-}
-
-/* SIDEBAR */
+/* SIDEBAR STYLES */
 .sidebar {
-  width: 240px;
-  position: fixed;
-  top: 70px;
-  left: 0;
-  height: calc(100vh - 70px); 
-  background: white;
-  padding: 20px;
-  border-radius: 0 15px 15px 0;
+    width: 260px;
+    background: #FFFFFF;
+    border-right: 1px solid #F2EFEA;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 30px 20px;
+    position: fixed;
+    height: 100vh;
+    z-index: 100;
+}
+
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-left: 10px;
+    margin-bottom: 40px;
+}
+
+.sidebar-brand img {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+}
+
+.sidebar-brand div {
+    line-height: 1.2;
+}
+
+.sidebar-brand strong {
+    font-size: 16px;
+    color: #1B1714;
+    font-family: 'Poppins', sans-serif;
+}
+
+.sidebar-brand span {
+    font-size: 11px;
+    color: #A39A90;
+    display: block;
+}
+
+.menu-section-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #A39A90;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding-left: 12px;
+    margin-top: 24px;
+    margin-bottom: 10px;
 }
 
 .menu-item {
-  padding: 10px;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-  color: black;
-  text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 14px;
+    color: #6E6558;
+    font-weight: 500;
+    font-size: 14px;
+    text-decoration: none;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    margin-bottom: 4px;
+}
+
+.menu-item:hover {
+    background-color: #FFF7F2;
+    color: #E8631C;
 }
 
 .menu-item.active {
-  background: #ffe8d6;
+    background-color: #FFF7F2;
+    color: #E8631C;
+    font-weight: 600;
 }
 
-/* CONTENT */
-.content {
-  margin-left: 240px;
-  padding: 30px;
+/* PROFILE BOX */
+.sidebar-profile {
+    border-top: 1px solid #F2EFEA;
+    padding-top: 20px;
+    margin-top: auto;
 }
 
-/* MODAL CUSTOM */
-.custom-modal {
-  border-radius: 15px;
-  border: none;
+.profile-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px;
+    border-radius: 12px;
+    background: #FAFAFA;
 }
 
-.custom-header {
-  background: #ff7a00;
-  color: white;
-  border-top-left-radius: 15px;
-  border-top-right-radius: 15px;
+.profile-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50px;
+    background: #FFE8DB;
+    color: #E8631C;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
 }
 
-/* BUTTON ORANGE */
+.profile-info {
+    line-height: 1.3;
+}
+
+.profile-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1B1714;
+    margin: 0;
+}
+
+.profile-role {
+    font-size: 11px;
+    color: #8C8375;
+    margin: 0;
+}
+
+/* MAIN CONTENT */
+.main-content {
+    margin-left: 260px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-width: 0;
+    overflow-x: hidden;
+}
+
+/* NAVBAR */
+.top-navbar {
+    height: 70px;
+    background: #FFFFFF;
+    border-bottom: 1px solid #F2EFEA;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+}
+
+.breadcrumb-box {
+    font-size: 13px;
+    color: #A39A90;
+}
+
+.search-bar-container {
+    position: relative;
+    width: 300px;
+}
+
+.search-bar-container input {
+    width: 100%;
+    background: #F5F5F5;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 16px 8px 36px;
+    font-size: 13px;
+}
+
+.search-bar-container i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #A39A90;
+    font-size: 14px;
+}
+
+.top-navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.notif-btn {
+    background: none;
+    border: none;
+    color: #6E6558;
+    font-size: 20px;
+    position: relative;
+}
+
+.content-body {
+    padding: 30px 40px;
+    flex-grow: 1;
+}
+
+.content-body h3 {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ==========================================================================
+   DASHBOARD COMPONENTS
+   ========================================================================== */
+
+/* QUICK ACTION ROW */
+.quick-action-row {
+    background: #FFFFFF;
+    border: 1px solid #F2EFEA;
+    border-radius: 16px;
+    padding: 20px 24px;
+}
+
+.quick-action-row p {
+    font-size: 12px;
+    color: #A39A90;
+    margin-bottom: 14px;
+    font-weight: 500;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: #FAFAFA;
+    border: 1px solid #F2EFEA;
+    border-radius: 10px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: #1B1714;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.action-btn:hover {
+    background: #FFF7F2;
+    border-color: #E8631C;
+    color: #E8631C;
+}
+
+.action-btn i {
+    font-size: 15px;
+    color: #E8631C;
+}
+
+.action-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+/* STATS CARDS */
+.stats-card {
+    background: #FFFFFF;
+    border: 1px solid #F2EFEA;
+    border-radius: 16px;
+    padding: 24px;
+    height: 100%;
+    transition: box-shadow 0.2s ease;
+}
+
+.stats-card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+
+.stats-label {
+    font-size: 13px;
+    color: #8C8375;
+    font-weight: 500;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.stats-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1B1714;
+    font-family: 'Poppins', sans-serif;
+    margin-bottom: 8px;
+    line-height: 1.2;
+}
+
+.stats-badge {
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-bottom: 12px;
+}
+
+.stats-badge.badge-up {
+    color: #2F6B45;
+}
+
+.stats-badge.badge-down {
+    color: #C0392B;
+}
+
+.sparkline-box {
+    margin-top: 8px;
+}
+
+/* AKTIVITAS */
+.activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.activity-item {
+    display: flex;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid #F2EFEA;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.activity-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.bg-light-orange {
+    background: #FFF2EB;
+    color: #E8631C;
+}
+
+.bg-light-blue {
+    background: #EBF2FF;
+    color: #2D4E7E;
+}
+
+.bg-light-green {
+    background: #EBFAF2;
+    color: #2F6B45;
+}
+
+.bg-light-red {
+    background: #FEEBEB;
+    color: #C0392B;
+}
+
+.text-orange {
+    color: #E8631C;
+}
+
+/* BADGE REAL-TIME */
+.badge-realtime {
+    background: #FFF2EB;
+    color: #E8631C;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    border: 1px solid #FFD4B8;
+}
+
+/* JADWAL IMAM TABLE */
+.jadwal-imam-mini {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.jadwal-imam-mini thead th {
+    font-size: 11px;
+    font-weight: 700;
+    color: #A39A90;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0 12px 12px 12px;
+    border-bottom: 1px solid #F2EFEA;
+}
+
+.jadwal-imam-mini tbody td {
+    padding: 12px;
+    color: #1B1714;
+    border-bottom: 1px solid #F2EFEA;
+    vertical-align: middle;
+}
+
+.jadwal-imam-mini tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.jadwal-imam-mini tbody tr:hover td {
+    background: #FFFAF7;
+}
+
+.jadwal-imam-mini tbody tr.row-berikutnya td {
+    background: #FFF7F2;
+}
+
+.badge-berikutnya {
+    background: #E8631C;
+    color: white;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 600;
+    margin-left: 8px;
+}
+
+.badge-jumat {
+    background: #EBF2FF;
+    color: #2D4E7E;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 600;
+    margin-left: 8px;
+}
+
+/* DONUT CHART CARD */
+.donut-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.donut-legend-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 13px;
+}
+
+.donut-legend-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #6E6558;
+}
+
+.donut-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.donut-legend-value {
+    font-weight: 600;
+    color: #1B1714;
+}
+
+/* BUTTON UTILITIES */
 .btn-orange {
-  background: #ff7a00;
-  color: white;
-  border: none;
+    background: #E8631C;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s ease;
 }
 
 .btn-orange:hover {
-  background: #e66a00;
+    background: #9C300C;
+    color: white;
 }
 
-/* INPUT STYLE */
-.modal .form-control {
-  border-radius: 10px;
+.btn-outline-orange {
+    background: transparent;
+    color: #E8631C;
+    border: 1.5px solid #E8631C;
+    border-radius: 10px;
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s ease;
 }
 
-/* STATUS BADGE */
-.status {
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  display: inline-block;
-  font-weight: 500;
+.btn-outline-orange:hover {
+    background: #FFF7F2;
 }
 
-/* ACTIVE */
-.status.active {
-  background: #d4edda;
-  color: #28a745;
+.btn-period {
+    background: transparent;
+    border: 1.5px solid #E8E0D8;
+    border-radius: 50px;
+    padding: 7px 18px;
+    font-size: 13px;
+    color: #1B1714;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-/* PENDING */
-.status.pending {
-  background: #fff3cd;
-  color: #ffc107;
+.btn-period:hover {
+    border-color: #E8631C;
+    color: #E8631C;
 }
 
-/* INACTIVE */
-.status.inactive {
-  background: #f8d7da;
-  color: #dc3545;
+.btn-export {
+    background: #FFF2EB;
+    border: none;
+    border-radius: 50px;
+    padding: 7px 18px;
+    font-size: 13px;
+    color: #E8631C;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
+.btn-export:hover {
+    background: #FFE4D4;
+}
+
+/* KELOLA LINK */
+.kelola-link {
+    font-size: 13px;
+    font-weight: 600;
+    color: #E8631C;
+    text-decoration: none;
+}
+
+.kelola-link:hover {
+    color: #9C300C;
+}
+
+/* TABLE ADMIN GLOBAL */
+.table-admin {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.table-admin thead th {
+    background: #FAFAFA;
+    font-size: 12px;
+    font-weight: 700;
+    color: #A39A90;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 12px 16px;
+    border-bottom: 1px solid #F2EFEA;
+}
+
+.table-admin tbody td {
+    padding: 14px 16px;
+    color: #1B1714;
+    border-bottom: 1px solid #F2EFEA;
+    vertical-align: middle;
+}
+
+.table-admin tbody tr:hover td {
+    background: #FFFAF7;
+}
+
+/* STATUS BADGES */
+.badge-publish {
+    background: #EBFAF2;
+    color: #2F6B45;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.badge-draft {
+    background: #F5F5F5;
+    color: #8C8375;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.badge-info {
+    background: #EBF2FF;
+    color: #2D4E7E;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+/* PAGINATION */
+.pagination-admin {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.pagination-admin button {
+    background: none;
+    border: 1px solid #F2EFEA;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 13px;
+    color: #6E6558;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.pagination-admin button:hover,
+.pagination-admin button.active {
+    background: #FFF7F2;
+    border-color: #E8631C;
+    color: #E8631C;
+}
+
+/* =========================================
+   REVISI FINAL KELOLA KEUANGAN (AK.html)
+   Berdasarkan Mockup Figma Al-Bayan
+========================================= */
+
+/* 1. Navigasi Tab (Semua, Pemasukan, dll) */
+.finance-tab-container {
+    background: #FFFFFF;
+}
+
+.finance-tab {
+    text-decoration: none;
+    color: #A39A90;
+    font-size: 13px;
+    font-weight: 600;
+    padding-bottom: 12px;
+    border-bottom: 2px solid transparent;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.3s;
+}
+
+.finance-tab.active {
+    color: #E8631C;
+    border-bottom-color: #E8631C;
+}
+
+.tab-badge {
+    background: #F4F2EE;
+    color: #666;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.finance-tab.active .tab-badge {
+    background: #FFF2EB;
+    color: #E8631C;
+}
+
+/* 2. Filter Bar (Horizontal Alignment) */
+.finance-filter-bar {
+    background-color: #FCFBF9 !important;
+    border-bottom: 1px solid #F2EFEA;
+    padding: 15px 25px !important;
+}
+
+/* Kunci utama lonjong (Pill Style) ada di border-radius: 50px */
+.search-input, .filter-select, .date-range-group {
+    background-color: #FFFFFF !important;
+    border: 1px solid #EBEBEB !important;
+    border-radius: 50px !important; 
+    font-size: 12px !important;
+    color: #1B1714 !important;
+    height: 38px !important;
+    padding: 0 15px !important;
+    outline: none !important;
+}
+
+.search-wrapper { position: relative; width: 240px; }
+.search-input { padding-left: 35px !important; width: 100%; }
+.search-icon { 
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%); 
+    color: #A39A90; font-size: 14px; z-index: 5;
+}
+
+.filter-select {
+    padding-right: 30px !important;
+    min-width: 140px;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23A39A90' viewBox='0 0 16 16'%3E%3Cpath d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 12px center !important;
+    appearance: none !important;
+}
+
+/* Base Style Tombol Kapsul */
+.btn-action-pill {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 38px !important;
+    padding: 0 20px !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    border-radius: 50px !important; /* Bikin bentuk kapsul lonjong sempurna */
+    transition: all 0.2s ease !important;
+    box-shadow: none !important;
+}
+
+/* Tombol Putih (Import & Export) */
+.pill-secondary {
+    background-color: #FFFFFF !important;
+    border: 1px solid #EBEBEB !important;
+    color: #1B1714 !important;
+}
+
+.pill-secondary:hover {
+    background-color: #F4F2EE !important;
+    border-color: #D6D1C9 !important;
+    color: #1B1714 !important;
+}
+
+/* Tombol Oranye Utama (Tambah Transaksi) */
+.pill-primary {
+    background-color: #D36334 !important; /* Oranye pas sesuai gambar */
+    border: 1px solid #D36334 !important;
+    color: #FFFFFF !important;
+    font-weight: 600 !important;
+}
+
+.pill-primary:hover {
+    background-color: #B85227 !important; /* Oranye agak gelap pas di-hover */
+    border-color: #B85227 !important;
+    color: #FFFFFF !important;
+}
+
+/* Jarak Ikon di dalam Tombol */
+.btn-action-pill i {
+    font-size: 14px !important;
+    line-height: 1;
+}
+
+/* Styling Kapsul Satuan */
+.date-capsule {
+    display: flex !important;
+    align-items: center !important;
+    background-color: #FFFFFF !important;
+    border: 1px solid #EBEBEB !important;
+    border-radius: 50px !important; /* Biar lonjong sempurna */
+    height: 38px !important;
+    padding: 0 12px !important;
+    width: 140px !important; /* Lebar pas buat satu tanggal + icon */
+}
+
+/* Input di dalam kapsul */
+.date-input-clean {
+    border: none !important;
+    outline: none !important;
+    background: transparent !important;
+    font-size: 13px !important;
+    color: #1B1714 !important;
+    width: 100% !important;
+    padding: 0 !important;
+    cursor: pointer;
+}
+
+/* Icon kalender kecil di dalam kapsul */
+.date-icon-small {
+    font-size: 12px !important;
+    color: #A39A90 !important;
+    margin-left: 5px !important;
+}
+
+/* Panah pemisah di tengah-tengah kapsul */
+.date-arrow-separator {
+    color: #A39A90 !important;
+    font-size: 14px !important;
+    font-weight: bold !important;
+}
+/* Reset Filter Button */
+.btn-reset-filter {
+    color: #1B1714 !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    border: 1px solid #EBEBEB !important;
+    border-radius: 50px !important;
+    padding: 8px 18px !important;
+    background: white !important;
+    text-decoration: none !important;
+}
+
+/* Styling Tabel Utama */
+.finance-table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.finance-table thead th {
+    background-color: #FFFFFF !important;
+    color: #A39A90 !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 20px 12px !important;
+    border-bottom: 1px solid #F2EFEA !important;
+}
+
+.finance-table tbody td {
+    padding: 20px 12px !important; /* Biar barisnya tinggi/lega */
+    border-bottom: 1px solid #F2EFEA !important;
+    vertical-align: middle;
+}
+
+/* Hover Effect biar interaktif */
+.finance-table tbody tr:hover {
+    background-color: #FCFBF9;
+}
+
+/* Typography Kolom */
+.finance-id { font-weight: 700; color: #1B1714; font-size: 12px; }
+.finance-date { font-size: 11px; color: #A39A90; margin-top: 2px; }
+
+.finance-desc-main { font-weight: 600; color: #1B1714; font-size: 13px; }
+.finance-desc-sub { font-size: 11px; color: #A39A90; }
+
+.finance-cat { font-size: 13px; color: #4A4A4A; }
+
+.finance-nominal { font-weight: 700; font-size: 14px; }
+
+/* Badges Tipe */
+.finance-badge {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+.type-in { background: #E9F7EF; color: #27AE60; }
+.type-out { background: #FEEBEB; color: #EB5757; }
+
+/* Status dengan Dot */
+.finance-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 500;
+}
+.status-verified { color: #27AE60; }
+.status-pending { color: #F2994A; }
+.dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+.status-verified .dot { background: #27AE60; }
+.status-pending .dot { background: #F2994A; }
+
+/* Bukti Button */
+.btn-bukti {
+    background: #FFFFFF;
+    border: 1px solid #EBEBEB;
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 11px;
+    color: #4A4A4A;
+    transition: 0.2s;
+}
+.btn-bukti:hover { background: #F4F2EE; }
+
+/* Action Buttons */
+.btn-action {
+    background: none;
+    border: none;
+    color: #A39A90;
+    padding: 6px;
+    font-size: 16px;
+    transition: 0.2s;
+}
+.btn-action:hover { color: #E8631C; }
+
+/* Pewarnaan Teks Rupiah disamain PERSIS ama teks Badge lu */
+.nominal-in {
+    color: #4E9F6D !important; /* Warna ijo soft khas badge pemasukan lu */
+    font-weight: 700 !important;
+}
+
+.nominal-out {
+    color: #D96B62 !important; /* Warna merah soft khas badge pengeluaran lu */
+    font-weight: 700 !important;
+}
+
+/* Biar buletan status terverifikasi juga ikutan seirama */
+.status-verified { 
+    color: #4E9F6D !important; 
+}
+.status-verified .dot { 
+    background-color: #4E9F6D !important; 
+}
+
+/* Container Utama Pagination */
+.custom-pagination .page-item {
+    margin: 0 !important; /* Jarak diatur pake gap di parent */
+}
+
+/* Styling Tombol Kotak Default */
+.custom-pagination .page-link {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 36px !important;
+    height: 36px !important;
+    padding: 0 !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    color: #1B1714 !important;
+    background-color: #FFFFFF !important;
+    border: 1px solid #EBEBEB !important;
+    border-radius: 10px !important; /* Bikin lengkungan squircle halus */
+    transition: all 0.2s ease;
+}
+
+/* Efek Hover Tombol Biasa */
+.custom-pagination .page-link:hover {
+    background-color: #F4F2EE !important;
+    border-color: #D6D1C9 !important;
+    color: #1B1714 !important;
+}
+
+/* Styling Halaman Aktif (Warna Oranye Mockup) */
+.custom-pagination .page-item.active .page-link {
+    background-color: #D36334 !important; /* Oranye pas sesuai gambar */
+    border-color: #D36334 !important;
+    color: #FFFFFF !important;
+    font-weight: 600 !important;
+    box-shadow: none !important; /* Hapus glow biru default bootstrap */
+}
+
+/* Untuk State Disabled (...) */
+.custom-pagination .page-item.disabled .page-link {
+    background: transparent !important;
+    border: none !important;
+    color: #A39A90 !important;
+}
+
+/* ===== KELOLA BERITA ===== */
+.btn-buka-web {
+    display: inline-flex;
+    align-items: center;
+    background: #fff;
+    border: 1.5px solid #E8E0D8;
+    border-radius: 50px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #1B1714;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-buka-web:hover {
+    border-color: #E8631C;
+    color: #E8631C;
+}
+
+.btn-tulis-berita {
+    display: inline-flex;
+    align-items: center;
+    background: #E8631C;
+    border: none;
+    border-radius: 50px;
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-tulis-berita:hover {
+    background: #9C300C;
+}
+
+.btn-hapus {
+    display: inline-flex;
+    align-items: center;
+    background: #FEEBEB;
+    border: none;
+    border-radius: 50px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #C0392B;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-hapus:hover {
+    background: #fdd;
+    color: #C0392B;
+}
+
+/* TAB BERITA */
+.tab-berita {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #8C8375;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: -2px;
+}
+
+.tab-berita:hover { color: #E8631C; }
+
+.tab-berita.active {
+    color: #E8631C;
+    border-bottom-color: #E8631C;
+    font-weight: 600;
+}
+
+.tab-count {
+    display: inline-block;
+    background: #F2EFEA;
+    color: #8C8375;
+    font-size: 11px;
+    padding: 1px 7px;
+    border-radius: 20px;
+    margin-left: 4px;
+    font-weight: 600;
+}
+
+.tab-berita.active .tab-count {
+    background: #FFF2EB;
+    color: #E8631C;
+}
+
+/* SEARCH ADMIN */
+.search-admin {
+    position: relative;
+}
+
+.search-admin i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #A39A90;
+    font-size: 13px;
+}
+
+.search-admin input {
+    width: 100%;
+    background: #FAFAFA;
+    border: 1.5px solid #F2EFEA;
+    border-radius: 10px;
+    padding: 9px 12px 9px 34px;
+    font-size: 13px;
+    color: #1B1714;
+    outline: none;
+    transition: border 0.2s ease;
+}
+
+.search-admin input:focus {
+    border-color: #E8631C;
+    background: #fff;
+}
+
+/* BERITA LIST CARD */
+.berita-list-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    background: #fff;
+    border: 1.5px solid #F2EFEA;
+    border-radius: 14px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.berita-list-card:hover {
+    border-color: #E8631C;
+    background: #FFFAF7;
+}
+
+.berita-list-card.aktif {
+    border-color: #E8631C;
+    background: #FFF7F2;
+}
+
+.berita-thumb {
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.berita-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.berita-info {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.berita-list-judul {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1B1714;
+    margin: 0 0 2px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.berita-list-meta {
+    font-size: 11px;
+    color: #A39A90;
+    margin: 0;
+}
+
+/* BADGE */
+.badge-live {
+    display: inline-block;
+    background: #EBFAF2;
+    color: #2F6B45;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.badge-draft-list {
+    display: inline-block;
+    background: #F5F5F5;
+    color: #8C8375;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+/* COVER PREVIEW */
+.berita-cover-preview {
+    width: 100%;
+    height: 240px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #F5F5F5;
+    position: relative;
+}
+
+.berita-cover-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cover-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* METADATA BAWAH */
+.berita-meta-bottom {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.meta-label {
+    font-size: 11px;
+    color: #A39A90;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.meta-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1B1714;
+}
+
+/* FORM */
+.form-label-admin {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1B1714;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.input-admin {
+    width: 100%;
+    background: #FAFAFA;
+    border: 1.5px solid #F2EFEA;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #1B1714;
+    outline: none;
+    transition: border 0.2s ease;
+    font-family: 'Inter', sans-serif;
+}
+
+.input-admin:focus {
+    border-color: #E8631C;
+    background: #fff;
+}

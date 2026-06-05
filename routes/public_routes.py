@@ -5,7 +5,7 @@ import requests
 public = Blueprint('public', __name__)
 
 def get_jadwal():
-    url = "https://api.aladhan.com/v1/timingsByCity?city=Jakarta&country=Indonesia"
+    url = "https://api.aladhan.com/v1/timingsByCity?city=Jakarta&country=Indonesia&method=20"
     res = requests.get(url)
     data = res.json()
     all_timings = data['data']['timings']
@@ -30,13 +30,6 @@ def home():
         berita=berita_data
     )
 
-@public.route('/jadwal')
-def jadwal():
-    jadwal, tanggal = get_jadwal()
-    return render_template('public/jadwal.html',
-        jadwal=jadwal,
-        tanggal=tanggal
-    )
 
 @public.route('/berita')
 def berita():
@@ -48,6 +41,10 @@ def berita_detail(id):
     b = Berita.query.get_or_404(id)
     return render_template('public/detail_berita.html', berita=b)
 
+@public.route('/donasi')
+def donasi():
+    return render_template('public/donasi.html')
+
 @public.route('/galeri')
 def galeri():
     return render_template('public/galeri.html')
@@ -55,3 +52,7 @@ def galeri():
 @public.route('/tentang')
 def tentang():
     return render_template('public/tentang.html')
+
+@public.route('/keuangan')
+def halaman_keuangan():
+    return render_template('public/keuangan.html')

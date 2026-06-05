@@ -1,0 +1,79 @@
+{% extends "layouts/public_base.html" %}
+{% block title %}Donasi - Masjid Al-Bayan{% endblock %}
+
+{% block content %}
+<!-- Hapus container-fluid p-0 biar full dikontrol sama CSS Donasi kita -->
+<section class="donasi-page">
+  <div class="donasi-wrapper">
+    <div class="donasi-card">
+
+      <!-- Bagian Kiri (Udah bener) -->
+      <div class="donasi-left fade-in-up">
+        <div class="donasi-badge">DONASI DIGITAL</div>
+        <h1>Salurkan Donasi Anda<br>dengan Mudah & Aman.</h1>
+        <p>
+          Setiap rupiah dari donasi Anda akan dicatat secara transparan
+          dan dapat dipantau melalui sistem keuangan Masjid Al-Bayan.
+        </p>
+
+        <div class="rekening-box">
+          <div class="rekening-info">
+            <small>TRANSFER BANK SYARIAH</small>
+            <!-- Di sini kita kasih id="nomor-rekening" biar gampang diambil angkanya doang, teks BSI-nya gak ikut kesalin -->
+            <h3>BSI • <span id="nomor-rekening">708812345678</span></h3>
+            <span style="color: rgba(255,255,255,0.6); font-size: 14px;">a.n. Masjid Al-Bayan</span>
+          </div>
+          <button class="btn-salin" onclick="copyRekening()">Salin</button>
+        </div>
+      </div>
+
+      <!-- BAGIAN KANAN (UDAH DIUBAH: dari 'fade' jadi 'fade-in-up') -->
+      <div class="donasi-right fade-in-up">
+        <div class="qris-card">
+          <div class="qris-header">
+            <!-- Tambahin styling text hitam biar kebaca di kartu putih -->
+            <h6 style="color: #1b1714; font-weight: 700; margin: 0; text-align: center;">QRIS • Scan untuk Donasi</h6>
+          </div>
+          <div class="qris-image">
+            <img src="{{ url_for('static', filename='img/qris-juan.png') }}" alt="QRIS Masjid Al-Bayan">
+          </div>
+          <a href="/" class="btn-tutup">Kembali ke Beranda</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{# ===== TARUH JAVASCRIPT-NYA DI SINI (DI LUAR BLOCK CONTENT) ===== #}
+{% block scripts %}
+<script>
+  function copyRekening() {
+    // 1. Ambil angka rekeningnya aja yang ada di dalam span id
+    const noRekening = document.getElementById('nomor-rekening').innerText;
+
+    // 2. Proses salin ke clipboard
+    navigator.clipboard.writeText(noRekening).then(() => {
+      
+      // 3. Efek visual pas berhasil disalin
+      const tombol = document.querySelector('.btn-salin');
+      const teksAsli = tombol.innerText;
+      
+      tombol.innerText = 'Tersalin! ✓';
+      tombol.style.background = '#22c55e'; // Ubah warna jadi hijau sukses
+      tombol.style.color = 'white';
+
+      // 4. Balikin tombol ke semula setelah 2 detik
+      setTimeout(() => {
+        tombol.innerText = teksAsli;
+        tombol.style.background = ''; // Balik ke warna orange bawaan CSS
+        tombol.style.color = '';
+      }, 2000);
+
+    }).catch(err => {
+      console.error('Gagal menyalin text: ', err);
+    });
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,178 @@
+/* ========================================================
+   RESPONSIVE.CSS — MASJID AL-BAYAN
+   ======================================================== */
+
+/* ===== NAVBAR ===== */
+@media (max-width: 991.98px) {
+  .custom-navbar {
+    background: rgba(15, 12, 10, 0.95) !important;
+  }
+
+  .navbar-toggler {
+    border-color: rgba(255,255,255,0.3);
+  }
+
+  .navbar-toggler-icon {
+    filter: invert(1);
+  }
+}
+
+/* ===== HERO + JADWAL FLOATING (TABLET) ===== */
+@media (max-width: 992px) {
+  .hero-section {
+    margin-top: 70px;
+    min-height: auto;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hero-section .overlay {
+    position: relative !important;
+    inset: auto !important;
+    padding: 60px 20px 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 55vh;
+  }
+
+  .hero-section .overlay > div {
+    max-width: 100%;
+    text-align: center;
+    z-index: 3;
+  }
+
+  .jadwal-floating {
+    position: relative !important;
+    bottom: auto !important;
+    left: auto !important;
+    transform: none !important;
+    width: calc(100% - 24px) !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+  }
+
+  #jadwal-imam {
+    padding-top: 40px !important;
+  }
+
+  .jadwal-floating-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .jadwal-left {
+    min-width: 100%;
+    max-width: 100%;
+    padding-right: 0;
+    margin-right: 0;
+    border-right: none;
+    border-bottom: 1px solid #e8e3dc;
+    padding-bottom: 14px;
+    white-space: normal;
+  }
+
+  .jadwal-right {
+    width: 100%;
+    gap: 8px !important;
+    justify-content: space-between;
+  }
+
+  .waktu-item {
+    min-width: auto;
+    flex: 1;
+    padding: 10px 6px;
+    border-radius: 12px;
+  }
+
+  .waktu-nama { font-size: 9px; letter-spacing: 0.5px; }
+  .waktu-jam  { font-size: 15px; }
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px) {
+  section { padding: 50px 0; }
+
+  .hero-section h1 { font-size: 36px; line-height: 1.2; }
+  .hero-section p  { font-size: 14px; line-height: 1.7; }
+  .bismillah-badge { font-size: 13px; padding: 7px 16px; }
+
+  .waktu-nama { font-size: 8px; }
+  .waktu-jam  { font-size: 13px; }
+  .waktu-item { padding: 8px 4px; }
+
+  .section-title { font-size: 26px; }
+  .section-label { font-size: 10px; }
+  .section-sub   { font-size: 13px; }
+
+  .jadwal-imam-table { font-size: 12px; }
+  .jadwal-imam-table thead th,
+  .jadwal-imam-table tbody td { padding: 10px; }
+
+  .keu-card { padding: 16px 18px; gap: 12px; }
+  .keu-angka { font-size: 18px; }
+  .keu-detail-card { padding: 16px; }
+  .keu-row { font-size: 13px; }
+
+  .berita-card img { height: 180px; }
+  .galeri-card img { height: 180px; }
+
+  .maps-preview { height: 200px; }
+  .about-box { margin-top: 16px; }
+
+  footer .row > div { text-align: center; }
+  footer .d-flex { justify-content: center; }
+
+  .news-hero-header { padding: 110px 16px 50px; }
+  .news-hero-header h1 { font-size: 28px; }
+}
+
+/* ===== HP KECIL ===== */
+@media (max-width: 480px) {
+  .hero-section h1 { font-size: 30px; }
+  .hero-section p  { font-size: 13px; }
+
+  .waktu-item { padding: 6px 2px; }
+  .waktu-nama { font-size: 7px; }
+  .waktu-jam  { font-size: 12px; }
+}
+
+/* ===== NAVBAR COLLAPSE STYLE ===== */
+@media (max-width: 991.98px) {
+  .navbar-collapse {
+    background: #1B1714;
+    padding: 25px;
+    border-radius: 24px;
+    margin-top: 15px;
+    border: 1px solid rgba(255,255,255,.1);
+    box-shadow: 0 20px 40px rgba(0,0,0,.4);
+  }
+}
+  /* ========================================================
+   =====          RESPONSIVE UTK MOBILE DONASI          =====
+   ======================================================== */
+@media (max-width: 992px) {
+  .donasi-page { padding: 110px 15px 50px 15px !important; height: auto; min-height: 100vh; }
+  .donasi-card { flex-direction: column; padding: 50px 30px; text-align: center; gap: 40px; min-height: auto; }
+  .donasi-left p { margin: 0 auto 35px; }
+  .rekening-box { flex-direction: column; gap: 16px; text-align: center; width: 100%; }
+  .donasi-right.fade-in-up { animation-delay: 0.15s; }
+  .qris-card { transform: rotate(0) !important; max-width: 360px; }
+}
+
+@media (max-width: 768px) {
+  .donasi-left h1 { font-size: 32px !important; line-height: 1.2; }
+  .donasi-left p { font-size: 16px; line-height: 1.6; }
+  .rekening-info h3 { font-size: 22px; }
+  .btn-salin { width: 100%; padding: 12px; }
+}
+
+@media (max-width: 480px) {
+  .donasi-card { padding: 35px 20px; border-radius: 24px; }
+  .donasi-left h1 { font-size: 28px !important; }
+  .rekening-info h3 { font-size: 18px; }
+}

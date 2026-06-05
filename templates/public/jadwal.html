@@ -2,21 +2,60 @@
 {% block title %}Jadwal Sholat{% endblock %}
 
 {% block content %}
-<section class="container text-center mt-5 pt-5">
-  <p class="text-uppercase fw-bold mb-1"
-     style="font-size: 11px; letter-spacing: 2px; color: #d97706;">
-    JADWAL SHOLAT
-  </p>
-  <h2 class="fw-bold mb-2"
-      style="font-family: 'Playfair Display', serif; font-size: 38px; color: #1f2937;">
-    Waktu Sholat Hari Ini
-  </h2>
+
+<!-- HERO -->
+<section class="jadwal-hero text-center">
+  <div class="container">
+    <p class="jadwal-label">JADWAL SHOLAT</p>
+
+    <h1>Waktu Sholat Masjid Al-Bayan</h1>
+
+  </div>
+</section>
+
+<!-- NEXT PRAYER -->
+<section class="pb-0" style="margin-top: -50px;">
+  <div class="container">
+
+    <div class="next-prayer-card">
+      <p class="mb-1 text-muted">Adzan Berikutnya</p>
+
+      <h2 id="nextPrayer">
+        Menentukan...
+      </h2>
+
+      <span id="countdown">
+        Menghitung waktu...
+      </span>
+    </div>
+
+  </div>
+</section>
+
+<!-- JADWAL -->
+<section class="container text-center pb-5 jadwal-page">
+
   <p class="text-muted mb-5" style="font-size: 14px;">
-    <i class="bi bi-geo-alt-fill" style="color: #d97706;"></i> Jakarta, Indonesia &nbsp;&nbsp;
-    <i class="bi bi-clock-fill" style="color: #d97706;"></i> {{ tanggal }}
+    <i class="bi bi-geo-alt-fill" style="color: #d97706;"></i>
+    Jakarta, Indonesia
+
+    &nbsp;&nbsp;
+
+    <i class="bi bi-clock-fill" style="color: #d97706;"></i>
+    {{ tanggal }}
   </p>
 
+  <div class="jadwal-desc-bawah mb-5">
+
+  <p>
+    Jadwal sholat harian untuk wilayah Tangerang Selatan
+    dan sekitarnya.
+  </p>
+
+</div>
+
   <div class="row justify-content-center g-4">
+
     {% set arabic = {
       'Subuh': 'الفجر',
       'Dzuhur': 'الظهر',
@@ -24,6 +63,7 @@
       'Maghrib': 'المغرب',
       'Isya': 'العشاء'
     } %}
+
     {% set imam = {
       'Subuh': 'Ust. Ahmad',
       'Dzuhur': 'Ust. Ibrahim',
@@ -31,45 +71,176 @@
       'Maghrib': 'Ust. Ali',
       'Isya': 'Ust. Umar'
     } %}
+
     {% for k, v in jadwal.items() %}
     <div class="col-md-2 col-6">
-      <div class="card jadwal-card shadow-sm p-4 border-0 position-relative text-center"
+
+      <div class="card jadwal-card shadow-sm border-0 position-relative text-center"
+           data-nama="{{ k }}"
            data-waktu="{{ v }}">
-        <span class="badge-next d-none">Berikutnya</span>
-        <p class="arabic">{{ arabic[k] }}</p>
-        <p class="nama-sholat">{{ k }}</p>
-        <h3 class="jam-sholat">{{ v }}</h3>
-        <p class="imam-sholat">Imam: {{ imam[k] }}</p>
+
+        <span class="badge-next d-none">
+          Berikutnya
+        </span>
+
+        <p class="arabic">
+          {{ arabic[k] }}
+        </p>
+
+        <p class="nama-sholat">
+          {{ k }}
+        </p>
+
+        <h3 class="jam-sholat">
+          {{ v }}
+        </h3>
+
+        <p class="imam-sholat">
+          Imam: {{ imam[k] }}
+        </p>
+
       </div>
+
     </div>
     {% endfor %}
+
   </div>
 
-  <p class="mt-5 text-muted" style="font-size: 12px; opacity: 0.8;">
-    * Iqamah 10 menit setelah adzan. Data dari Aladhan API (Kementerian Agama RI).
-  </p>
+  <!-- INFO -->
+  <div class="jadwal-info-box mt-5">
+
+    <h5>
+      Informasi Jadwal
+    </h5>
+
+    <p>
+      Jadwal sholat diperbarui otomatis berdasarkan API Aladhan
+      dan digunakan sebagai acuan waktu ibadah Masjid Al-Bayan.
+    </p>
+
+    <div class="mt-3 text-muted" style="font-size: 13px;">
+      * Iqamah dilaksanakan ±10 menit setelah adzan.
+    </div>
+
+  </div>
+
 </section>
 
 <script>
-function highlightBerikutnya() {
+
+function updateJadwal() {
+
   const now = new Date();
-  const jamSekarang = now.getHours() * 60 + now.getMinutes();
+
+  const jamSekarang =
+    (now.getHours() * 3600) +
+    (now.getMinutes() * 60) +
+    now.getSeconds();
+
   const cards = document.querySelectorAll('.jadwal-card');
+
   let berikutnya = null;
+
   cards.forEach(card => {
+
+    card.classList.remove('active');
+
+    const badge = card.querySelector('.badge-next');
+
+    if (badge) {
+      badge.classList.add('d-none');
+    }
+
     const waktu = card.getAttribute('data-waktu');
+
     if (!waktu) return;
+
     const [jam, menit] = waktu.split(':').map(Number);
-    const totalMenit = jam * 60 + menit;
-    if (totalMenit > jamSekarang && !berikutnya) berikutnya = card;
+
+    const totalDetik =
+      (jam * 3600) +
+      (menit * 60);
+
+    if (totalDetik > jamSekarang && !berikutnya) {
+      berikutnya = card;
+    }
   });
-  if (!berikutnya) berikutnya = document.querySelector('.jadwal-card');
+
+  // Kalau lewat Isya → balik ke Subuh
+  if (!berikutnya) {
+    berikutnya = document.querySelector('.jadwal-card');
+  }
+
   if (berikutnya) {
+
     berikutnya.classList.add('active');
-    berikutnya.querySelector('.badge-next').classList.remove('d-none');
+
+    berikutnya
+      .querySelector('.badge-next')
+      .classList.remove('d-none');
+
+    const nama =
+      berikutnya.getAttribute('data-nama');
+
+    const waktu =
+      berikutnya.getAttribute('data-waktu');
+
+    // NEXT PRAYER TEXT
+    document.getElementById('nextPrayer')
+      .innerHTML = `${nama} • ${waktu}`;
+
+    // COUNTDOWN
+    const [jam, menit] =
+      waktu.split(':').map(Number);
+
+    const targetDetik =
+      (jam * 3600) +
+      (menit * 60);
+
+    let sisa = targetDetik - jamSekarang;
+
+    if (sisa < 0) {
+      sisa += 24 * 3600;
+    }
+
+    const jamSisa =
+      Math.floor(sisa / 3600);
+
+    const menitSisa =
+      Math.floor((sisa % 3600) / 60);
+
+    const detikSisa =
+      sisa % 60;
+
+    document.getElementById('countdown')
+      .innerHTML =
+      `Dalam ${jamSisa} Jam ${menitSisa} Menit ${detikSisa} Detik`;
+  }
+
+  // JAM REALTIME
+  const liveClock =
+    document.getElementById('liveClock');
+
+  if (liveClock) {
+
+    const h =
+      String(now.getHours()).padStart(2, '0');
+
+    const m =
+      String(now.getMinutes()).padStart(2, '0');
+
+    const s =
+      String(now.getSeconds()).padStart(2, '0');
+
+    liveClock.innerHTML = `${h}:${m}:${s}`;
   }
 }
-highlightBerikutnya();
+
+// RUN
+updateJadwal();
+
+setInterval(updateJadwal, 1000);
+
 </script>
 
 {% endblock %}
