@@ -30,14 +30,6 @@ def home():
         berita=berita_data
     )
 
-@public.route('/jadwal')
-def jadwal():
-    jadwal, tanggal = get_jadwal()
-    return render_template('public/jadwal.html',
-        jadwal=jadwal,
-        tanggal=tanggal
-    )
-
 @public.route('/berita')
 def berita():
     data = Berita.query.order_by(Berita.created_at.desc()).all()

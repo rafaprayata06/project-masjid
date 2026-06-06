@@ -27,10 +27,7 @@ def guest_only(f):
                 flash("Anda sudah login sebagai Admin Keuangan", "info")
                 return redirect("/admin-keuangan")
 
-            # Default fallback
-            flash("Anda sudah login", "info")
-            return redirect("/")
-
+        
         return f(*args, **kwargs)
 
     return decorated_function
