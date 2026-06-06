@@ -1,137 +1,332 @@
 {% extends 'layouts/admin_base.html' %}
 
-{% block title %}Users{% endblock %}
+{% block breadcrumb %}Dashboard Al-Bayan{% endblock %}
 
-{% block content %}
+{% block admin_content %}
+<div class="quick-action-row mb-4">
+    <div class="d-flex align-items-center gap-3" style="flex-wrap: nowrap; overflow-x: auto;">
 
-<div class="card-box">
+        <div style="min-width: 110px; border-right: 1px solid #F2EFEA; padding-right: 16px; margin-right: 4px; flex-shrink: 0;">
+            <p class="fw-semibold mb-0" style="font-size:13px; color:#1B1714;">Aksi Cepat</p>
+            <small style="font-size:11px; color:#A39A90;">Shortcut untuk aksi yang sering digunakan</small>
+        </div>
 
-  <div class="d-flex justify-content-between mb-3">
-    <h5>Admin Users Management</h5>
-  </div>
+        <a href="#" class="action-btn" style="white-space: nowrap; flex-shrink: 0;">
+            <span class="action-icon" style="background:#E4F1EA;">
+                <i class="bi bi-plus-circle-fill" style="color:#2C7A5C;"></i>
+            </span>
+            Tambah Pemasukan
+        </a>
+        <a href="#" class="action-btn" style="white-space: nowrap; flex-shrink: 0;">
+            <span class="action-icon" style="background:#FBE6E0;">
+                <i class="bi bi-dash-circle-fill" style="color:#C4422C;"></i>
+            </span>
+            Tambah Pengeluaran
+        </a>
+        <a href="#" class="action-btn" style="white-space: nowrap; flex-shrink: 0;">
+            <span class="action-icon" style="background:#E0E9F4;">
+                <i class="bi bi-pencil-fill" style="color:#2C5C8A;"></i>
+            </span>
+            Tulis Berita
+        </a>
+        <a href="#" class="action-btn" style="white-space: nowrap; flex-shrink: 0;">
+            <span class="action-icon" style="background:#FFF6EF;">
+                <i class="bi bi-calendar-check-fill" style="color:#C44F12;"></i>
+            </span>
+            Atur Jadwal Imam
+        </a>
+        <a href="#" class="action-btn" style="white-space: nowrap; flex-shrink: 0;">
+            <span class="action-icon" style="background:#FCEFD9;">
+                <i class="bi bi-images" style="color:#B8893D;"></i>
+            </span>
+            Upload Foto Galeri
+        </a>
 
-<form method="GET" action="/admin-super/users" class="d-flex mb-3">
-  <input type="text" 
-         name="q"
-         class="form-control me-2"
-         placeholder="Search admin..."
-         value="{{ request.args.get('q', '') }}">
+    </div>
+</div>
 
-  <button type="submit" class="btn btn-orange">Search</button>
-</form>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>No</th>
-        <th>Nim</th>
-        <th>Nama</th>
-        <th>Jurusan</th>
-        <th>Jenis Kelamin</th>
-        <th>Role</th>
-        <th>Status Akun</th>
-        <th>Aksi</th>
-      </tr>
-    </thead>
+<!-- 2. STATS CARD ROW (Angka Ringkasan) -->
+<div class="row g-4 mb-4">
+    <!-- Card 1: Saldo -->
+    <div class="col-md-3">
+        <div class="stats-card">
+            <div class="stats-label">Saldo Masjid <span class="badge bg-light text-danger ms-1" style="font-size: 10px;">Real-time</span></div>
+            <div class="stats-value">Rp 487,2jt</div>
+            <div class="stats-badge badge-up">
+                <i class="bi bi-arrow-up-short"></i> 12.4% <span class="ms-1 text-muted fw-normal">dari bulan lalu</span>
+            </div>
+            <div id="chart-spark-1" class="sparkline-box"></div>
+        </div>
+    </div>
+    <!-- Card 2: Donasi -->
+    <div class="col-md-3">
+        <div class="stats-card">
+            <div class="stats-label">Donasi Bulan Ini</div>
+            <div class="stats-value">Rp 142,8jt</div>
+            <div class="stats-badge badge-up">
+                <i class="bi bi-arrow-up-short"></i> 8.2% <span class="ms-1 text-muted fw-normal">dari April</span>
+            </div>
+            <div id="chart-spark-2" class="sparkline-box"></div>
+        </div>
+    </div>
+    <!-- Card 3: Donatur -->
+    <div class="col-md-3">
+        <div class="stats-card">
+            <div class="stats-label">Total Donatur</div>
+            <div class="stats-value">847</div>
+            <div class="stats-badge badge-up">
+                <i class="bi bi-person-plus-fill me-1"></i> +31 <span class="ms-1 text-muted fw-normal">orang baru</span>
+            </div>
+            <div id="chart-spark-3" class="sparkline-box"></div>
+        </div>
+    </div>
+    <!-- Card 4: Berita -->
+    <div class="col-md-3">
+        <div class="stats-card">
+            <div class="stats-label">Berita Dipublikasi</div>
+            <div class="stats-value">24</div>
+            <div class="stats-badge text-muted">
+                <span class="fw-bold">5</span> draft, <span class="fw-bold">3</span> jadwal terbit
+            </div>
+            <div id="chart-spark-4" class="sparkline-box"></div>
+        </div>
+    </div>
+</div>
 
-    <tbody>
+<!-- 3. MAIN SECTION (Grafik Besar & Aktivitas) -->
+<div class="row">
+    <!-- Kolom Kiri: Grafik Arus Kas -->
+    <div class="col-lg-8 mb-4">
+        <div class="stats-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h5 class="fw-bold mb-0" style="font-family: 'Poppins', sans-serif;">Arus Kas 6 Bulan Terakhir</h5>
+                    <small class="text-muted">Tren pemasukan dan pengeluaran masjid</small>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn-period">6 Bulan</button>
+                    <button class="btn-export">Export</button>
+                </div>
+            </div>
+            <!-- Div Canvas Grafik Utama -->
+            <div id="chart-arus-kas" style="min-height: 350px;"></div>
+        </div>
+    </div>
+    
+    <!-- Kolom Kanan: List Aktivitas Terbaru -->
+    <div class="col-lg-4 mb-4">
+        <div class="stats-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="fw-bold mb-0" style="font-family: 'Poppins', sans-serif;">Aktivitas Terbaru</h5>
+                <a href="#" class="text-decoration-none small text-orange fw-semibold">Lihat Semua</a>
+            </div>
+            <div class="activity-list">
+                <!-- Item Aktivitas 1 -->
+                <div class="d-flex gap-3 mb-4">
+                    <div class="activity-icon bg-light-orange">
+                        <i class="bi bi-wallet2"></i>
+                    </div>
+                    <div>
+                        <p class="mb-0 small" style="color: #1B1714;"><b>Admin Keuangan</b> mencatat donasi Rp 5.000.000 dari Pak Hasan Tirta</p>
+                        <small class="text-muted">2 menit lalu • #TRX2026051401</small>
+                    </div>
+                </div>
+                <!-- Item Aktivitas 2 -->
+                <div class="d-flex gap-3 mb-4">
+                    <div class="activity-icon bg-light-blue">
+                        <i class="bi bi-megaphone"></i>
+                    </div>
+                    <div>
+                        <p class="mb-0 small" style="color: #1B1714;"><b>Admin Humas</b> mempublikasikan berita "Pembukaan Tahsin Angkatan 12"</p>
+                        <small class="text-muted">2 jam lalu • Status: Live</small>
+                    </div>
+                </div>
+                <!-- Item Aktivitas 3 -->
+                <div class="d-flex gap-3">
+                    <div class="activity-icon bg-light-orange">
+                        <i class="bi bi-dash-circle"></i>
+                    </div>
+                    <div>
+                        <p class="mb-0 small" style="color: #1B1714;"><b>Admin Keuangan</b> mencatat pengeluaran listrik Rp 1.840.000</p>
+                        <small class="text-muted">3 jam lalu • #TRX2026051101</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-      {% if is_empty %}
-<tr>
-  <td colspan="8" class="text-center">
-
-    <div style="padding:40px;">
-      <i class="bi bi-search" style="font-size:40px; color:#ccc;"></i>
-      <h5 class="mt-3">Data tidak ditemukan</h5>
-      <p style="color:#888;">
-        Tidak ada user yang cocok dengan pencarian kamu 😢
-      </p>
+<!-- 4. BOTTOM SECTION: Jadwal Imam + Donut -->
+<div class="row">
+    <!-- Jadwal Imam Minggu Ini -->
+    <div class="col-lg-8 mb-4">
+        <div class="stats-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h6 class="fw-bold mb-0">Jadwal Imam Minggu Ini</h6>
+                    <small class="text-muted">Pekan ke-20 · 11–17 Mei 2026</small>
+                </div>
+                <a href="#" class="kelola-link">Kelola →</a>
+            </div>
+            <table class="jadwal-imam-mini">
+                <thead>
+                    <tr>
+                        <th>Hari</th>
+                        <th>Sholat</th>
+                        <th>Imam</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="row-berikutnya">
+                        <td class="fw-semibold">Kam, 14 Mei</td>
+                        <td>Ashar</td>
+                        <td>Ust. Abdul Karim</td>
+                        <td><span class="badge-berikutnya">Berikutnya</span></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-semibold">Kam, 14 Mei</td>
+                        <td>Maghrib</td>
+                        <td>Ust. Yusuf Mansur</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-semibold">Kam, 14 Mei</td>
+                        <td>Isya</td>
+                        <td>Ust. Ahmad Syahril</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-semibold">Jum, 15 Mei</td>
+                        <td>Dzuhur · Khotib</td>
+                        <td>Ust. Muh. Fauzi, Lc.</td>
+                        <td><span class="badge-jumat">Jumat</span></td>
+                    </tr>
+                    <tr>
+                        <td class="fw-semibold">Jum, 15 Mei</td>
+                        <td>Maghrib</td>
+                        <td>Ust. Muh. Fauzi, Lc.</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
-  </td>
-</tr>
-{% else %}
+    <!-- Donut Chart Sumber Pemasukan -->
+    <div class="col-lg-4 mb-4">
+        <div class="stats-card">
+            <div class="mb-3">
+                <h6 class="fw-bold mb-0">Sumber Pemasukan Bulan Ini</h6>
+                <small class="text-muted">Distribusi total Rp 142,8jt</small>
+            </div>
+            <div id="chart-donut" class="mb-4"></div>
+            <div class="donut-legend">
+                <div class="donut-legend-item">
+                    <span class="donut-legend-label">
+                        <span class="donut-dot" style="background:#E8631C;"></span> Donasi Tetap
+                    </span>
+                    <span class="donut-legend-value">Rp 88,5jt · 62%</span>
+                </div>
+                <div class="donut-legend-item">
+                    <span class="donut-legend-label">
+                        <span class="donut-dot" style="background:#F4A06A;"></span> Infaq Jamaah
+                    </span>
+                    <span class="donut-legend-value">Rp 31,4jt · 22%</span>
+                </div>
+                <div class="donut-legend-item">
+                    <span class="donut-legend-label">
+                        <span class="donut-dot" style="background:#B8962E;"></span> Kotak Amal
+                    </span>
+                    <span class="donut-legend-value">Rp 15,7jt · 11%</span>
+                </div>
+                <div class="donut-legend-item">
+                    <span class="donut-legend-label">
+                        <span class="donut-dot" style="background:#D1D5DB;"></span> Lainnya
+                    </span>
+                    <span class="donut-legend-value">Rp 7,2jt · 5%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
 
-    {% for u in users %}
-  <tr>
-    <td>{{ loop.index  }}</td>
-    <td>{{ u.nim }}</td>
-    <td>{{ u.name }}</td>
-    <td>{{ u.jurusan }}</td>
-    <td>{{ u.jenis_kelamin }}</td>
-    <td>{{ u.role }}</td>
-    <td>
-    {% if u.active == 1 %}
-        <div class="status active">Active</div>
-    {% elif u.active == 0 %}
-        <div class="status pending">Pending</div>
-    {% elif u.active == 2 %}
-        <div class="status inactive">Inactive</div>
-    {% endif %}
-</td>
-    <td>
-      <a href="#" class="text-edit" data-bs-toggle="modal" data-bs-target="#modal-{{ u.nim }}">Edit</a>
+{% block extra_scripts %}
+<!-- Manggil library ApexCharts via CDN -->
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+    // 1. SETTINGAN GRAFIK ARUS KAS (BAR CHART)
+    var optionsArusKas = {
+        series: [{
+            name: 'Pemasukan',
+            data: [110, 120, 135, 125, 140, 155]
+        }, {
+            name: 'Pengeluaran',
+            data: [80, 85, 100, 95, 110, 105]
+        }],
+        chart: {
+            type: 'bar',
+            height: 350,
+            toolbar: { show: false }
+        },
+        colors: ['#E8631C', '#D1D5DB'], 
+        plotOptions: {
+            bar: { borderRadius: 6, columnWidth: '45%' }
+        },
+        dataLabels: { enabled: false },
+        stroke: { show: true, width: 2, colors: ['transparent'] },
+        xaxis: {
+            categories: ['Des', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei'],
+            axisBorder: { show: false }
+        },
+        fill: { opacity: 1 },
+        legend: { position: 'top', horizontalAlign: 'left' }
+    };
+    new ApexCharts(document.querySelector("#chart-arus-kas"), optionsArusKas).render();
+
+    // 2. SETTINGAN MINI GRAPH (SPARKLINE COKOT DI POJOK CARD STATS)
+    var sparkOptions = {
+        series: [{ data: [30, 40, 35, 50, 49, 60, 70, 91] }],
+        chart: { type: 'line', width: 90, height: 40, sparkline: { enabled: true } },
+        stroke: { curve: 'smooth', width: 2 },
+        colors: ['#E8631C'],
+        tooltip: { enabled: false }
+    };
     
-    <!-- Modal edit user-->
-<div class="modal fade" id="modal-{{ u.nim }}">
-  <div class="modal-dialog">
-    <form method="POST" action="/admin-super/users/update/{{ u.nim }}">
-      
-      <div class="modal-content custom-modal">
+    // Render grafik kecil di setiap card stats
+    new ApexCharts(document.querySelector("#chart-spark-1"), sparkOptions).render();
+    new ApexCharts(document.querySelector("#chart-spark-2"), sparkOptions).render();
+    new ApexCharts(document.querySelector("#chart-spark-3"), sparkOptions).render();
+    new ApexCharts(document.querySelector("#chart-spark-4"), sparkOptions).render();
 
-        <!-- HEADER -->
-        <div class="modal-header custom-header">
-          <h5 class="modal-title">Edit User</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-
-        <!-- BODY -->
-        <div class="modal-body">
-
-          <div class="mb-3">
-            <label class="form-label">Nama</label>
-            <input type="text" class="form-control" value="{{ u.name }}" disabled>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Role</label>
-            <select name="role" class="form-control">
-              <option value="">-- pilih role --</option>
-              <option value="AS" {% if u.role == 'AS' %}selected{% endif %}>Admin Super</option>
-              <option value="AK" {% if u.role == 'AK' %}selected{% endif %}>Admin Keuangan</option>
-              <option value="AH" {% if u.role == 'AH' %}selected{% endif %}>Admin Humas</option>
-            </select>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Status</label>
-            <select name="active" class="form-control">
-              <option value="0" {% if u.active == 0 %}selected{% endif %}>Pending</option>
-              <option value="1" {% if u.active == 1 %}selected{% endif %}>Active</option>
-              <option value="2" {% if u.active == 2 %}selected{% endif %}>Inactive</option>
-            </select>
-          </div>
-
-        </div>
-
-        <!-- FOOTER -->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-orange">Save</button>
-        </div>
-
-      </div>
-
-    </form>
-  </div>
-</div>
-    </td>
-  </tr>
-  {% endfor %}     
-  {% endif %}
-
-    </tbody>
-  </table>
-
-</div>
+  // 3. DONUT CHART SUMBER PEMASUKAN
+ var optionsDonut = {
+    series: [62, 22, 11, 5],
+    chart: { type: 'donut', height: 200 },
+    colors: ['#E8631C', '#F4A06A', '#B8962E', '#D1D5DB'],
+    labels: ['Donasi Tetap', 'Infaq Jamaah', 'Kotak Amal', 'Lainnya'],
+    dataLabels: { enabled: false },
+    legend: { show: false },
+    plotOptions: {
+        pie: {
+            donut: {
+                size: '70%',
+                labels: {
+                    show: true,
+                    total: {
+                        show: true,
+                        label: 'Total',
+                        fontSize: '12px',
+                        color: '#8C8375',
+                        formatter: () => 'Rp 142jt'
+                    }
+                }
+            }
+        }
+    }
+};
+new ApexCharts(document.querySelector("#chart-donut"), optionsDonut).render();
+</script>
 
 {% endblock %}

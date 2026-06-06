@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
   <link href="{{ url_for('static', filename='css/bootstrap-icons.min.css') }}" rel="stylesheet">
   <link href="{{ url_for('static', filename='css/public.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/responsive.css') }}" rel="stylesheet">
   <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
-  
   <title>{% block title %}{% endblock %}</title>
 </head>
 
@@ -17,11 +16,11 @@
 <nav class="navbar navbar-expand-lg fixed-top custom-navbar">
   <div class="container">
 
-    <a class="navbar-brand d-flex align-items-center gap-2" href="#" onclick="window.scrollTo({top:0, behavior:'smooth'}); return false;">
+    <a class="navbar-brand d-flex align-items-center gap-2" href="/" onclick="navTo(event, 'top')">
       <img src="{{ url_for('static', filename='img/logo-albayan.png') }}">
-      <div>
-        <div class="brand-title">Masjid Al-Bayan</div>
-        <small class="brand-subtitle">Sistem Manajemen Masjid</small>
+      <div class="d-flex flex-column justify-content-center">
+        <span class="brand-title m-0">Albayan-Hub</span>
+        <span class="brand-subtitle m-0">MASJID AL-BAYAN</span>
       </div>
     </a>
 
@@ -30,21 +29,29 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
+      <ul class="navbar-nav ms-auto align-items-center">
         <li class="nav-item">
-          <a class="nav-link" href="/">Beranda</a>
+          <a class="nav-link active" href="/" onclick="navTo(event, 'top')">Beranda</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/jadwal">Jadwal Sholat</a>
+          <a class="nav-link" href="/#jadwal-imam" onclick="navTo(event,'jadwal-imam')">Jadwal Imam</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/berita">Berita</a>
+          <a class="nav-link" href="/#keuangan" onclick="navTo(event,'keuangan')">Keuangan</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/galeri">Galeri</a>
+         <a class="nav-link" href="/#berita" onclick="navTo(event,'berita')">Berita</a>
+       </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/#galeri" onclick="navTo(event,'galeri')">Galeri</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/tentang">Tentang</a>
+          <a class="nav-link" href="/#tentang" onclick="navTo(event,'tentang')">Tentang</a>
+        </li>
+        <li class="nav-item ms-2">
+          <a class="btn-nav-donasi" href="/donasi">
+            <i class="bi bi-heart-pulse-fill me-1"></i>Donasi
+          </a>
         </li>
       </ul>
     </div>
@@ -52,52 +59,230 @@
   </div>
 </nav>
 
+<div id="modal-donasi" onclick="tutupModalDonasi()"
+     style="display:none; position:fixed; inset:0; background:rgba(27,23,20,0.75);
+            z-index:99999; justify-content:center; align-items:center;">
+  <div onclick="event.stopPropagation()"
+       style="background:#fff; border-radius:24px; padding:36px; max-width:420px;
+              width:90%; box-shadow:0 20px 60px rgba(0,0,0,0.2);">
+
+    <div class="d-flex justify-content-between align-items-start mb-3">
+      <div>
+        <h5 class="fw-bold mb-1"
+            style="font-family:'Playfair Display',serif; color:#1B1714; font-size:22px;">
+          Donasi & Infaq
+        </h5>
+        <p style="font-size:13px; color:#5A5244; margin:0;">
+          Salurkan donasi Anda untuk kemajuan Masjid Al-Bayan
+        </p>
+      </div>
+      <button onclick="tutupModalDonasi()"
+              style="background:none; border:none; font-size:20px; color:#9ca3af; cursor:pointer; padding:0;">
+        ✕
+      </button>
+    </div>
+
+    <div style="background:#fff7ed; border-radius:16px; padding:20px; margin-bottom:12px;
+                border:1px solid #fed7aa;">
+      <p style="font-size:11px; color:#9ca3af; margin-bottom:6px; font-weight:600; letter-spacing:1px;">
+        TRANSFER VIA BANK
+      </p>
+      <p class="fw-bold" style="color:#1B1714; font-size:16px; margin:0;">
+        BCA — 1234567890
+      </p>
+      <p style="font-size:13px; color:#5A5244; margin:2px 0 0;">a.n. Masjid Al-Bayan</p>
+    </div>
+
+    <div style="background:#fff7ed; border-radius:16px; padding:20px; margin-bottom:24px;
+                border:1px solid #fed7aa;">
+      <p style="font-size:11px; color:#9ca3af; margin-bottom:6px; font-weight:600; letter-spacing:1px;">
+        TRANSFER VIA BANK SYARIAH
+      </p>
+      <p class="fw-bold" style="color:#1B1714; font-size:16px; margin:0;">
+        BSI — 0987654321
+      </p>
+      <p style="font-size:13px; color:#5A5244; margin:2px 0 0;">a.n. Masjid Al-Bayan</p>
+    </div>
+
+    <button onclick="tutupModalDonasi()"
+            style="width:100%; background:#E8631C; color:white; border:none;
+                   border-radius:50px; padding:13px; font-size:14px;
+                   font-weight:600; cursor:pointer; transition:background 0.2s ease;">
+      Tutup
+    </button>
+  </div>
+</div>
+
 <main>
   {% block content %}{% endblock %}
 </main>
 
-<footer style="background: #d97706;">
+<footer style="background:#1B1714;">
   <div class="container py-5">
-    <div class="row g-4">
+    <div class="row g-4 align-items-start">
 
-      <div class="col-md-4">
-        <h5 class="fw-bold mb-3" style="color: #fff; font-family: 'Playfair Display', serif; font-size: 20px;">
-          Masjid Jami' Al-Bayan
-        </h5>
-        <p style="color: rgba(255,255,255,0.85); font-size: 14px; line-height: 1.8;">
-          Pusat ibadah dan dakwah yang dikelola oleh mahasiswa Institut Teknologi Indonesia. 
-          Berlokasi strategis di tepi jalan utama, Masjid Jami' Al-Bayan hadir sebagai ruang 
-          spiritual yang inklusif serta tempat singgah yang nyaman bagi mahasiswa, pekerja, dan masyarakat umum."
+      <div class="col-md-3">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <img src="{{ url_for('static', filename='img/logo-albayan.png') }}" style="width:32px;">
+          <span style="font-family:'Playfair Display',serif; font-size:16px; font-weight:700; color:#fff;">
+            Masjid Al-Bayan
+          </span>
+        </div>
+        <p style="color:rgba(255,255,255,0.65); font-size:13px; line-height:1.8;">
+          Pusat ibadah, dakwah, dan pendidikan Islam yang modern dan amanah untuk seluruh umat.
         </p>
       </div>
 
-      <div class="col-md-4">
-        <h6 class="fw-bold mb-3" style="color: #fff; font-size: 15px;">Kontak</h6>
-        <p style="color: rgba(255,255,255,0.85); font-size: 14px; line-height: 2; margin: 0;">
-          <i class="bi bi-geo-alt me-2"></i>Jl. Raya Puspitek No.101, Setu, Kec. Setu, Kota Tangerang Selatan, Banten 15314<br>
-          <i class="bi bi-telephone me-2"></i> (021) 1234-5678<br>
-          <i class="bi bi-envelope me-2"></i> info@masjidalbayan.id
-        </p>
+      <div class="col-md-3">
+        <h6 style="color:#fff; font-size:13px; font-weight:700; letter-spacing:1px; margin-bottom:16px;">
+          JELAJAHI
+        </h6>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <a href="/#jadwal-imam" style="color:rgba(255,255,255,0.65); font-size:13px; text-decoration:none;">Jadwal Imam</a>
+          <a href="/#keuangan"    style="color:rgba(255,255,255,0.65); font-size:13px; text-decoration:none;">Transparansi Keuangan</a>
+          <a href="/#berita"      style="color:rgba(255,255,255,0.65); font-size:13px; text-decoration:none;">Berita</a>
+          <a href="/#galeri"      style="color:rgba(255,255,255,0.65); font-size:13px; text-decoration:none;">Galeri</a>
+        </div>
       </div>
 
-      <div class="col-md-4">
-        <h6 class="fw-bold mb-3" style="color: #fff; font-size: 15px;">Jam Operasional</h6>
-        <p style="color: rgba(255,255,255,0.85); font-size: 14px; line-height: 2; margin: 0;">
-          <i class="bi bi-clock me-2"></i> Buka 24 Jam untuk Ibadah<br>
-          &nbsp;&nbsp;&nbsp;&nbsp; Sekretariat: 08.00 - 17.00 WIB<br>
-          &nbsp;&nbsp;&nbsp;&nbsp; Konsultasi: Senin - Jumat
-        </p>
+      <div class="col-md-3">
+        <h6 style="color:#fff; font-size:13px; font-weight:700; letter-spacing:1px; margin-bottom:16px;">
+          LAYANAN
+        </h6>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <a href="#" onclick="bukaModalDonasi(); return false;"
+             style="color:rgba(255,255,255,0.65); font-size:13px; text-decoration:none;">Donasi</a>
+          <a href="/#tentang" style="color:rgba(255,255,255,0.65); font-size:13px; text-decoration:none;">Tentang Kami</a>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <h6 style="color:#fff; font-size:13px; font-weight:700; letter-spacing:1px; margin-bottom:16px;">
+          KONTAK
+        </h6>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <p style="color:rgba(255,255,255,0.65); font-size:13px; margin:0;">
+            <i class="bi bi-geo-alt me-2" style="color:#E8631C;"></i>
+            Jl. Raya Puspitek No.101, Serpong, Tangerang Selatan
+          </p>
+          <p style="color:rgba(255,255,255,0.65); font-size:13px; margin:0;">
+            <i class="bi bi-telephone me-2" style="color:#E8631C;"></i>
+            (021) 1234-5678
+          </p>
+          <p style="color:rgba(255,255,255,0.65); font-size:13px; margin:0;">
+            <i class="bi bi-envelope me-2" style="color:#E8631C;"></i>
+            info@masjidalbayan.id
+          </p>
+        </div>
       </div>
 
     </div>
   </div>
 
-  <div style="border-top: 1px solid rgba(255,255,255,0.2); padding: 16px 0; text-align: center;">
-    <p class="mb-0" style="color: rgba(255,255,255,0.8); font-size: 13px;">
-      © 2026 Masjid Al-Bayan. Sistem Manajemen Masjid Digital.
+  <div style="border-top:1px solid rgba(255,255,255,0.1); padding:16px 0; text-align:center;">
+    <p style="color:rgba(255,255,255,0.4); font-size:12px; margin:0;">
+      © 2026 Masjid Al-Bayan · All rights reserved.
     </p>
   </div>
 </footer>
+
+<script>
+// GANTI FUNGSI navTo LU YANG LAMA PAKE VERSI SEGAR INI
+function navTo(e, sectionId) {
+  const isHome = window.location.pathname === '/' || window.location.pathname === '';
+  
+  if (isHome) {
+    e.preventDefault(); // Kunci! Tahan browser biar gak refresh jepret
+    
+    if (sectionId === 'top') {
+      // Nge-scroll ke koordinat paling atas (0,0) secara smooth
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      // Nge-scroll ke id element section (jadwal-imam, keuangan, dll)
+      const el = document.getElementById(sectionId);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    // Otomatis nutup menu navbar kalau lagi dibuka di HP
+    const navCollapse = document.getElementById('navbarNav');
+    if (navCollapse && navCollapse.classList.contains('show')) {
+      new bootstrap.Collapse(navCollapse).hide();
+    }
+  }
+}
+
+window.addEventListener('load', () => {
+  if (window.location.hash) {
+    const el = document.querySelector(window.location.hash);
+    if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth' }), 150);
+  }
+});
+
+function bukaModalDonasi() {
+  document.getElementById('modal-donasi').style.display = 'flex';
+}
+
+function tutupModalDonasi() {
+  document.getElementById('modal-donasi').style.display = 'none';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') tutupModalDonasi();
+});
+</script>
+
+{# INI KUNCI JALANNYA BUTTON SALIN LU, JANGAN DIHAPUS #}
+{% block scripts %}{% endblock %}
+
+<div id="lightbox" onclick="tutupLightbox()" 
+     style="display:none; position:fixed; inset:0; background:rgba(27,23,20,0.9); z-index:999999; justify-content:center; align-items:center; flex-direction:column; opacity:0; transition:opacity 0.3s ease;">
+  <div class="lightbox-inner" onclick="event.stopPropagation()" style="max-width:700px; width:90%; background:#fff; border-radius:24px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+    <img id="lightbox-img" src="" class="w-100" style="max-height:500px; object-fit:cover;">
+    <div class="p-4">
+      <span id="lightbox-kategori" style="background:#E8631C; color:white; padding:4px 12px; border-radius:50px; font-size:11px; display:inline-block; margin-bottom:10px;"></span>
+      <h5 id="lightbox-judul" class="fw-bold mb-0" style="font-family:'Playfair Display',serif; color:#1B1714; font-size:20px;"></h5>
+    </div>
+  </div>
+  <button onclick="tutupLightbox()" class="lightbox-close" style="margin-top:20px; background:transparent; border:2px solid white; color:white; border-radius:50px; padding:8px 30px; cursor:pointer;">✕ Tutup</button>
+</div>
+
+<script>
+// Kita tembak fungsinya langsung ke window biar "kelihatan" global
+window.bukaLightbox = function(element) {
+  const lb = document.getElementById('lightbox');
+  const img = document.getElementById('lightbox-img');
+  
+  if (!lb || !img) return;
+
+  img.src = element.dataset.img;
+  document.getElementById('lightbox-judul').innerText = element.dataset.judul;
+  document.getElementById('lightbox-kategori').innerText = element.dataset.kategori;
+  
+  lb.style.display = 'flex';
+  // Kasih delay dikit biar transisi opacity-nya kerasa
+  setTimeout(() => {
+    lb.style.opacity = '1';
+    // Kalau lu pake class .show di CSS, tambahin ini:
+    lb.classList.add('show');
+  }, 10);
+};
+
+window.tutupLightbox = function() {
+  const lb = document.getElementById('lightbox');
+  if (!lb) return;
+  lb.style.opacity = '0';
+  lb.classList.remove('show');
+  setTimeout(() => {
+    lb.style.display = 'none';
+  }, 300);
+};
+
+// Tutup pake ESC
+document.addEventListener('keydown', e => { 
+  if (e.key === 'Escape') window.tutupLightbox(); 
+});
+</script>
+
 
 </body>
 </html>

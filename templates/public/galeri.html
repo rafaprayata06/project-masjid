@@ -1,118 +1,57 @@
 {% extends 'layouts/public_base.html' %}
-{% block title %}Galeri Kegiatan{% endblock %}
+{% block title %}Galeri Lengkap - Masjid Al-Bayan{% endblock %}
 
 {% block content %}
-<section class="mt-5 pt-5 pb-5" style="background: #f8f5f0;">
-  <div class="container">
-    <div class="text-center mb-5">
-      <p class="text-uppercase fw-bold mb-1"
-         style="font-size: 11px; letter-spacing: 2px; color: #d97706;">
-        GALERI
-      </p>
+<section class="galeri-header" style="background-image: url('{{ url_for('static', filename='img/header-albayan.png') }}');">
+  <div class="container reveal-galeri">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb justify-content-center mb-3">
+        <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-white-50 small">Beranda</a></li>
+        <li class="breadcrumb-item active text-white small" aria-current="page">Galeri</li>
+      </ol>
+    </nav>
 
-      <h2 class="fw-bold mb-2"
-          style="font-family: 'Playfair Display', serif; font-size: 38px; color: #1f2937;">
-        Dokumentasi Kegiatan
-      </h2>
-      <p class="text-muted" style="font-size: 14px;">Momen-momen berharga di Masjid Al-Bayan</p>
+    <span class="badge-premium">ARSIP VISUAL</span>
+    <h1 style="font-family: 'Playfair Display', serif; font-size: clamp(32px, 5vw, 52px); font-weight: 800; margin: 10px 0;">Semua Dokumentasi</h1>
+    <div style="width: 60px; height: 4px; background: #E8631C; margin: 20px auto; border-radius: 2px;"></div>
+  </div>
+</section>
+
+<section style="background: #fcfcfc; padding: 60px 0 100px;">
+  <div class="container">
+    {% set fotos = [
+      {'judul': 'Interior Masjid Al-Bayan', 'kategori': 'Masjid', 'img': 'default.jpg'},
+      {'judul': 'Keindahan Malam', 'kategori': 'Masjid', 'img': 'default.jpg'},
+      {'judul': 'Sholat Berjamaah', 'kategori': 'Ibadah', 'img': 'default.jpg'},
+      {'judul': 'Kaligrafi Al-Quran', 'kategori': 'Seni', 'img': 'default.jpg'},
+      {'judul': 'Buka Puasa Bersama', 'kategori': 'Ramadan', 'img': 'default.jpg'},
+      {'judul': 'Taman Masjid', 'kategori': 'Masjid', 'img': 'default.jpg'}
+    ] %}
+
+    <div class="d-flex justify-content-center gap-2 mb-5 flex-wrap reveal-galeri" style="animation-delay: 0.2s;">
+        <button class="btn" style="background: #E8631C; color: white; border-radius: 50px; padding: 8px 25px; border: none;">Semua</button>
+        <button class="btn" style="background: white; color: #1B1714; border: 1px solid #eee; border-radius: 50px; padding: 8px 25px;">Ibadah</button>
+        <button class="btn" style="background: white; color: #1B1714; border: 1px solid #eee; border-radius: 50px; padding: 8px 25px;">Sosial</button>
+        <button class="btn" style="background: white; color: #1B1714; border: 1px solid #eee; border-radius: 50px; padding: 8px 25px;">Bangunan</button>
     </div>
 
-    <div class="row g-3">
-      {% set fotos = [
-        {'judul': 'Interior Masjid Al-Bayan', 'kategori': 'Masjid', 'img': 'default.jpg'},
-        {'judul': 'Keindahan Malam', 'kategori': 'Masjid', 'img': 'default.jpg'},
-        {'judul': 'Sholat Berjamaah', 'kategori': 'Ibadah', 'img': 'default.jpg'},
-        {'judul': 'Kaligrafi Al-Quran', 'kategori': 'Seni', 'img': 'default.jpg'},
-        {'judul': 'Buka Puasa Bersama', 'kategori': 'Ramadan', 'img': 'default.jpg'},
-        {'judul': 'Taman Masjid', 'kategori': 'Masjid', 'img': 'default.jpg'}
-      ] %}
+    <div class="row g-4">
       {% for f in fotos %}
-      <div class="col-md-4 col-6">
-        <div class="galeri-card position-relative overflow-hidden rounded-3"
-             data-judul="{{ f.judul }}"
-             data-kategori="{{ f.kategori }}"
-             data-img="{{ url_for('static', filename='img/' ~ f.img) }}"
-             onclick="bukaLightbox(this)">
-
-          <img src="{{ url_for('static', filename='img/' ~ f.img) }}"
-               class="w-100"
-               alt="{{ f.judul }}">
-
-          <div class="galeri-overlay">
-            <span class="galeri-kategori">{{ f.kategori }}</span>
-            <p class="galeri-judul">{{ f.judul }}</p>
-          </div>
-
+      <div class="col-6 col-md-4 reveal-galeri" style="animation-delay: {{ loop.index0 * 0.05 }}s;">
+        <div class="galeri-card" 
+             onclick="bukaLightbox(this)" 
+             data-judul="{{ f.judul }}" 
+             data-kategori="{{ f.kategori }}" 
+             data-img="{{ url_for('static', filename='img/' ~ f.img) }}">
+           <img src="{{ url_for('static', filename='img/' ~ f.img) }}" alt="{{ f.judul }}" loading="lazy">
+           <div class="galeri-overlay">
+              <span class="galeri-kategori-tag">{{ f.kategori }}</span>
+              <p class="galeri-judul-text">{{ f.judul }}</p>
+           </div>
         </div>
       </div>
       {% endfor %}
     </div>
   </div>
 </section>
-
-<!-- LIGHTBOX -->
-<div id="lightbox" onclick="tutupLightbox()"
-     style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85);
-            z-index:9999; justify-content:center; align-items:center; flex-direction:column;">
-  <div onclick="event.stopPropagation()"
-       style="max-width:700px;
-              width:90%;
-              background:#fff;
-              border-radius:16px;
-              overflow:hidden;">
-
-    <img id="lightbox-img"
-         src=""
-         class="w-100"
-         style="max-height:450px; object-fit:cover;"
-         alt="Preview">
-
-    <div class="p-4">
-      <span id="lightbox-kategori"
-            class="badge mb-2"
-            style="background:#d97706;
-                   font-size:12px;
-                   padding:4px 12px;
-                   border-radius:20px;">
-      </span>
-
-      <h5 id="lightbox-judul"
-          class="fw-bold mb-0"
-          style="font-family:'Playfair Display', serif;
-                 color:#1f2937;">
-      </h5>
-    </div>
-
-  </div>
-  <button onclick="tutupLightbox()" class="mt-3"
-          style="background:transparent; border:2px solid white; color:white;
-                 border-radius:50px; padding:8px 24px; font-size:14px; cursor:pointer;">
-    ✕ Tutup
-  </button>
-</div>
-
-<script>
-function bukaLightbox(element) {
-  const judul = element.dataset.judul;
-  const kategori = element.dataset.kategori;
-  const img = element.dataset.img;
-
-  document.getElementById('lightbox-img').src = img;
-  document.getElementById('lightbox-judul').innerText = judul;
-  document.getElementById('lightbox-kategori').innerText = kategori;
-  
-  const lb = document.getElementById('lightbox');
-  lb.style.opacity = '1';
-  lb.style.display = 'flex';
-}
-
-function tutupLightbox() {
-  const lb = document.getElementById('lightbox');
-  lb.style.display = 'none';
-  lb.style.opacity = '1';
-}
-
-document.addEventListener('keydown', e => { if (e.key === 'Escape') tutupLightbox(); });
-</script>
-
 {% endblock %}

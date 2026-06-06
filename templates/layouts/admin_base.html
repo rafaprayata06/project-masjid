@@ -1,173 +1,169 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
-<link href="{{ url_for('static', filename='css/admin.css') }}" rel="stylesheet">
-<link href="{{ url_for('static', filename='css/bootstrap-icons.min.css') }}" rel="stylesheet">
-<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/admin.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/bootstrap-icons.min.css') }}" rel="stylesheet">
+    
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<title>{% block title %}{% endblock %}</title>
-<style>
-input,
-textarea,
-select {
-    box-shadow: none !important;
-}
-
-input:focus,
-textarea:focus,
-select:focus {
-    box-shadow: none !important;
-}
-
-.form-control,
-.form-select {
-    background-image: none !important;
-    border-color: #ced4da;
-}
-
-/* FOCUS NORMAL */
-.form-control:focus,
-.form-select:focus {
-    border-color: #86b7fe !important;
-}
-
-/* REMOVE AUTOFILL STYLE */
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-textarea:-webkit-autofill,
-select:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0px 1000px white inset !important;
-    box-shadow: 0 0 0px 1000px white inset !important;
-}
-
-/* DEFAULT REQUIRED */
-.custom-validate-form .required-field {
-    border-color: #ced4da !important;
-}
-
-/* INVALID */
-.custom-validate-form .required-field.is-invalid,
-.form-control.is-invalid,
-.form-select.is-invalid {
-    border-color: #dc3545 !important;
-    background-image: none !important;
-}
-
-/* VALID */
-.custom-validate-form .required-field.is-valid,
-.form-control.is-valid,
-.form-select.is-valid {
-    border-color: #198754 !important;
-    background-image: none !important;
-}
-
-/* ERROR TEXT */
-.error-text {
-    display: none;
-    font-size: 0.875rem;
-    color: #dc3545;
-}
-
-.error-text.show-error {
-    display: block;
-}
-</style>
-
-
-
+    <title>{% block title %}Al-Bayan Hub Admin{% endblock %}</title>
 </head>
 
 <body>
 
-<!-- HEADER -->
-<div class="header">
-  <div class="header-left">
-    <img src="{{ url_for('static', filename='img/logo-albayan.png') }}">
-    <strong>Albayan-Hub</strong>
-  </div>
+<div class="admin-wrapper">
+    <div class="sidebar">
+        <div>
+            <div class="sidebar-brand">
+                <img src="{{ url_for('static', filename='img/logo-albayan.png') }}" alt="Logo">
+                <div>
+                    <strong>Al-Bayan Hub</strong>
+                    <span>Admin Panel</span>
+                </div>
+            </div>
 
-  <div class="header-right" data-bs-toggle="modal" data-bs-target="#logoutModal">
-    {% if current_user.role == 'AS' %}
-      Admin Super
-    {% elif current_user.role == 'AH' %}
-      Admin Humas
-    {% elif current_user.role == 'AK' %}
-      Admin Keuangan
-    {% endif %}
-    <i class="bi bi-person-circle"></i>
-  </div>
+            <nav class="nav-menu">
+                {% if current_user.role == 'AS' %}
+                    <div class="menu-section-label">Menu Utama</div>
+                    <a href="{{ url_for('admin.admin_dashboard_show') }}" class="menu-item {{ 'active' if request.path == '/admin-super/dashboard' else '' }}">
+                        <i class="bi bi-grid"></i> Dashboard
+                    </a>
+                    <a href="{{ url_for('admin.admin_super_finance') }}" class="menu-item {{ 'active' if request.path == '/admin-super/finance' else '' }}">
+                        <i class="bi bi-cash-stack"></i> Kelola Keuangan
+                    </a>
+                    <a href="/admin-super/schedules" class="menu-item {{ 'active' if '/schedules' in request.path else '' }}">
+                        <i class="bi bi-person-badge"></i> Kelola Jadwal Imam
+                    </a>
+                    <a href="/admin-super/news" class="menu-item {{ 'active' if '/news' in request.path else '' }}">
+                        <i class="bi bi-newspaper"></i> Kelola Berita
+                    </a>
+                    <a href="/admin-super/gallery" class="menu-item {{ 'active' if '/gallery' in request.path else '' }}">
+                        <i class="bi bi-images"></i> Kelola Galeri
+                    </a>
+                    <a href="/admin-super/activities" class="menu-item {{ 'active' if '/activities' in request.path else '' }}">
+                        <i class="bi bi-clock-history"></i> Aktivitas
+                    </a>
+
+                    <div class="menu-section-label">Administrasi</div>
+                    <a href="/admin-super/users" class="menu-item {{ 'active' if '/users' in request.path else '' }}">
+                        <i class="bi bi-people"></i> Kelola Admin
+                    </a>
+                    <a href="/admin-super/settings" class="menu-item {{ 'active' if '/settings' in request.path else '' }}">
+                        <i class="bi bi-gear"></i> Pengaturan
+                    </a>
+
+                {% elif current_user.role == 'AH' %}
+                    <div class="menu-section-label">Menu Utama</div>
+                    <a href="/admin-humas/dashboard" class="menu-item {{ 'active' if '/dashboard' in request.path else '' }}">
+                        <i class="bi bi-grid"></i> Dashboard
+                    </a>
+                    <a href="/admin-humas/schedules" class="menu-item {{ 'active' if '/schedules' in request.path else '' }}">
+                        <i class="bi bi-person-badge"></i> Kelola Jadwal Imam
+                    </a>
+                    <a href="{{ url_for('admin.admin_humas_show') }}" class="menu-item {{ 'active' if '/news' in request.path else '' }}">
+                        <i class="bi bi-newspaper"></i> Kelola Berita
+                    </a>
+                    <a href="/admin-humas/gallery" class="menu-item {{ 'active' if '/gallery' in request.path else '' }}">
+                        <i class="bi bi-images"></i> Kelola Galeri
+                    </a>
+
+                {% elif current_user.role == 'AK' %}
+                    <div class="menu-section-label">Menu Utama</div>
+                    <a href="{{ url_for('admin.admin_keuangan_dashboard') }}" class="menu-item {{ 'active' if request.path == '/admin-keuangan/dashboard' else '' }}">
+                        <i class="bi bi-grid"></i> Dashboard
+                    </a>
+                    <a href="{{ url_for('admin.admin_keuangan_finance') }}" class="menu-item {{ 'active' if request.path == '/admin-keuangan/finance' else '' }}">
+                        <i class="bi bi-cash-stack"></i> Kelola Keuangan
+                    </a>
+                {% endif %}
+            </nav>
+        </div>
+
+        <div class="sidebar-profile">
+            <div class="profile-box" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                <div class="profile-avatar">
+                    {{ current_user.username[:2].upper() if current_user.username else 'AS' }}
+                </div>
+                <div class="profile-info">
+                    <p class="profile-name">{{ current_user.username or 'Ahmad Saputra' }}</p>
+                    <p class="profile-role">
+                        {% if current_user.role == 'AS' %}Admin Super
+                        {% elif current_user.role == 'AH' %}Admin Humas
+                        {% elif current_user.role == 'AK' %}Admin Keuangan{% endif %}
+                    </p>
+                </div>
+                <i class="bi bi-box-arrow-right ms-auto text-muted" style="font-size: 16px;"></i>
+            </div>
+            <a href="/" class="text-decoration-none d-block text-center mt-3 small text-muted" style="font-size: 12px;">
+                <i class="bi bi-arrow-left"></i> Kembali ke Website
+            </a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="top-navbar">
+            <div class="breadcrumb-box">
+                Beranda / <span class="text-dark fw-medium">{% block breadcrumb %}Dashboard{% endblock %}</span>
+            </div>
+            
+            <div class="top-navbar-right">
+                <div class="search-bar-container">
+                    <i class="bi bi-search"></i>
+                    <input type="text" placeholder="Cari di seluruh panel admin...">
+                </div>
+                <button class="notif-btn"><i class="bi bi-bell"></i></button>
+                <button class="notif-btn"><i class="bi bi-question-circle"></i></button>
+            </div>
+        </div>
+
+        <div class="content-body">
+            {%if '/dashboard' in request.path %}
+            <h3 class="fw-bold text-dark mb-4">
+                Selamat datang kembali, {{ current_user.username or 'JEMBUT' }} 👋
+            </h3>
+            {% endif %}
+            
+            {% block admin_content %}{% endblock %}
+        </div>
+    </div>
 </div>
 
-<!-- SIDEBAR -->
-<div class="sidebar">
-  {% if current_user.role == 'AS' %}
-    <div class="menu-item"><i class="bi bi-grid"></i> Dashboard</div>
-    <a href="/admin-super/users" class="menu-item"><i class="bi bi-people"></i> Users</a>
-    <div class="menu-item"><i class="bi bi-cash"></i> Finance</div>
-    <div class="menu-item"><i class="bi bi-calendar"></i> Imam Schedules</div>
-    <a href="/admin-humas/news" class="menu-item"><i class="bi bi-newspaper"></i> News</a>
-    <div class="menu-item"><i class="bi bi-images"></i> Gallery</div>
-
-  {% elif current_user.role == 'AH' %}
-    <div class="menu-item"><i class="bi bi-grid"></i> Dashboard</div>
-    <div class="menu-item"><i class="bi bi-calendar"></i> Imam Schedules</div>
-    <div class="menu-item active"><i class="bi bi-newspaper"></i> News</div>
-    <div class="menu-item"><i class="bi bi-images"></i> Gallery</div>
-
-  {% elif current_user.role == 'AK' %}
-    <div class="menu-item"><i class="bi bi-grid"></i> Dashboard</div>
-    <div class="menu-item"><i class="bi bi-cash"></i> Finance</div>
-  {% endif %}
-</div>
-
-<!-- CONTENT -->
-<div class="content">
-  {% block content %}{% endblock %}
-</div>
-
-<!-- LOGOUT MODAL -->
 <div class="modal fade" id="logoutModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-
-      <div class="modal-header" style="background:#ff7a00; color:white;">
-        <h5 class="modal-title">Logout</h5>
+    <div class="modal-content" style="border-radius: 16px; border: none;">
+      <div class="modal-header border-0 pt-4 px-4">
+        <h5 class="modal-title fw-bold">Keluar Sistem</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-
-      <div class="modal-body text-center">
-        <i class="bi bi-box-arrow-right" style="font-size:40px; color:#ff7a00;"></i>
-        <p class="mt-3">Yakin mau logout?</p>
+      <div class="modal-body text-center py-4">
+        <div class="mb-3 d-inline-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: #FFF2EB; color: #E8631C; border-radius: 50px; font-size: 26px;">
+            <i class="bi bi-box-arrow-right"></i>
+        </div>
+        <p class="text-muted">Apakah anda yakin ingin mengakhiri sesi admin ini?</p>
       </div>
-
-      <div class="modal-footer justify-content-center">
-        <button type="button" class="btn btn-light" data-bs-dismiss="modal">
-          Batal
-        </button>
+      <div class="modal-footer border-0 pb-4 px-4 justify-content-center gap-2">
+        <button type="button" class="btn btn-light px-4" style="border-radius: 10px;" data-bs-dismiss="modal">Batal</button>
         <form method="POST" action="/logout">
-          <button type="submit" class="btn btn-warning">Logout</button>
+          <button type="submit" class="btn text-white px-4" style="background: #E8631C; border-radius: 10px;">Ya, Keluar</button>
         </form>
       </div>
-
     </div>
   </div>
 </div>
 
-<!-- SweetAlert Flash Message -->
 {% with messages = get_flashed_messages(with_categories=true) %}
 {% if messages %}
 <script>
   Swal.fire({
     icon: '{{ messages[0][0] }}',
-    title: 'Berhasil!',
+    title: 'Informasi',
     text: '{{ messages[0][1] }}',
     timer: 2000,
     timerProgressBar: true,
@@ -178,6 +174,8 @@ select:-webkit-autofill {
 </script>
 {% endif %}
 {% endwith %}
+
+{% block extra_scripts %}{% endblock %}
 
 </body>
 </html>

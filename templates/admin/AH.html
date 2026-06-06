@@ -1,439 +1,459 @@
 {% extends 'layouts/admin_base.html' %}
+{% block breadcrumb %}Kelola Berita & Pengumuman Al-Bayan{% endblock %}
 
-{% block title %}News Management{% endblock %}
-
-{% block content %}
-
-<h4 class="mb-4">News Management</h4>
-
-<!-- BUTTON CREATE -->
-<button class="btn btn-success mb-4" data-bs-toggle="collapse" data-bs-target="#formBerita">
-  + Create New Article
-</button>
-
-<!-- ================= FORM TAMBAH ================= -->
-<div class="collapse" id="formBerita">
-  <div class="card shadow mb-5">
-    
-    <!-- HEADER HIJAU -->
-    <div class="card-header bg-success text-white text-center">
-      <h4 class="mb-0 fw-semibold">Tambah Berita</h4>
-    </div>
-
-    <div class="card-body">
-      <form action="/admin-humas/news" method="POST" enctype="multipart/form-data" class="row g-3 needs-validation" novalidate>
-
-    <!-- Judul -->
-    <div class="col-md-12">
-        <label class="form-label">Judul Berita</label>
-        <input type="text" name="judul" class="form-control" required>
-        <div class="invalid-feedback">Judul wajib diisi.</div>
-    </div>
-
-    <!-- Kategori -->
-   <!-- Kategori -->
-<div class="col-md-6">
-    <label class="form-label">Kategori</label>
-    <select name="kategori" class="form-select" required>
-        <!-- Value kosong dan disabled agar dianggap 'invalid' oleh Bootstrap jika tidak diganti -->
-        <option value="" selected disabled>-- Pilih Kategori --</option>
-        <option value="kegiatan">Kegiatan</option>
-        <option value="pengumuman">Pengumuman</option>
-        <option value="kajian">Kajian</option>
-        <option value="prestasi">Prestasi</option>
-    </select>
-    <div class="invalid-feedback">Pilih salah satu kategori.</div>
-</div>
-
-    <!-- Lokasi - SEKARANG REQUIRED -->
-    <div class="col-md-6">
-        <label class="form-label">Lokasi</label>
-        <input type="text" name="lokasi" class="form-control" required>
-        <div class="invalid-feedback">Lokasi wajib diisi.</div>
-    </div>
-
-    <!-- Gambar Berita -->
-  <div class="col-md-12">
-    <label class="form-label">Gambar Berita (Maks 2MB, JPG/PNG)</label>
-    <input type="file" name="thumbnail" class="form-control" id="fileInput" accept="image/*" required>
-    <!-- Kita kasih ID khusus 'error-msg' untuk tulisannya -->
-    <div id="fileFeedback" class="invalid-feedback">
-        <span id="error-msg">Gambar wajib diunggah.</span>
-    </div>
-    
-    <div id="previewContainer" class="mt-3 d-none position-relative" style="width: 200px;">
-        <img id="imagePreview" src="#" alt="Preview" class="img-thumbnail">
-        <button type="button" id="removeImage" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1">&times;</button>
-    </div>
-</div>
-    <!-- Ringkasan - SEKARANG REQUIRED -->
-    <div class="col-md-12">
-        <label class="form-label">Ringkasan</label>
-        <textarea name="excerpt" class="form-control" rows="2" required></textarea>
-        <div class="invalid-feedback">Ringkasan wajib diisi.</div>
-    </div>
-
-    <!-- Isi Berita -->
-    <div class="col-md-12">
-        <label class="form-label">Isi Berita</label>
-        <textarea name="isi" class="form-control" rows="5" required></textarea>
-        <div class="invalid-feedback">Konten berita tidak boleh kosong.</div>
-    </div>
-
-    <!-- Tanggal - SEKARANG REQUIRED -->
-    <div class="col-md-6">
-        <label class="form-label">Tanggal</label>
-        <input type="date" name="tanggal_kegiatan" class="form-control" required>
-        <div class="invalid-feedback">Tanggal wajib dipilih.</div>
-    </div>
-
-    <!-- Status -->
-<div class="col-md-6">
-    <label class="form-label">Status</label>
-    <select name="status" class="form-select" required>
-        <option value="" selected disabled>-- Pilih Status --</option>
-        <option value="draft">Draft</option>
-        <option value="publish">Publish</option>
-    </select>
-    <div class="invalid-feedback">Tentukan status berita.</div>
-</div>
-
-<!-- Checkbox Unggulan -->
-    <div class="col-12">
-        <div class="form-check">
-            <input type="checkbox" name="is_featured" class="form-check-input" id="checkFeatured">
-            <label class="form-check-label" for="checkFeatured">
-                Jadikan Berita Unggulan (Optional)
-            </label>
-        </div>
-    </div>
-
-    <div class="col-12">
-        <button type="submit" class="btn btn-success w-100">Simpan Berita</button>
-    </div>
-
-</form>
-
-    </div>
-  </div>
-</div>
-
-<!-- ================= LIST BERITA ================= -->
-<div class="card p-3 shadow-sm">
-
-  {% for berita in semua_berita %}
-  <div class="d-flex align-items-center justify-content-between border rounded p-3 mb-3">
-
-    <div class="d-flex align-items-center gap-3">
-
-      {% if berita.thumbnail %}
-      <img src="{{ url_for('static', filename=berita.thumbnail) }}" 
-           width="70" 
-           class="rounded border">
-      {% else %}
-      <div style="width:70px;height:70px;background:#eee;border-radius:8px;"></div>
-      {% endif %}
-
-      <div>
-        <strong>{{ berita.judul }}</strong><br>
-        <small class="text-muted">{{ berita.excerpt or 'No description' }}</small>
-      </div>
-    </div>
-
+{% block admin_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-      {% if berita.status == 'publish' %}
-        <span class="badge bg-success px-3 py-2">Published</span>
-      {% else %}
-        <span class="badge bg-secondary px-3 py-2">Draft</span>
-      {% endif %}
+        <small class="text-muted" style="font-size:12px;">Beranda · Admin · Kelola Berita</small>
+        <h4 class="fw-bold mb-0" style="color:#1B1714;">Kelola Berita & Pengumuman</h4>
     </div>
-
     <div class="d-flex gap-2">
-
-      <button class="btn btn-outline-success btn-sm"
-              data-bs-toggle="modal"
-              data-bs-target="#editModal{{ berita.id }}">
-        Edit
-      </button>
-
-      <button class="btn btn-outline-secondary btn-sm">
-        Preview
-      </button>
-
-    
-
+        <a href="/#berita" target="_blank" class="btn-buka-web">
+            <i class="bi bi-box-arrow-up-right me-1"></i> Buka di Website
+        </a>
+        <button class="btn-tulis-berita" data-bs-toggle="collapse" data-bs-target="#formBeritaSection" onclick="resetFormBerita()">
+            <i class="bi bi-plus me-1"></i> Tulis Berita Baru
+        </button>
     </div>
+</div>
 
-  </div>
-
-  <!-- ================= MODAL EDIT (INI YANG LO CARI) ================= -->
-  <div class="modal fade" id="editModal{{ berita.id }}" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-
-        <div class="modal-header bg-success text-white">
-          <h5 class="modal-title">Edit Berita</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+<!-- FORM COLLAPSE -->
+<div class="collapse mb-4" id="formBeritaSection">
+    <div class="stats-card">
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-3" style="border-bottom:1px solid #F2EFEA;">
+            <h6 class="fw-bold mb-0" id="formTitle">Tulis Artikel Baru</h6>
+            <button class="btn-close" data-bs-toggle="collapse" data-bs-target="#formBeritaSection"></button>
         </div>
-
-      <form action="/admin-humas/news/update/{{ berita.id }}" method="POST" enctype="multipart/form-data" class="row g-3 needs-validation" novalidate>
-    <div class="modal-body row g-3">
-        <!-- Judul -->
-        <div class="col-md-12">
-            <label class="form-label">Judul Berita</label>
-            <input type="text" name="judul" class="form-control" value="{{ berita.judul }}" required>
-            <div class="invalid-feedback">Judul wajib diisi.</div>
-        </div>
-
-        <!-- Kategori -->
-        <div class="col-md-6">
-            <label class="form-label">Kategori</label>
-            <select name="kategori" class="form-select" required>
-                <option value="kegiatan" {% if berita.kategori=='kegiatan' %}selected{% endif %}>Kegiatan</option>
-                <option value="pengumuman" {% if berita.kategori=='pengumuman' %}selected{% endif %}>Pengumuman</option>
-                <option value="kajian" {% if berita.kategori=='kajian' %}selected{% endif %}>Kajian</option>
-                <option value="prestasi" {% if berita.kategori=='prestasi' %}selected{% endif %}>Prestasi</option>
-            </select>
-            <div class="invalid-feedback">Pilih kategori.</div>
-        </div>
-
-        <!-- Lokasi -->
-        <div class="col-md-6">
-            <label class="form-label">Lokasi</label>
-            <input type="text" name="lokasi" class="form-control" value="{{ berita.lokasi }}" required>
-            <div class="invalid-feedback">Lokasi wajib diisi.</div>
-        </div>
-
-        <!-- Gambar -->
-       <div class="col-md-12">
-    <label class="form-label">Gambar Berita (Maks 2MB, JPG/PNG)</label>
-    <input type="file" name="thumbnail" class="form-control updateFileInput" accept="image/*">
-    <div class="invalid-feedback">
-        <span class="update-error-msg">Format salah atau file terlalu besar (Maks 2MB).</span>
-    </div>
-
-    <div class="d-flex gap-3 mt-3">
-        <!-- 1. PREVIEW GAMBAR LAMA (YANG SUDAH ADA) -->
-        <div class="current-image-container" style="width: 150px;">
-            <small class="text-muted d-block mb-1">Gambar Saat Ini:</small>
-            {% if berita.thumbnail %}
-            <img src="{{ url_for('static', filename=berita.thumbnail) }}" 
-     alt="Current Image" 
-     class="img-thumbnail" 
-     style="height: 100px; width: 100%; object-fit: cover;"
-     onerror="this.src='https://placehold.co/150x100?text=No+Image';">
-            {% else %}
-                <div class="img-thumbnail d-flex align-items-center justify-content-center" style="height: 100px; background: #f8f9fa;">
-                    <small class="text-muted">No Image</small>
+        <form action="/admin-humas/news" method="POST" enctype="multipart/form-data" id="mainFormBerita">
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label-admin">Judul Berita</label>
+                    <input type="text" name="judul" id="f_judul" class="input-admin" placeholder="Masukkan judul berita..." required>
                 </div>
-            {% endif %}
-        </div>
-
-        <!-- 2. PREVIEW GAMBAR BARU (MUNCUL SAAT PILIH FILE) -->
-        <div class="updatePreviewContainer d-none position-relative" style="width: 150px;">
-            <small class="text-primary d-block mb-1">Preview Baru:</small>
-            <img src="#" alt="Preview" class="img-thumbnail updateImagePreview" style="height: 100px; width: 100%; object-fit: cover;">
-            <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 updateRemoveImage" style="padding: 0px 5px; line-height: 1;">&times;</button>
-        </div>
+                <div class="col-md-6">
+                    <label class="form-label-admin">Kategori</label>
+                    <select name="kategori" id="f_kategori" class="input-admin" required>
+                        <option value="" disabled selected>-- Pilih Kategori --</option>
+                        <option value="Pengumuman">Pengumuman</option>
+                        <option value="Kegiatan">Kegiatan</option>
+                        <option value="Kajian">Kajian</option>
+                        <option value="Sosial">Sosial</option>
+                        <option value="Pendidikan">Pendidikan</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label-admin">Lokasi</label>
+                    <input type="text" name="lokasi" id="f_lokasi" class="input-admin" placeholder="Tempat pelaksanaan...">
+                </div>
+                <div class="col-12">
+                    <label class="form-label-admin">Gambar Berita (Maks 2MB)</label>
+                    <input type="file" name="thumbnail" id="fileInput" class="input-admin" accept="image/*">
+                    <div id="previewContainer" class="mt-2 d-none position-relative" style="width:200px;">
+                        <img id="imagePreview" src="#" class="img-thumbnail rounded-3" alt="Preview">
+                        <button type="button" id="removeImage" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1">✕</button>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <label class="form-label-admin">Ringkasan Singkat</label>
+                    <textarea name="excerpt" id="f_excerpt" class="input-admin" rows="2" placeholder="Ringkasan untuk kartu depan..."></textarea>
+                </div>
+                <div class="col-12">
+                    <label class="form-label-admin">Isi Berita Lengkap</label>
+                    <textarea name="isi" id="f_isi" class="input-admin" rows="7" placeholder="Tulis konten berita lengkap di sini..."></textarea>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label-admin">Tanggal Berita</label>
+                    <input type="date" name="tanggal_kegiatan" id="f_tanggal" class="input-admin" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label-admin">Status Publikasi</label>
+                    <select name="status" id="f_status" class="input-admin" required>
+                        <option value="draft">Draft</option>
+                        <option value="publish">Publish</option>
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <div class="form-check mb-2">
+                        <input type="checkbox" name="is_featured" class="form-check-input" id="checkFeatured">
+                        <label class="form-check-label fw-semibold" for="checkFeatured" style="font-size:13px;">Jadikan Berita Utama</label>
+                    </div>
+                </div>
+                <div class="col-12 d-flex justify-content-end gap-2 mt-2">
+                    <button type="button" class="btn-buka-web" data-bs-toggle="collapse" data-bs-target="#formBeritaSection">Batal</button>
+                    <button type="submit" class="btn-tulis-berita">Simpan Berita</button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
-        <!-- Ringkasan -->
-        <div class="col-md-12">
-            <label class="form-label">Ringkasan</label>
-            <textarea name="excerpt" class="form-control" rows="2" required>{{ berita.excerpt }}</textarea>
-            <div class="invalid-feedback">Ringkasan wajib diisi.</div>
+
+<!-- MAIN LAYOUT -->
+<div class="row g-4">
+
+    <!-- KOLOM KIRI: LIST BERITA -->
+    <div class="col-lg-5">
+
+        <!-- FILTER TABS -->
+        <div class="d-flex gap-1 mb-3" style="border-bottom:2px solid #F2EFEA; padding-bottom:0;">
+            <button class="tab-berita active" data-status="all">
+                Semua <span class="tab-count">{{ semua_berita|length }}</span>
+            </button>
+            <button class="tab-berita" data-status="publish">
+                Dipublikasi <span class="tab-count">{{ semua_berita|selectattr('status','eq','publish')|list|length }}</span>
+            </button>
+            <button class="tab-berita" data-status="draft">
+                Draft <span class="tab-count">{{ semua_berita|selectattr('status','eq','draft')|list|length }}</span>
+            </button>
         </div>
 
-        <!-- Isi Berita -->
-        <div class="col-md-12">
-            <label class="form-label">Isi Berita</label>
-            <textarea name="isi" class="form-control" rows="5" required>{{ berita.isi }}</textarea>
-            <div class="invalid-feedback">Isi berita tidak boleh kosong.</div>
-        </div>
-
-        <!-- Tanggal -->
-        <div class="col-md-6">
-            <label class="form-label">Tanggal</label>
-            <input type="date" name="tanggal_kegiatan" class="form-control" value="{{ berita.tanggal_kegiatan }}" required>
-            <div class="invalid-feedback">Pilih tanggal.</div>
-        </div>
-
-        <!-- Status -->
-        <div class="col-md-6">
-            <label class="form-label">Status</label>
-            <select name="status" class="form-select" required>
-                <option value="draft" {% if berita.status=='draft' %}selected{% endif %}>Draft</option>
-                <option value="publish" {% if berita.status=='publish' %}selected{% endif %}>Publish</option>
+        <!-- SEARCH + FILTER KATEGORI -->
+        <div class="d-flex gap-2 mb-3">
+            <div class="search-admin flex-grow-1">
+                <i class="bi bi-search"></i>
+                <input type="text" id="searchBerita" placeholder="Cari berita...">
+            </div>
+            <select class="input-admin" id="filterKategori" style="width:140px; padding:8px 12px;">
+                <option value="">Semua Kategori</option>
+                <option value="Pengumuman">Pengumuman</option>
+                <option value="Kegiatan">Kegiatan</option>
+                <option value="Kajian">Kajian</option>
+                <option value="Sosial">Sosial</option>
+                <option value="Pendidikan">Pendidikan</option>
             </select>
         </div>
 
-        <!-- Checkbox -->
-        <div class="col-12">
-            <div class="form-check">
-                <input type="checkbox" name="is_featured" class="form-check-input" id="updateFeatured{{ berita.id }}" {% if berita.is_featured %}checked{% endif %}>
-                <label class="form-check-label" for="updateFeatured{{ berita.id }}">Jadikan Unggulan</label>
+        <!-- LIST BERITA -->
+        <div style="max-height:620px; overflow-y:auto; padding-right:4px;">
+            {% for b in semua_berita %}
+ <div class="berita-list-card news-card"
+     data-status="{{ b.status }}"
+     data-kategori="{{ b.kategori }}"
+     data-id="{{ b.id }}"
+     data-judul="{{ b.judul }}"
+     data-kategori-val="{{ b.kategori }}"
+     data-lokasi="{{ b.lokasi or '' }}"
+     data-excerpt="{{ b.excerpt or '' }}"
+     data-isi="{{ b.isi or '' }}"
+     data-tanggal="{{ b.tanggal_kegiatan or '' }}"
+     data-featured="{{ 'true' if b.is_featured else 'false' }}"
+     data-penulis="{{ b.user_nim or '-' }}"
+     data-views="{{ b.views or 0 }}"
+     data-img="{% if b.thumbnail %}{{ url_for('static', filename=b.thumbnail) }}{% endif %}">
+
+    <div class="berita-thumb" style="background:
+        {% if b.kategori == 'pengumuman' %}#FFF2EB
+        {% elif b.kategori == 'kajian' %}#E0E9F4
+        {% elif b.kategori == 'sosial' %}#EBFAF2
+        {% elif b.kategori == 'pendidikan' %}#F5EBFF
+        {% else %}#F2EFEA{% endif %};">
+        {% if b.thumbnail %}
+            <img src="{{ url_for('static', filename=b.thumbnail) }}" alt="">
+        {% else %}
+            <span style="font-size:18px; font-weight:700; color:
+                {% if b.kategori == 'pengumuman' %}#E8631C
+                {% elif b.kategori == 'kajian' %}#2C5C8A
+                {% elif b.kategori == 'sosial' %}#2C7A5C
+                {% elif b.kategori == 'pendidikan' %}#7C3AED
+                {% else %}#8C8375{% endif %};">
+                {{ b.judul[0].upper() }}
+            </span>
+        {% endif %}
+    </div>
+
+    <div class="berita-info">
+        <div class="d-flex align-items-center gap-2 mb-1">
+            {% if b.status == 'publish' %}
+                <span class="badge-live">🟢 Live</span>
+            {% else %}
+                <span class="badge-draft-list">⚪ Draft</span>
+            {% endif %}
+            <span style="font-size:11px; color:#A39A90;">{{ b.kategori }}</span>
+        </div>
+        <h6 class="berita-list-judul">{{ b.judul }}</h6>
+        <p class="berita-list-meta">
+            {{ b.user_nim or '-' }} &nbsp;·&nbsp;
+            {{ b.tanggal_kegiatan.strftime('%d %b %Y') if b.tanggal_kegiatan else '-' }}
+            &nbsp;·&nbsp; {{ b.views or 0 }} views
+        </p>
+    </div>
+
+    <i class="bi bi-chevron-right" style="color:#D1C9C0; font-size:13px; flex-shrink:0;"></i>
+</div>
+{% else %}
+<div class="text-center py-5">
+    <p class="text-muted">Belum ada berita.</p>
+</div>
+{% endfor %}
+        </div>
+
+        <button class="btn-buka-web w-100 mt-3 text-center justify-content-center">Muat berita lainnya</button>
+    </div>
+
+    <!-- KOLOM KANAN: PREVIEW / DETAIL -->
+    <div class="col-lg-7">
+        <div class="stats-card h-100" id="previewPanel">
+
+            <!-- EMPTY STATE -->
+            <div id="emptyState" class="d-flex flex-column align-items-center justify-content-center text-center" style="min-height:500px;">
+                <div style="font-size:48px;">👈</div>
+                <h6 class="fw-bold mt-3 mb-2">Pilih Berita Terlebih Dahulu</h6>
+                <p class="text-muted" style="font-size:13px; max-width:300px;">
+                    Klik salah satu kartu berita di sebelah kiri untuk melihat preview atau edit.
+                </p>
             </div>
+
+            <!-- DETAIL STATE -->
+             <div id="detailState" class="d-none">
+
+    <!-- TOP BAR -->
+    <div class="d-flex justify-content-between align-items-center mb-3 pb-3" style="border-bottom:1px solid #F2EFEA;">
+        <div class="d-flex align-items-center gap-2">
+            <span id="p_status_badge" class="badge-live">🟢 Live</span>
+            <small id="p_meta_top" class="text-muted" style="font-size:11px;"></small>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn-buka-web" id="btnEditAction">
+                <i class="bi bi-pencil me-1"></i> Edit Data
+            </button>
+            <a href="#" class="btn-hapus" id="btnHapusAction"
+               onclick="return confirm('Yakin hapus berita ini?')">
+                <i class="bi bi-trash me-1"></i> Hapus
+            </a>
         </div>
     </div>
 
-    <div class="modal-footer">
-        <button type="submit" class="btn btn-success w-100">Update Berita</button>
+    <!-- FOTO SAMPUL -->
+    <div class="berita-cover-preview mb-3">
+        <img id="p_banner" src="" alt="Cover" class="d-none">
+        <div class="cover-placeholder" id="p_cover_placeholder">
+            <i class="bi bi-image" style="font-size:32px; color:#D1C9C0;"></i>
+            <span style="font-size:12px; color:#A39A90;">Foto Sampul · 1600 × 900 px direkomendasikan</span>
+        </div>
     </div>
-</form>
-      </div>
-    </div>
-  </div>
 
-  {% endfor %}
+    <!-- JUDUL -->
+    <h4 class="fw-bold mb-2" id="p_judul_text"
+        style="font-family:'Playfair Display',serif; color:#1B1714;"></h4>
+
+    <!-- EXCERPT -->
+    <p id="p_excerpt_text" style="font-size:14px; color:#8C8375; margin-bottom:12px;"></p>
+
+    <!-- ISI -->
+    <div style="font-size:14px; line-height:1.8; color:#5A5244; max-height:220px; overflow-y:auto;"
+         id="p_isi_text"></div>
+
+    <!-- METADATA BAWAH -->
+    <div class="berita-meta-bottom mt-4 pt-3" style="border-top:1px solid #F2EFEA;">
+        <div class="meta-item">
+            <span class="meta-label">Kategori</span>
+            <span class="meta-value" id="p_kategori_text"></span>
+        </div>
+        <div class="meta-item">
+            <span class="meta-label">Lokasi</span>
+            <span class="meta-value" id="p_lokasi_text"></span>
+        </div>
+        <div class="meta-item">
+            <span class="meta-label">Status Publikasi</span>
+            <span class="meta-value" id="p_status_text"></span>
+        </div>
+    </div>
+
+    <!-- TOMBOL BAWAH -->
+    <div class="d-flex justify-content-end gap-2 mt-4 pt-3" style="border-top:1px solid #F2EFEA;">
+        <a id="btnPratinjau" href="#" target="_blank" class="btn-buka-web">
+            Pratinjau
+        </a>
+        <button id="btnSimpanDraft" class="btn-buka-web" onclick="ubahStatusBerita('draft')">
+            Simpan Draft
+        </button>
+        <button id="btnPublikasi" class="btn-tulis-berita" onclick="ubahStatusBerita('publish')">
+            Perbarui & Publikasi
+        </button>
+    </div>
 
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
 <script>
-(() => {
-    'use strict'
+document.addEventListener("DOMContentLoaded", function() {
 
-    // --- Inisialisasi Elemen Form Create ---
-    const forms = document.querySelectorAll('.needs-validation')
-    const createFileInput = document.getElementById('fileInput')
-    const createPreviewContainer = document.getElementById('previewContainer')
-    const createImagePreview = document.getElementById('imagePreview')
-    const createRemoveImage = document.getElementById('removeImage')
-    const createErrorMsg = document.getElementById('error-msg')
+    const cards = document.querySelectorAll('.news-card');
+    const emptyState = document.getElementById('emptyState');
+    const detailState = document.getElementById('detailState');
 
-    // --- 1. Validasi Global saat Submit ---
-   // --- 1. Validasi Global saat Submit ---
-    Array.from(forms).forEach(form => {
-        form.addEventListener('submit', event => {
-            let isFileValid = true;
-            
-            // A. CEK VALIDASI HTML5 BAWAAN (Required, dll)
-            const isHtmlValid = form.checkValidity();
+    cards.forEach(card => {
+        card.addEventListener('click', function() {
+            cards.forEach(c => c.classList.remove('aktif'));
+            this.classList.add('aktif');
 
-            // B. CEK VALIDASI FILE KHUSUS UNTUK FORM CREATE
-            if (form.querySelector('#fileInput')) {
-                isFileValid = validateCreateFile();
-            }
+            const id       = this.getAttribute('data-id');
+            const judul    = this.getAttribute('data-judul');
+            const kategori = this.getAttribute('data-kategori-val');
+            const lokasi   = this.getAttribute('data-lokasi');
+            const excerpt  = this.getAttribute('data-excerpt');
+            const isi      = this.getAttribute('data-isi');
+            const tanggal  = this.getAttribute('data-tanggal');
+            const featured = this.getAttribute('data-featured');
+            const imgUrl   = this.getAttribute('data-img');
+            const status   = this.getAttribute('data-status');
+            const penulis  = this.getAttribute('data-penulis');
+            const views    = this.getAttribute('data-views');
 
-            // C. CEK VALIDASI FILE UNTUK FORM UPDATE (Jika ada file yang salah format/ukuran)
-            const updateInput = form.querySelector('.updateFileInput');
-            if (updateInput && updateInput.files.length > 0) {
-                if (updateInput.classList.contains('is-invalid')) {
-                    isFileValid = false;
-                }
-            }
+            document.getElementById('p_judul_text').innerText = judul;
+            document.getElementById('p_excerpt_text').innerText = excerpt;
+            document.getElementById('p_isi_text').innerText = isi;
+            document.getElementById('p_kategori_text').innerText = kategori;
+            document.getElementById('p_lokasi_text').innerText = lokasi || '-';
+            document.getElementById('p_meta_top').innerText = `Diedit: ${tanggal} oleh ${penulis} · ${views} views`;
+            document.getElementById('p_status_text').innerText = status === 'publish' ? 'Live (publik)' : 'Draft';
+            document.getElementById('btnPratinjau').href = `/berita/${id}`;
 
-            // GABUNGKAN SEMUA VALIDASI
-            // Jika HTML tidak valid (ada text kosong) ATAU file tidak valid, maka STOP.
-            if (!isHtmlValid || !isFileValid) {
-                event.preventDefault();
-                event.stopPropagation();
-                
-                // Jika modal, pastikan modal tidak tertutup (biasanya otomatis teratasi oleh preventDefault)
-            }
+            const badge = document.getElementById('p_status_badge');
+            badge.innerText = status === 'publish' ? '🟢 Live' : '⚪ Draft';
+            badge.className = status === 'publish' ? 'badge-live' : 'badge-draft-list';
 
-            form.classList.add('was-validated');
-        }, false)
-    })
-    // --- 2. Logika Khusus Form CREATE ---
-    if (createFileInput) {
-        createFileInput.addEventListener('change', validateCreateFile);
-
-        createRemoveImage.addEventListener('click', function() {
-            createFileInput.value = '';
-            createPreviewContainer.classList.add('d-none');
-            createImagePreview.src = '#';
-            createFileInput.classList.remove('is-valid');
-            createFileInput.classList.remove('is-invalid');
-        });
-    }
-
-    function validateCreateFile() {
-        const file = createFileInput.files[0];
-        const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.webp)$/i;
-        const maxSize = 2 * 1024 * 1024;
-
-        if (file) {
-            if (!allowedExtensions.exec(file.name)) {
-                createErrorMsg.innerText = "Format file salah! Harus JPG, PNG, atau WebP.";
-                resetCreateInput();
-                return false;
-            } else if (file.size > maxSize) {
-                createErrorMsg.innerText = "File terlalu besar! Maksimal ukuran adalah 2MB.";
-                resetCreateInput();
-                return false;
+            const banner = document.getElementById('p_banner');
+            const placeholder = document.getElementById('p_cover_placeholder');
+            if (imgUrl) {
+                banner.src = imgUrl;
+                banner.classList.remove('d-none');
+                placeholder.classList.add('d-none');
             } else {
-                createFileInput.classList.remove('is-invalid');
-                createFileInput.classList.add('is-valid');
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    createImagePreview.src = e.target.result;
-                    createPreviewContainer.classList.remove('d-none');
-                }
-                reader.readAsDataURL(file);
-                return true;
+                banner.classList.add('d-none');
+                placeholder.classList.remove('d-none');
             }
-        } else {
-            createErrorMsg.innerText = "Gambar wajib diunggah.";
-            return false;
-        }
-    }
 
-    function resetCreateInput() {
-        createFileInput.value = '';
-        createPreviewContainer.classList.add('d-none');
-        createFileInput.classList.add('is-invalid');
-    }
+            document.getElementById('btnHapusAction').href = `/admin-humas/news/delete/${id}`;
+            document.getElementById('btnSimpanDraft').dataset.id = id;
+            document.getElementById('btnPublikasi').dataset.id = id;
 
-    // --- 3. Logika Khusus Form UPDATE (Multi-Modal) ---
-    const updateFiles = document.querySelectorAll('.updateFileInput');
-    updateFiles.forEach(input => {
-        input.addEventListener('change', function() {
-            const file = this.files[0];
-            const container = this.closest('.col-md-12');
-            const previewContainer = container.querySelector('.updatePreviewContainer');
-            const imagePreview = container.querySelector('.updateImagePreview');
-            const errorMsg = container.querySelector('.update-error-msg');
-            
-            const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.webp)$/i;
-            const maxSize = 2 * 1024 * 1024;
+            document.getElementById('btnEditAction').onclick = function() {
+                const collapse = new bootstrap.Collapse(
+                    document.getElementById('formBeritaSection'), { toggle: false }
+                );
+                collapse.show();
+                document.getElementById('formTitle').innerText = 'Edit Data Berita';
+                document.getElementById('mainFormBerita').action = `/admin-humas/news/update/${id}`;
+                document.getElementById('f_judul').value = judul;
+                document.getElementById('f_kategori').value = kategori;
+                document.getElementById('f_lokasi').value = lokasi;
+                document.getElementById('f_excerpt').value = excerpt;
+                document.getElementById('f_isi').value = isi;
+                document.getElementById('f_tanggal').value = tanggal;
+                document.getElementById('f_status').value = status;
+                document.getElementById('checkFeatured').checked = (featured === 'true');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
 
-            if (file) {
-                if (!allowedExtensions.exec(file.name)) {
-                    errorMsg.innerText = "Format salah! Harus JPG, PNG, atau WebP.";
-                    this.value = '';
-                    this.classList.add('is-invalid');
-                    previewContainer.classList.add('d-none');
-                } else if (file.size > maxSize) {
-                    errorMsg.innerText = "File terlalu besar! Maksimal 2MB.";
-                    this.value = '';
-                    this.classList.add('is-invalid');
-                    previewContainer.classList.add('d-none');
-                } else {
-                    this.classList.remove('is-invalid');
-                    this.classList.add('is-valid');
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        imagePreview.src = e.target.result;
-                        previewContainer.classList.remove('d-none');
-                    }
-                    reader.readAsDataURL(file);
-                }
-            }
+            emptyState.classList.add('d-none');
+            detailState.classList.remove('d-none');
         });
     });
 
-    document.querySelectorAll('.updateRemoveImage').forEach(btn => {
+    // FILTER TAB
+    document.querySelectorAll('.tab-berita').forEach(btn => {
         btn.addEventListener('click', function() {
-            const container = this.closest('.col-md-12');
-            const input = container.querySelector('.updateFileInput');
-            const preview = container.querySelector('.updatePreviewContainer');
-            input.value = '';
-            preview.classList.add('d-none');
-            input.classList.remove('is-valid');
-            input.classList.remove('is-invalid');
+            document.querySelectorAll('.tab-berita').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            const status = this.dataset.status;
+            cards.forEach(card => {
+                card.classList.toggle('d-none',
+                    status !== 'all' && card.dataset.status !== status
+                );
+            });
         });
     });
 
-})()
+    // SEARCH
+    document.getElementById('searchBerita').addEventListener('input', function() {
+        const kw = this.value.toLowerCase();
+        cards.forEach(card => {
+            card.classList.toggle('d-none', !card.dataset.judul.toLowerCase().includes(kw));
+        });
+    });
+
+    // FILTER KATEGORI
+    document.getElementById('filterKategori').addEventListener('change', function() {
+        const kat = this.value;
+        cards.forEach(card => {
+            card.classList.toggle('d-none', kat !== '' && card.dataset.kategori !== kat);
+        });
+    });
+
+    // IMAGE PREVIEW
+    const fileInput = document.getElementById('fileInput');
+    if (fileInput) {
+        fileInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    document.getElementById('imagePreview').src = e.target.result;
+                    document.getElementById('previewContainer').classList.remove('d-none');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        document.getElementById('removeImage').addEventListener('click', function() {
+            fileInput.value = '';
+            document.getElementById('previewContainer').classList.add('d-none');
+        });
+    }
+});
+
+function ubahStatusBerita(newStatus) {
+    const btn = newStatus === 'draft'
+        ? document.getElementById('btnSimpanDraft')
+        : document.getElementById('btnPublikasi');
+    const id = btn.dataset.id;
+    if (!id) return;
+
+    const card = document.querySelector('.news-card.aktif');
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = `/admin-humas/news/update/${id}`;
+
+    const fields = {
+        status: newStatus,
+        judul: card.getAttribute('data-judul'),
+        kategori: card.getAttribute('data-kategori-val'),
+        isi: card.getAttribute('data-isi'),
+    };
+
+    Object.entries(fields).forEach(([k, v]) => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = k;
+        input.value = v;
+        form.appendChild(input);
+    });
+
+    document.body.appendChild(form);
+    form.submit();
+}
+ function resetFormBerita() {
+    document.getElementById('formTitle').innerText = 'Tulis Artikel Baru';
+    document.getElementById('mainFormBerita').action = '/admin-humas/news';
+    document.getElementById('mainFormBerita').reset();
+    document.getElementById('previewContainer').classList.add('d-none');
+}
 </script>
 
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    {% for category, message in messages %}
+    Swal.fire({
+        title: "{{ 'Berhasil!' if category == 'success' else 'Info' }}",
+        text: "{{ message }}",
+        icon: "{{ category }}",
+        confirmButtonColor: '#E8631C'
+    });
+    {% endfor %}
+});
+</script>
+{% endif %}
+{% endwith %}
 {% endblock %}

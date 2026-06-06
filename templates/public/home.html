@@ -1,16 +1,17 @@
 {% extends 'layouts/public_base.html' %}
-{% block title %}Beranda{% endblock %}
+{% block title %}Beranda - Masjid Al-Bayan{% endblock %}
 
 {% block content %}
 
-<!-- HERO -->
+<!-- ===== HERO ===== -->
 <section class="hero-section">
   <div class="overlay text-center text-white">
     <div>
+      <div class="bismillah-badge mb-3">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم</div>
       <h1>Masjid <span>Al-Bayan</span></h1>
-      <p class="mt-2">"Masjid kampus yang terbuka untuk siapa saja. Dikelola langsung oleh mahasiswa Institut Teknologi Indonesia, 
-        kami menyambut hangat mahasiswa, warga sekitar, 
-        hingga teman-teman pekerja dan ojek online yang ingin beribadah atau sekadar melepas lelah sejenak."
+      <p class="mt-3 px-3">
+        Sistem Manajemen Masjid Digital — Transparansi Keuangan, Jadwal Sholat
+        Real-Time, dan Digitalisasi Infaq
       </p>
      <div class="mt-4">
   <a href="#" class="btn btn-warning me-2">Donasi Sekarang</a>
@@ -19,6 +20,43 @@
     Lihat Jadwal Sholat
   </a>
 </div>
+
+    </div>
+  </div>
+
+  <!-- FLOATING JADWAL CARD -->
+  <div class="jadwal-floating">
+    <div class="jadwal-floating-inner">
+      <div class="jadwal-left" style="min-width: 340px; max-width: 340px; padding-right: 30px; margin-right: 10px;">
+      <div class="d-flex align-items-center gap-2 mb-2">
+       <span class="dot-orange"></span>
+       <span style="font-size: 12px; font-weight: 800; color: #E8631C; letter-spacing: 1.5px;">WAKTU SEKARANG</span>
+    </div>
+  <div id="jam-sekarang" style="font-size: 38px; font-weight: 800; color: #1B1714; line-height: 1; letter-spacing: -0.5px;">00:00</div>
+  <div id="tanggal-sekarang" style="font-size: 13.5px; font-weight: 600; color: #3A352E; margin-top: 8px;"></div>
+  <div style="font-size: 12px; font-weight: 500; color: #6E6558; margin-top: 6px; display: flex; align-items: center; gap: 4px;">📍 Masjid Al-Bayan ITI, Tangerang Selatan</div>
+  <div class="mt-3" style="background: #f7f3ee; border-radius: 14px; padding: 12px 16px; border: 1px solid #ece5dc; display: flex; align-items: center; justify-content: space-between; width: 100%;">
+    <span id="label-countdown" style="font-size: 13px; font-weight: 700; color: #3A352E; white-space: nowrap;">Menuju Dzuhur</span>
+    <span id="countdown-timer" style="font-size: 14px; font-weight: 800; color: #E8631C; white-space: nowrap; letter-spacing: 0.5px;">00:00:00</span>
+     </div>
+    </div>
+
+      <div class="jadwal-right">
+  {% for k, v in jadwal.items() %}
+  <div class="waktu-item" data-waktu="{{ v }}" data-nama="{{ k }}">
+    <div class="waktu-icon">
+      {% if k|lower == 'subuh' %} 🌅
+      {% elif k|lower == 'dzuhur' %} ☀️
+      {% elif k|lower == 'ashar' %} 🌤️
+      {% elif k|lower == 'maghrib' %} 🌇
+      {% elif k|lower == 'isya' %} 🌙
+      {% endif %}
+      </div>
+      <div class="waktu-nama">{{ k|upper }}</div>
+      <div class="waktu-jam">{{ v }}</div>
+    </div>
+    {% endfor %}
+     </div>
     </div>
   </div>
 </section>
@@ -36,6 +74,7 @@
     <i class="bi bi-geo-alt-fill" style="color: #d97706;"></i> Jakarta, Indonesia &nbsp;&nbsp;
     <i class="bi bi-clock-fill" style="color: #d97706;"></i> {{ tanggal }}
   </p>
+
 
   <div class="row justify-content-center g-4">
     {% set arabic = {
@@ -94,49 +133,175 @@ highlightBerikutnya();
 </script>
 <!-- BERITA -->
 <section class="mt-5 pt-5 pb-5">
+<!-- ===== JADWAL IMAM ===== -->
+<section id="jadwal-imam" style="background:#fff; padding-bottom: 80px;">
+
   <div class="container">
-    <div class="text-center mb-5">
-      <p class="text-uppercase fw-bold mb-1"
-         style="font-size: 11px; letter-spacing: 2px; color: #d97706;">
-        BERITA & KEGIATAN
-      </p>
-      <h2 class="fw-bold mb-2"
-          style="font-family: 'Playfair Display', serif; font-size: 38px; color: #1f2937;">
-        Kegiatan Masjid Al-Bayan
-      </h2>
-      <p class="text-muted" style="font-size: 14px;">
-        Info terbaru seputar kegiatan dan program masjid
-      </p>
+    
+    <div class="text-center mb-5" style="margin-top: 150px !important;">
+      <p class="section-label">PENJADWALAN</p>
+      <h2 class="section-title">Jadwal Imam Sholat</h2>
+      <p class="section-sub"><i class="bi bi-calendar3"></i> Jadwal imam bergilir mingguan</p>
     </div>
 
-    <div class="row">
+    <div class="table-responsive">
+      <table class="table jadwal-imam-table">
+        <thead>
+          <tr>
+            <th>Hari</th>
+            <th>Subuh</th>
+            <th>Dzuhur</th>
+            <th>Ashar</th>
+            <th>Maghrib</th>
+            <th>Isya</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% set jadwal_imam = [
+            {'hari': 'Senin',  'subuh': 'Ust. Ahmad',  'dzuhur': 'Ust. Ibrahim', 'ashar': 'Ust. Yusuf',  'maghrib': 'Ust. Ali',     'isya': 'Ust. Umar'},
+            {'hari': 'Selasa', 'subuh': 'Ust. Yusuf',  'dzuhur': 'Ust. Ahmad',   'ashar': 'Ust. Ali',    'maghrib': 'Ust. Umar',    'isya': 'Ust. Ibrahim'},
+            {'hari': 'Rabu',   'subuh': 'Ust. Ali',    'dzuhur': 'Ust. Yusuf',   'ashar': 'Ust. Ibrahim','maghrib': 'Ust. Ahmad',   'isya': 'Ust. Umar'},
+            {'hari': 'Kamis',  'subuh': 'Ust. Umar',   'dzuhur': 'Ust. Ali',     'ashar': 'Ust. Ahmad',  'maghrib': 'Ust. Ibrahim', 'isya': 'Ust. Yusuf'},
+            {'hari': 'Jumat',  'subuh': 'Ust. Ibrahim','dzuhur': 'Ust. Umar',    'ashar': 'Ust. Yusuf',  'maghrib': 'Ust. Ali',     'isya': 'Ust. Ahmad'},
+            {'hari': 'Sabtu',  'subuh': 'Ust. Ahmad',  'dzuhur': 'Ust. Yusuf',   'ashar': 'Ust. Umar',   'maghrib': 'Ust. Ibrahim', 'isya': 'Ust. Ali'},
+            {'hari': 'Minggu', 'subuh': 'Ust. Ali',    'dzuhur': 'Ust. Ibrahim', 'ashar': 'Ust. Ahmad',  'maghrib': 'Ust. Yusuf',   'isya': 'Ust. Umar'},
+          ] %}
+          {% for row in jadwal_imam %}
+          <tr {% if loop.last %}class="hari-ini"{% endif %}>
+            <td class="fw-semibold">
+              {{ row.hari }}
+              {% if loop.last %}<span class="badge-hari-ini ms-2">Hari ini</span>{% endif %}
+            </td>
+            <td><i class="bi bi-person"></i> {{ row.subuh }}</td>
+            <td><i class="bi bi-person"></i> {{ row.dzuhur }}</td>
+            <td><i class="bi bi-person"></i> {{ row.ashar }}</td>
+            <td><i class="bi bi-person"></i> {{ row.maghrib }}</td>
+            <td><i class="bi bi-person"></i> {{ row.isya }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <p class="text-center text-muted mt-3" style="font-size:12px;">
+      * Jadwal dapat berubah sewaktu-waktu. Hubungi sekretariat untuk konfirmasi.
+    </p>
+  </div>
+</section>
+
+<!-- ===== TRANSPARANSI KEUANGAN ===== -->
+<section id="keuangan" style="background: var(--surface-3);">
+  <div class="container">
+    <div class="text-center mb-5">
+      <p class="section-label">TRANSPARANSI</p>
+      <h2 class="section-title">Laporan Keuangan</h2>
+      <p class="section-sub">Periode: Maret 2026</p>
+    </div>
+
+    <!-- SUMMARY CARDS -->
+    <div class="row g-3 justify-content-center mb-4">
+      <div class="col-12 col-md-4">
+        <div class="keu-card">
+          <div class="keu-card-icon" style="background:#fff7ed;">
+            <i class="bi bi-graph-up-arrow" style="color:#E8631C;"></i>
+          </div>
+          <div>
+            <p class="keu-label">Total Pemasukan</p>
+            <h4 class="keu-angka" style="color:#E8631C;">Rp 33.500.000</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="keu-card">
+          <div class="keu-card-icon" style="background:#fef2f2;">
+            <i class="bi bi-graph-down-arrow" style="color:#C0392B;"></i>
+          </div>
+          <div>
+            <p class="keu-label">Total Pengeluaran</p>
+            <h4 class="keu-angka" style="color:#C0392B;">Rp 18.000.000</h4>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="keu-card">
+          <div class="keu-card-icon" style="background:#fffbeb;">
+            <i class="bi bi-wallet2" style="color:#B8962E;"></i>
+          </div>
+          <div>
+            <p class="keu-label">Saldo</p>
+            <h4 class="keu-angka" style="color:#B8962E;">Rp 15.500.000</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DETAIL PEMASUKAN & PENGELUARAN -->
+    <div class="row g-3 justify-content-center mb-4">
+      <div class="col-12 col-md-6">
+        <div class="keu-detail-card">
+          <h6 class="keu-detail-title">
+            <i class="bi bi-graph-up-arrow" style="color:#E8631C;"></i> Pemasukan
+          </h6>
+          <div class="keu-row"><span>Infaq Jumat</span><span style="color:#E8631C;font-weight:600;">Rp 8.500.000</span></div>
+          <div class="keu-row"><span>Donasi Bulanan</span><span style="color:#E8631C;font-weight:600;">Rp 15.000.000</span></div>
+          <div class="keu-row"><span>Infaq Harian</span><span style="color:#E8631C;font-weight:600;">Rp 3.200.000</span></div>
+          <div class="keu-row"><span>Zakat & Sedekah</span><span style="color:#E8631C;font-weight:600;">Rp 6.800.000</span></div>
+        </div>
+      </div>
+      <div class="col-12 col-md-6">
+        <div class="keu-detail-card">
+          <h6 class="keu-detail-title">
+            <i class="bi bi-graph-down-arrow" style="color:#C0392B;"></i> Pengeluaran
+          </h6>
+          <div class="keu-row"><span>Listrik & Air</span><span style="color:#C0392B;font-weight:600;">Rp 2.800.000</span></div>
+          <div class="keu-row"><span>Gaji Pengurus</span><span style="color:#C0392B;font-weight:600;">Rp 7.500.000</span></div>
+          <div class="keu-row"><span>Perawatan Masjid</span><span style="color:#C0392B;font-weight:600;">Rp 4.200.000</span></div>
+          <div class="keu-row"><span>Kegiatan Dakwah</span><span style="color:#C0392B;font-weight:600;">Rp 3.500.000</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-4">
+    <a href="/keuangan" class="btn-lihat-lengkap">
+        Lihat Laporan Lengkap <span class="panah-animasi">→</span>
+    </a>
+</div>
+
+  </div>
+</section>
+
+<!-- ===== BERITA & KEGIATAN ===== -->
+<section id="berita" style="background:#fdfbf7; padding: 60px 0;"> <!-- Background diganti cream halus biar gak flat putih -->
+  <div class="container">
+    <div class="text-center mb-5">
+      <p class="badge-kategori-detail">BERITA & KEGIATAN</p>
+      <h2 class="section-title mt-2" style="font-family: 'Playfair Display', serif; font-weight: 700; color: #1B1714;">Kegiatan Masjid Al-Bayan</h2>
+      <p class="text-muted">Info terbaru seputar kegiatan dan program masjid</p>
+    </div>
+    
+    <div class="row g-4"> 
       {% for b in berita %}
         {% if b.status != 'draft' %}
-        <div class="col-md-4 mb-4">
+        <div class="col-12 col-sm-6 col-lg-4">
           <div class="card berita-card shadow-sm h-100 border-0">
-            <div class="position-relative">
+            <div class="position-relative overflow-hidden card-img-wrapper" style="aspect-ratio: 16/9; height: 210px;"> 
               {% if b.thumbnail %}
-                <img src="{{ url_for('static', filename=b.thumbnail) }}" class="card-img-top">
+                <img src="{{ url_for('static', filename=b.thumbnail) }}" class="card-img-top h-100 w-100" style="object-fit: cover; transition: transform 0.5s ease;">
               {% else %}
-                <img src="{{ url_for('static', filename='img/default.jpg') }}" class="card-img-top">
+                <img src="{{ url_for('static', filename='img/default.jpg') }}" class="card-img-top h-100 w-100" style="object-fit: cover; transition: transform 0.5s ease;">
               {% endif %}
-              <span class="position-absolute top-0 start-0 m-3 badge"
-                    style="background: #d97706; font-size: 12px; padding: 6px 12px; border-radius: 20px;">
-                {{ b.kategori }}
-              </span>
+              <span class="badge-kategori">{{ b.kategori }}</span>
             </div>
-            <div class="card-body p-4">
-              <p class="text-muted mb-2" style="font-size: 13px;">
-                <i class="bi bi-calendar3" style="color: #d97706;"></i>
-                &nbsp;{{ b.tanggal_kegiatan.strftime('%d %B %Y') if b.tanggal_kegiatan else '-' }}
-              </p>
-              <h5 class="fw-bold mb-2" style="color: #1f2937; font-size: 17px; line-height: 1.4;">
-                {{ b.judul }}
-              </h5>
-              <p class="text-muted mb-3" style="font-size: 14px; line-height: 1.6;">
-                {{ b.excerpt if b.excerpt else b.isi[:100] ~ '...' }}
-              </p>
-              <a href="/berita/{{ b.id }}" class="baca-link">Baca Selengkapnya →</a>
+            <div class="card-body p-4 d-flex flex-column justify-content-between">
+              <div>
+                <p class="berita-tanggal mb-2 text-muted" style="font-size: 13px;">
+                  <i class="bi bi-calendar3" style="color: #f97316;"></i>
+                  {{ b.tanggal_kegiatan.strftime('%d %B %Y') if b.tanggal_kegiatan else '-' }}
+                </p>
+                <h5 class="berita-judul" style="font-family: 'Playfair Display', serif; font-weight: 700; color: #1B1714; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 48px;">{{ b.judul }}</h5>
+                <p class="berita-excerpt text-secondary" style="font-size: 14px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">{{ b.excerpt if b.excerpt else b.isi[:100] ~ '...' }}</p>
+              </div>
+              <!-- FIX CLASS: Pake .baca-link -->
+              <a href="/berita/{{ b.id }}" class="baca-link mt-3">Baca Selengkapnya &rarr;</a>
             </div>
           </div>
         </div>
@@ -144,116 +309,84 @@ highlightBerikutnya();
       {% endfor %}
     </div>
 
-    <div class="text-center mt-2">
-      <a href="/berita"
-         style="background: #d97706; color: white; border-radius: 50px;
-                padding: 10px 28px; text-decoration: none; font-size: 14px; font-weight: 500;">
-        Lihat Semua Berita →
-      </a>
-    </div>
-  </div>
+    <div class="text-center mt-5">
+      <a href="/berita" class="btn-utama-berita">
+        <span>Lihat Semua Berita</span>
+        <i class="bi bi-arrow-right"></i>
+       </a>
+     </div>
 </section>
 
-<!-- GALERI -->
-<section class="mt-5 py-5" style="background: #f8f5f0;">
+<!-- ===== GALERI ===== -->
+<section id="galeri" style="background: var(--surface-3); padding: 100px 0;">
   <div class="container">
-    <div class="text-center mb-5">
-      <p class="text-uppercase fw-bold mb-1"
-         style="font-size: 11px; letter-spacing: 2px; color: #d97706;">
-        GALERI
-      </p>
-      <h2 class="fw-bold mb-2"
-          style="font-family: 'Playfair Display', serif; font-size: 38px; color: #1f2937;">
-        Dokumentasi Kegiatan
-      </h2>
-      <p class="text-muted" style="font-size: 14px;">Momen-momen berharga di Masjid Al-Bayan</p>
+     {% set fotos = [
+      {'judul': 'Interior Masjid Al-Bayan', 'kategori': 'Masjid', 'img': 'default.jpg'},
+      {'judul': 'Keindahan Malam', 'kategori': 'Masjid', 'img': 'default.jpg'},
+      {'judul': 'Sholat Berjamaah', 'kategori': 'Ibadah', 'img': 'default.jpg'},
+      {'judul': 'Kaligrafi Al-Quran', 'kategori': 'Seni', 'img': 'default.jpg'},
+      {'judul': 'Buka Puasa Bersama', 'kategori': 'Ramadan', 'img': 'default.jpg'},
+      {'judul': 'Taman Masjid', 'kategori': 'Masjid', 'img': 'default.jpg'}
+    ] %}
+    <div class="text-center mb-5 reveal-galeri">
+      <p class="badge-kategori-detail">DOKUMENTASI</p>
+      <h2 class="section-title" style="font-family: 'Playfair Display', serif; font-size: 40px; font-weight: 800;">Galeri Kegiatan</h2>
+      <p class="section-sub" style="color: #666;">Menyimpan kenangan dan semangat ukhuwah di Masjid Al-Bayan</p>
     </div>
 
-    <div class="row g-3">
-      {% set fotos = [
-        {'judul': 'Interior Masjid Al-Bayan', 'kategori': 'Masjid', 'img': 'default.jpg'},
-        {'judul': 'Keindahan Malam', 'kategori': 'Masjid', 'img': 'default.jpg'},
-        {'judul': 'Sholat Berjamaah', 'kategori': 'Ibadah', 'img': 'default.jpg'},
-      ] %}
+    <div class="row g-4 justify-content-center">
       {% for f in fotos %}
-      <div class="col-md-4 col-6">
-        <div class="galeri-card position-relative overflow-hidden rounded-3"
+      <div class="col-6 col-md-4 reveal-galeri" style="animation-delay: {{ loop.index0 * 0.1 }}s;">
+        <div class="galeri-card position-relative"
              data-judul="{{ f.judul }}"
              data-kategori="{{ f.kategori }}"
              data-img="{{ url_for('static', filename='img/' ~ f.img) }}"
              onclick="bukaLightbox(this)">
-          <img src="{{ url_for('static', filename='img/' ~ f.img) }}" class="w-100" alt="{{ f.judul }}">
+          <img src="{{ url_for('static', filename='img/' ~ f.img) }}" alt="{{ f.judul }}">
           <div class="galeri-overlay">
-            <span class="galeri-kategori">{{ f.kategori }}</span>
-            <p class="galeri-judul">{{ f.judul }}</p>
+             <span class="galeri-kategori-tag">{{ f.kategori }}</span>
+           <p class="galeri-judul-text">{{ f.judul }}</p>
           </div>
         </div>
       </div>
       {% endfor %}
     </div>
 
-    <div class="text-center mt-4">
-      <a href="/galeri"
-         style="background: #d97706; color: white; border-radius: 50px;
-                padding: 10px 28px; text-decoration: none; font-size: 14px; font-weight: 500;">
-        Lihat Semua Foto →
-      </a>
-    </div>
-  </div>
+    <div class="text-center mt-5 reveal-galeri" style="animation-delay: 0.6s;">
+  <a href="/galeri" class="btn-galeri-modern">
+    <span>Lihat Semua Foto</span>
+    <i class="bi bi-arrow-right"></i>
+  </a>
+</div>
 </section>
 
-<!-- LIGHTBOX -->
-<div id="lightbox" onclick="tutupLightbox()"
-     style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85);
-            z-index:9999; justify-content:center; align-items:center; flex-direction:column;">
-  <div onclick="event.stopPropagation()"
-       style="max-width:700px; width:90%; background:#fff; border-radius:16px; overflow:hidden;">
-    <img id="lightbox-img" src="" class="w-100" style="max-height:450px; object-fit:cover;">
-    <div class="p-4">
-      <span id="lightbox-kategori" class="badge mb-2"
-            style="background:#d97706; font-size:12px; padding:4px 12px; border-radius:20px;"></span>
-      <h5 id="lightbox-judul" class="fw-bold mb-0"
-          style="font-family:'Playfair Display',serif; color:#1f2937;"></h5>
-    </div>
-  </div>
-  <button onclick="tutupLightbox()" class="mt-3"
-          style="background:transparent; border:2px solid white; color:white;
-                 border-radius:50px; padding:8px 24px; font-size:14px; cursor:pointer;">
-    ✕ Tutup
-  </button>
-</div>
-
-<script>
-function bukaLightbox(element) {
-  document.getElementById('lightbox-img').src = element.dataset.img;
-  document.getElementById('lightbox-judul').innerText = element.dataset.judul;
-  document.getElementById('lightbox-kategori').innerText = element.dataset.kategori;
-  document.getElementById('lightbox').style.display = 'flex';
-}
-function tutupLightbox() {
-  document.getElementById('lightbox').style.display = 'none';
-}
-document.addEventListener('keydown', e => { if (e.key === 'Escape') tutupLightbox(); });
-</script>
-
-<!-- TENTANG SINGKAT -->
-<section class="mt-5 pt-5 pb-5" style="background: #ffffff;">
+<!-- ===== TENTANG ===== -->
+<section id="tentang" style="background:#fff;">
   <div class="container">
-    <div class="text-center mb-4">
-      <p class="text-uppercase fw-bold mb-1"
-         style="font-size: 11px; letter-spacing: 2px; color: #d97706;">
-        TENTANG KAMI
-      </p>
-      <h2 class="fw-bold mb-4"
-          style="font-family: 'Playfair Display', serif; font-size: 38px; color: #1f2937;">
-        Masjid Al-Bayan
-      </h2>
+    <div class="text-center mb-5">
+      <p class="section-label">TENTANG KAMI</p>
+      <h2 class="section-title">Masjid Al-Bayan</h2>
     </div>
 
-    <div class="row justify-content-center mb-5">
-      <div class="col-md-8">
-        <div class="p-4 rounded-4 text-center" style="background: #f8f5f0;">
-          <p style="font-size: 16px; line-height: 1.9; color: #4b5563;">
+    <div class="row g-4 align-items-start justify-content-center">
+      <!-- MAPS -->
+      <div class="col-12 col-md-5">
+        <div class="maps-preview" onclick="window.open('https://maps.google.com/?q=Masjid+Al-Bayan+ITI+Serpong','_blank')">
+          <img src="{{ url_for('static', filename='img/maps-albayan.png') }}" class="w-100 rounded-4" alt="Lokasi Masjid">
+          <div class="maps-overlay">
+            <i class="bi bi-geo-alt-fill"></i>
+            Buka di Google Maps
+          </div>
+        </div>
+      </div>
+
+      <!-- INFO -->
+      <div class="col-12 col-md-5">
+        <div class="about-box p-4 rounded-4 h-100">
+          <p class="mb-3" style="font-size:13px;color:#9ca3af;font-weight:600;text-transform:uppercase;letter-spacing:1px;">
+            Keterangan tempatnya
+          </p>
+          <p>
             Masjid Al-Bayan hadir sebagai pusat ibadah dan dakwah yang mengedepankan
             transparansi, teknologi, dan pelayanan terbaik untuk umat. Dengan sistem manajemen
             digital, kami berkomitmen menjadikan masjid sebagai pusat peradaban Islam yang
@@ -263,45 +396,127 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') tutupLightbo
       </div>
     </div>
 
-    <div class="row justify-content-center text-center g-4">
-      <div class="col-6 col-md-3">
-        <div class="stat-card p-4 rounded-4">
-          <i class="bi bi-people stat-icon"></i>
-          <h3 class="fw-bold mt-3 mb-1" style="font-size: 32px; color: #1f2937;">500+</h3>
-          <p class="text-muted mb-0" style="font-size: 14px;">Jamaah Aktif</p>
-        </div>
-      </div>
-      <div class="col-6 col-md-3">
-        <div class="stat-card p-4 rounded-4">
-          <i class="bi bi-calendar-event stat-icon"></i>
-          <h3 class="fw-bold mt-3 mb-1" style="font-size: 32px; color: #1f2937;">20+</h3>
-          <p class="text-muted mb-0" style="font-size: 14px;">Kegiatan/Bulan</p>
-        </div>
-      </div>
-      <div class="col-6 col-md-3">
-        <div class="stat-card p-4 rounded-4">
-          <i class="bi bi-book stat-icon"></i>
-          <h3 class="fw-bold mt-3 mb-1" style="font-size: 32px; color: #1f2937;">8x</h3>
-          <p class="text-muted mb-0" style="font-size: 14px;">Kajian Rutin</p>
-        </div>
-      </div>
-      <div class="col-6 col-md-3">
-        <div class="stat-card p-4 rounded-4">
-          <i class="bi bi-award stat-icon"></i>
-          <h3 class="fw-bold mt-3 mb-1" style="font-size: 32px; color: #1f2937;">2010</h3>
-          <p class="text-muted mb-0" style="font-size: 14px;">Tahun Berdiri</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="text-center mt-4">
-      <a href="/tentang"
-         style="background: #d97706; color: white; border-radius: 50px;
-                padding: 10px 28px; text-decoration: none; font-size: 14px; font-weight: 500;">
-        Selengkapnya →
+    <div class="text-center mt-5">
+      <a href="/tentang" class="btn-text-link">
+        Pelajari Profil Selengkapnya <i class="bi bi-arrow-right ms-1"></i>
       </a>
     </div>
   </div>
 </section>
+
+<!-- ===== SCRIPTS ===== -->
+<script>
+let countdownInterval;
+
+// JAM REAL-TIME
+function updateJam() {
+  const now = new Date();
+  document.getElementById('jam-sekarang').innerText =
+    String(now.getHours()).padStart(2,'0') + ':' +
+    String(now.getMinutes()).padStart(2,'0');
+}
+updateJam();
+setInterval(updateJam, 1000);
+
+// TANGGAL MASEHI + HIJRIAH
+function updateTanggal() {
+  const now = new Date();
+  const hari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+  const bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+  const masehi = `${hari[now.getDay()]} • ${now.getDate()} ${bulan[now.getMonth()]} ${now.getFullYear()}`;
+  const hijriah = new Intl.DateTimeFormat('id-TN-u-ca-islamic', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  }).format(now);
+
+  document.getElementById('tanggal-sekarang').innerText = `${masehi} • ${hijriah}`;
+}
+updateTanggal();
+
+// HIGHLIGHT + STATUS SHOLAT + COUNTDOWN
+function setupJadwal() {
+  const now = new Date();
+  const jamNow = now.getHours() * 60 + now.getMinutes();
+  const items = document.querySelectorAll('.waktu-item');
+  let berikutnya = null;
+  let saatIni = null;
+
+  items.forEach(item => {
+    const [h, m] = item.getAttribute('data-waktu').split(':').map(Number);
+    if ((h * 60 + m) > jamNow && !berikutnya) {
+      berikutnya = item;
+    }
+  });
+
+  if (!berikutnya) {
+    berikutnya = items[0];
+  }
+
+  for (let i = items.length - 1; i >= 0; i--) {
+    const [h, m] = items[i].getAttribute('data-waktu').split(':').map(Number);
+    if ((h * 60 + m) <= jamNow) {
+      saatIni = items[i];
+      break;
+    }
+  }
+
+  if (!saatIni) {
+    saatIni = items[items.length - 1];
+  }
+
+  items.forEach(i => i.classList.remove('aktif'));
+  berikutnya.classList.add('aktif');
+  document.getElementById('label-countdown').innerText = 'Menuju ' + berikutnya.getAttribute('data-nama');
+
+  clearInterval(countdownInterval);
+
+  function tick() {
+    const n = new Date();
+    const [th, tm] = berikutnya.getAttribute('data-waktu').split(':').map(Number);
+    let target = new Date();
+    target.setHours(th, tm, 0, 0);
+
+    if (target < n) {
+      target.setDate(target.getDate() + 1);
+    }
+
+    const diff = Math.floor((target - n) / 1000);
+    document.getElementById('countdown-timer').innerText =
+      String(Math.floor(diff / 3600)).padStart(2,'0') + ':' +
+      String(Math.floor((diff % 3600) / 60)).padStart(2,'0') + ':' +
+      String(diff % 60).padStart(2,'0');
+  }
+
+  tick();
+  countdownInterval = setInterval(tick, 1000);
+}
+
+setupJadwal();
+setInterval(setupJadwal, 60000);
+
+// ANIMASI COUNTDOWN
+setInterval(() => {
+  const timer = document.getElementById('countdown-timer');
+  if (!timer) return;
+  timer.style.transform = 'scale(1.03)';
+  setTimeout(() => {
+    timer.style.transform = 'scale(1)';
+  }, 150);
+}, 1000);
+
+// LIGHTBOX FUNCTION
+function bukaLightbox(el) {
+  document.getElementById('lightbox-img').src = el.dataset.img;
+  document.getElementById('lightbox-judul').innerText = el.dataset.judul;
+  document.getElementById('lightbox-kategori').innerText = el.dataset.kategori;
+  document.getElementById('lightbox').style.display = 'flex';
+}
+function tutupLightbox() {
+  document.getElementById('lightbox').style.display = 'none';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') tutupLightbox(); });
+</script>
 
 {% endblock %}

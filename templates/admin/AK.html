@@ -1,11 +1,649 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>ini keuangan</h1>
-</body>
-</html>
+{% extends 'layouts/admin_base.html' %}
+
+{% block breadcrumb %}Kelola Keuangan Al-Bayan{% endblock %}
+
+{% block admin_content %}
+<!-- HEADER SECTION -->
+<div class="d-flex justify-content-between align-items-end mb-4">
+    <div>
+        <small class="text-muted fw-medium" style="font-size: 11px; letter-spacing: 0.5px;">Beranda · Admin · Kelola Keuangan</small>
+        <h4 class="fw-bold mb-0 mt-1" style="color: #1B1714;">Kelola Keuangan Masjid</h4>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+    <!-- Tombol Import Data -->
+    <button class="btn btn-action-pill pill-secondary">
+        <i class="bi bi-download me-1"></i> Import Data
+    </button>
+
+    <!-- Tombol Export Excel (Udah di-update pake ID dan Spinner) -->
+<button id="btnExport" class="btn btn-action-pill pill-secondary">
+    <i id="btnIcon" class="bi bi-file-earmark-arrow-up me-1"></i> 
+    <span id="btnText">Export Excel</span>
+    <!-- Spinner yang awalnya sembunyi (d-none) -->
+    <span id="btnSpinner" class="spinner-border spinner-border-sm d-none ms-1" role="status" aria-hidden="true"></span>
+</button>
+
+    <!-- Tombol Tambah Transaksi -->
+    <button class="btn btn-action-pill pill-primary" data-bs-toggle="modal" data-bs-target="#modalTambahTransaksi">
+        + Tambah Transaksi
+    </button>
+</div>
+</div>
+
+<!-- SUMMARY CARDS -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="stats-card p-3">
+            <small class="text-muted" style="font-size: 12px;">Total Pemasukan · Bulan Ini</small>
+            <div class="fw-bold my-1" style="font-size: 24px; color: #1B1714;">Rp 142,8jt</div>
+            <small class="text-success fw-medium" style="font-size: 11px;">
+                <i class="bi bi-arrow-up-short"></i> 8.2% <span class="text-muted fw-normal">dari April</span>
+            </small>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card p-3">
+            <small class="text-muted" style="font-size: 12px;">Total Pengeluaran · Bulan Ini</small>
+            <div class="fw-bold my-1" style="font-size: 24px; color: #1B1714;">Rp 84,3jt</div>
+            <small class="text-danger fw-medium" style="font-size: 11px;">
+                <i class="bi bi-arrow-up-short"></i> 3.1% <span class="text-muted fw-normal">dari April</span>
+            </small>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card p-3">
+            <small class="text-muted" style="font-size: 12px;">Saldo Aktif</small>
+            <div class="fw-bold my-1" style="font-size: 24px; color: #1B1714;">Rp 487,2jt</div>
+            <small class="text-muted" style="font-size: 11px;">Per 14 Mei 2026 - 13:06</small>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card p-3" style="border: 1px solid #F5D3B3; background-color: #FFFDF9;">
+            <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted" style="font-size: 12px;">Perlu Verifikasi</small>
+                <span class="badge rounded-pill bg-danger text-white px-2" style="font-size: 10px;">12</span>
+            </div>
+            <div class="fw-bold my-1" style="font-size: 24px; color: #C44F12;">Rp 48,5jt</div>
+            <small class="text-muted" style="font-size: 11px;">12 transaksi menunggu</small>
+        </div>
+    </div>
+</div>
+
+
+<div class="finance-tab-container border-bottom bg-white px-4 pt-3">
+    <div class="d-flex gap-4">
+        <a href="#" class="finance-tab active">Semua <span class="tab-badge">147</span></a>
+        <a href="#" class="finance-tab">Pemasukan <span class="tab-badge">82</span></a>
+        <a href="#" class="finance-tab">Pengeluaran <span class="tab-badge">65</span></a>
+        <a href="#" class="finance-tab">Perlu Verifikasi <span class="tab-badge warning">12</span></a>
+        <a href="#" class="finance-tab">Draft <span class="tab-badge">3</span></a>
+    </div>
+</div>
+
+<div class="finance-filter-bar d-flex align-items-center justify-content-between px-4 py-3">
+    <div class="d-flex align-items-center gap-2">
+        <div class="search-wrapper">
+            <i class="bi bi-search search-icon"></i>
+            <input type="text" class="search-input" placeholder="Cari deskripsi, kategori, atau">
+        </div>
+        
+        <select class="filter-select">
+            <option>Semua Kategori</option>
+        </select>
+        
+        <select class="filter-select">
+            <option>Bulan Ini</option>
+        </select>
+        
+    <div class="d-flex align-items-center gap-2">
+    <div class="date-capsule">
+        <input type="text" class="date-input-clean" value="05/01/2026" readonly>
+        <i class="bi bi-calendar3 date-icon-small"></i>
+    </div>
+
+    <span class="date-arrow-separator">→</span>
+
+    <div class="date-capsule">
+        <input type="text" class="date-input-clean" value="05/14/2026" readonly>
+        <i class="bi bi-calendar3 date-icon-small"></i>
+    </div>
+</div>
+    </div>
+    
+    <button class="btn-reset-filter">Reset Filter</button>
+</div>
+
+    <div class="table-responsive">
+    <table class="table align-middle finance-table mb-0">
+        <thead>
+            <tr>
+                <th style="width: 40px; padding-left: 20px;"><input type="checkbox" class="form-check-input finance-check"></th>
+                <th>ID & TANGGAL</th>
+                <th>TIPE</th>
+                <th>DESKRIPSI</th>
+                <th>KATEGORI</th>
+                <th>NOMINAL</th>
+                <th>STATUS</th>
+                <th>BUKTI</th>
+                <th style="padding-right: 20px;"></th>
+            </tr>
+        </thead>
+        <tbody>
+    <tr>
+        <td class="td-checkbox"><input type="checkbox" class="form-check-input finance-check"></td>
+        <td>
+            <div class="finance-id">#TRX2026051401</div>
+            <div class="finance-date">14 Mei · 10:42</div>
+        </td>
+        <td><span class="finance-badge type-in"><i class="bi bi-arrow-down-left"></i> Pemasukan</span></td>
+        <td>
+            <div class="finance-desc-main">Donasi Pak Hasan Tirta</div>
+            <div class="finance-desc-sub">Transfer BSI - Manual</div>
+        </td>
+        <td class="finance-cat">Donasi</td>
+        <td class="finance-nominal nominal-in">+Rp 5.000.000</td>
+        <td><span class="finance-status status-verified"><span class="dot"></span>Terverifikasi</span></td>
+        <td><button class="btn-bukti"><i class="bi bi-paperclip"></i> 1 file</button></td>
+        <td class="text-end" style="padding-right: 20px;">
+            <div class="d-flex gap-1 justify-content-end">
+                <button class="btn-action"><i class="bi bi-pencil"></i></button>
+                <button class="btn-action"><i class="bi bi-eye"></i></button>
+                <button class="btn-action" onclick="konfirmasiHapus('TRX2026051401')"><i class="bi bi-trash"></i></button>
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="td-checkbox"><input type="checkbox" class="form-check-input finance-check"></td>
+        <td>
+            <div class="finance-id">#TRX2026051301</div>
+            <div class="finance-date">13 Mei · 16:30</div>
+        </td>
+        <td><span class="finance-badge type-in"><i class="bi bi-arrow-down-left"></i> Pemasukan</span></td>
+        <td>
+            <div class="finance-desc-main">Infaq via QRIS (akumulasi)</div>
+            <div class="finance-desc-sub">Otomatis · 8 transaksi QRIS</div>
+        </td>
+        <td class="finance-cat">Infaq</td>
+        <td class="finance-nominal nominal-in">+Rp 850.000</td>
+        <td><span class="finance-status status-pending"><span class="dot"></span>Perlu Verifikasi</span></td>
+        <td><button class="btn-bukti" style="opacity: 0.5;"><i class="bi bi-paperclip"></i> 0 file</button></td>
+        <td class="text-end" style="padding-right: 20px;">
+            <div class="d-flex gap-1 justify-content-end">
+                <button class="btn-action"><i class="bi bi-check2-circle text-success"></i></button>
+                <button class="btn-action"><i class="bi bi-pencil"></i></button>
+                <button class="btn-action" onclick="konfirmasiHapus('TRX2026051301')"><i class="bi bi-trash"></i></button>
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="td-checkbox"><input type="checkbox" class="form-check-input finance-check"></td>
+        <td>
+            <div class="finance-id">#TRX2026051201</div>
+            <div class="finance-date">12 Mei · 13:20</div>
+        </td>
+        <td><span class="finance-badge type-in"><i class="bi bi-arrow-down-left"></i> Pemasukan</span></td>
+        <td>
+            <div class="finance-desc-main">Kotak Amal Sholat Jumat</div>
+            <div class="finance-desc-sub">Tunai · Bendahara</div>
+        </td>
+        <td class="finance-cat">Kotak Amal</td>
+        <td class="finance-nominal nominal-in">+Rp 3.420.000</td>
+        <td><span class="finance-status status-verified"><span class="dot"></span>Terverifikasi</span></td>
+        <td><button class="btn-bukti"><i class="bi bi-paperclip"></i> 2 file</button></td>
+        <td class="text-end" style="padding-right: 20px;">
+            <div class="d-flex gap-1 justify-content-end">
+                <button class="btn-action"><i class="bi bi-pencil"></i></button>
+                <button class="btn-action"><i class="bi bi-eye"></i></button>
+                <button class="btn-action" onclick="konfirmasiHapus('TRX2026051201')"><i class="bi bi-trash"></i></button>
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="td-checkbox"><input type="checkbox" class="form-check-input finance-check"></td>
+        <td>
+            <div class="finance-id">#TRX2026051101</div>
+            <div class="finance-date">11 Mei · 09:15</div>
+        </td>
+        <td><span class="finance-badge type-out"><i class="bi bi-arrow-up-right"></i> Pengeluaran</span></td>
+        <td>
+            <div class="finance-desc-main">Tagihan Listrik PLN – Mei 2026</div>
+            <div class="finance-desc-sub">Transfer · 450VA / 1300VA</div>
+        </td>
+        <td class="finance-cat">Operasional</td>
+        <td class="finance-nominal nominal-out">-Rp 1.840.000</td>
+        <td><span class="finance-status status-verified"><span class="dot"></span>Terverifikasi</span></td>
+        <td><button class="btn-bukti"><i class="bi bi-paperclip"></i> 1 file</button></td>
+        <td class="text-end" style="padding-right: 20px;">
+            <div class="d-flex gap-1 justify-content-end">
+                <button class="btn-action"><i class="bi bi-pencil"></i></button>
+                <button class="btn-action"><i class="bi bi-eye"></i></button>
+                <button class="btn-action" onclick="konfirmasiHapus('TRX2026051401')"><i class="bi bi-trash"></i></button>
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="td-checkbox"><input type="checkbox" class="form-check-input finance-check"></td>
+        <td>
+            <div class="finance-id">#TRX2026051001</div>
+            <div class="finance-date">10 Mei · 08:00</div>
+        </td>
+        <td><span class="finance-badge type-out"><i class="bi bi-arrow-up-right"></i> Pengeluaran</span></td>
+        <td>
+            <div class="finance-desc-main">Pembelian Karpet Sajadah 80m²</div>
+            <div class="finance-desc-sub">Tunai · Toko Permadani Jaya</div>
+        </td>
+        <td class="finance-cat">Pembangunan</td>
+        <td class="finance-nominal nominal-out">-Rp 12.500.000</td>
+        <td><span class="finance-status status-pending"><span class="dot"></span>Perlu Verifikasi</span></td>
+        <td><button class="btn-bukti" style="background: #FFF4E5; border-color: #F5D3B3; color: #C44F12;"><i class="bi bi-exclamation-triangle"></i> Tanpa bukti</button></td>
+        <td class="text-end" style="padding-right: 20px;">
+            <div class="d-flex gap-1 justify-content-end">
+                <button class="btn-action"><i class="bi bi-check2-circle text-success"></i></button>
+                <button class="btn-action"><i class="bi bi-pencil"></i></button>
+                <button class="btn-action" onclick="konfirmasiHapus('TRX2026051001')"><i class="bi bi-trash"></i></button>
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="td-checkbox"><input type="checkbox" class="form-check-input finance-check"></td>
+        <td>
+            <div class="finance-id">#TRX2026050901</div>
+            <div class="finance-date">9 Mei · 16:30</div>
+        </td>
+        <td><span class="finance-badge type-in"><i class="bi bi-arrow-down-left"></i> Pemasukan</span></td>
+        <td>
+            <div class="finance-desc-main">Infaq Hj. Aminah</div>
+            <div class="finance-desc-sub">Transfer Mandiri</div>
+        </td>
+        <td class="finance-cat">Infaq</td>
+        <td class="finance-nominal nominal-in">+Rp 10.000.000</td>
+        <td><span class="finance-status status-verified"><span class="dot"></span>Terverifikasi</span></td>
+        <td><button class="btn-bukti"><i class="bi bi-paperclip"></i> 1 file</button></td>
+        <td class="text-end" style="padding-right: 20px;">
+            <div class="d-flex gap-1 justify-content-end">
+                <button class="btn-action"><i class="bi bi-pencil"></i></button>
+                <button class="btn-action"><i class="bi bi-eye"></i></button>
+                <button class="btn-action" onclick="konfirmasiHapus('TRX2026050901')"><i class="bi bi-trash"></i></button>
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="td-checkbox"><input type="checkbox" class="form-check-input finance-check"></td>
+        <td>
+            <div class="finance-id">#TRX2026050401</div>
+            <div class="finance-date">4 Mei · 10:00</div>
+        </td>
+        <td><span class="finance-badge type-out"><i class="bi bi-arrow-up-right"></i> Pengeluaran</span></td>
+        <td>
+            <div class="finance-desc-main">Honor Imam & Khotib Bulan Mei</div>
+            <div class="finance-desc-sub">Transfer · 5 imam</div>
+        </td>
+        <td class="finance-cat">Honor & SDM</td>
+        <td class="finance-nominal nominal-out">-Rp 7.000.000</td>
+        <td><span class="finance-status status-verified"><span class="dot"></span>Terverifikasi</span></td>
+        <td><button class="btn-bukti"><i class="bi bi-paperclip"></i> 3 file</button></td>
+        <td class="text-end" style="padding-right: 20px;">
+            <div class="d-flex gap-1 justify-content-end">
+                <button class="btn-action"><i class="bi bi-pencil"></i></button>
+                <button class="btn-action"><i class="bi bi-eye"></i></button>
+                <button class="btn-action" onclick="konfirmasiHapus('TRX2026050401')"><i class="bi bi-trash"></i></button>
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="td-checkbox"><input type="checkbox" class="form-check-input finance-check"></td>
+        <td>
+            <div class="finance-id">#TRX2026050201</div>
+            <div class="finance-date">2 Mei · 11:20</div>
+        </td>
+        <td><span class="finance-badge type-out"><i class="bi bi-arrow-up-right"></i> Pengeluaran</span></td>
+        <td>
+            <div class="finance-desc-main">Tagihan Air PDAM - April</div>
+            <div class="finance-desc-sub">Autodebet Bank</div>
+        </td>
+        <td class="finance-cat">Operasional</td>
+        <td class="finance-nominal nominal-out">-Rp 450.000</td>
+        <td><span class="finance-status status-verified"><span class="dot"></span>Terverifikasi</span></td>
+        <td><button class="btn-bukti"><i class="bi bi-paperclip"></i> 1 file</button></td>
+        <td class="text-end" style="padding-right: 20px;">
+            <div class="d-flex gap-1 justify-content-end">
+                <button class="btn-action"><i class="bi bi-pencil"></i></button>
+                <button class="btn-action"><i class="bi bi-eye"></i></button>
+                <button class="btn-action" onclick="konfirmasiHapus('TRX2026050201')"><i class="bi bi-trash"></i></button>
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="td-checkbox"><input type="checkbox" class="form-check-input finance-check"></td>
+        <td>
+            <div class="finance-id">#TRX2026050102</div>
+            <div class="finance-date">1 Mei · 21:00</div>
+        </td>
+        <td><span class="finance-badge type-in"><i class="bi bi-arrow-down-left"></i> Pemasukan</span></td>
+        <td>
+            <div class="finance-desc-main">Hasil Parkir Ramadhan (Sisa)</div>
+            <div class="finance-desc-sub">Tunai · Setoran Koordinator</div>
+        </td>
+        <td class="finance-cat">Lainnya</td>
+        <td class="finance-nominal nominal-in">+Rp 1.200.000</td>
+        <td><span class="finance-status status-verified"><span class="dot"></span>Terverifikasi</span></td>
+        <td><button class="btn-bukti"><i class="bi bi-paperclip"></i> 1 file</button></td>
+        <td class="text-end" style="padding-right: 20px;">
+            <div class="d-flex gap-1 justify-content-end">
+                <button class="btn-action" onclick="editTransaksi('TRX2026050102', '2026-05-01', '1200000', 'Hasil Parkir Ramadhan (Sisa)')"><i class="bi bi-pencil"></i></button>
+                <button class="btn-action"><i class="bi bi-eye"></i></button>
+                <button class="btn-action" onclick="konfirmasiHapus('TRX2026050102')"><i class="bi bi-trash"></i></button>
+            </div>
+        </td>
+    </tr>
+
+    <tr>
+        <td class="td-checkbox"><input type="checkbox" class="form-check-input finance-check"></td>
+        <td>
+            <div class="finance-id">#TRX2026050101</div>
+            <div class="finance-date">1 Mei · 09:00</div>
+        </td>
+        <td><span class="finance-badge type-out"><i class="bi bi-arrow-up-right"></i> Pengeluaran</span></td>
+        <td>
+            <div class="finance-desc-main">Belanja Sabun & Alat Kebersihan</div>
+            <div class="finance-desc-sub">Tunai · Toko Berkah</div>
+        </td>
+        <td class="finance-cat">Operasional</td>
+        <td class="finance-nominal nominal-out">-Rp 275.000</td>
+        <td><span class="finance-status status-verified"><span class="dot"></span>Terverifikasi</span></td>
+        <td><button class="btn-bukti"><i class="bi bi-paperclip"></i> 1 file</button></td>
+        <td class="text-end" style="padding-right: 20px;">
+            <div class="d-flex gap-1 justify-content-end">
+                <button class="btn-action" onclick="editTransaksi('TRX123', '2026-05-14', '5000000', 'Donasi Hasan')"><i class="bi bi-pencil"></i></button>
+                <button class="btn-action"><i class="bi bi-eye"></i></button>
+                <button class="btn-action" onclick="konfirmasiHapus('TRX2026050101')"><i class="bi bi-trash"></i></button>
+            </div>
+        </td>
+    </tr>
+</tbody>
+    </table>
+</div>
+
+    <!-- Pagination -->
+    <nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination custom-pagination justify-content-end align-items-center gap-2">
+        <!-- Tombol Prev -->
+        <li class="page-item">
+            <a class="page-link text-muted" href="#" aria-label="Previous">
+                <span aria-hidden="true">&lsaquo;</span>
+            </a>
+        </li>
+        
+        <!-- Halaman Aktif (Oranye) -->
+        <li class="page-item active">
+            <a class="page-link" href="#">1</a>
+        </li>
+        
+        <!-- Halaman Biasa -->
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        
+        <!-- Titik-titik (...) -->
+        <li class="page-item disabled">
+            <span class="page-link border-0 bg-transparent text-muted">...</span>
+        </li>
+        
+        <li class="page-item"><a class="page-link" href="#">21</a></li>
+        
+        <!-- Tombol Next -->
+        <li class="page-item">
+            <a class="page-link text-muted" href="#" aria-label="Next">
+                <span aria-hidden="true">&rsaquo;</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<!-- MODAL TAMBAH TRANSAKSI -->
+<div class="modal fade" id="modalTambahTransaksi" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 24px; border: none; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
+            <div class="modal-header border-0 pt-4 px-4 pb-0">
+                <h5 class="fw-bold" style="color: #1B1714;">Tambah Transaksi Baru</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <form action="/admin-keuangan/finance/add" method="POST">
+                <div class="modal-body px-4 py-4">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">TANGGAL</label>
+                        <input type="date" class="form-control bg-light border-0" name="tanggal" required style="border-radius: 12px; padding: 12px;">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted d-block mb-3">TIPE TRANSAKSI</label>
+                        <div class="d-flex gap-4">
+                            <div class="form-check custom-radio">
+                                <input class="form-check-input" type="radio" name="tipe" id="tipeIn" value="Masuk" checked>
+                                <label class="form-check-label text-success fw-medium" for="tipeIn">
+                                    <i class="bi bi-arrow-down-left me-1"></i> Pemasukan
+                                </label>
+                            </div>
+                            <div class="form-check custom-radio">
+                                <input class="form-check-input" type="radio" name="tipe" id="tipeOut" value="Keluar">
+                                <label class="form-check-label text-danger fw-medium" for="tipeOut">
+                                    <i class="bi bi-arrow-up-right me-1"></i> Pengeluaran
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">NOMINAL (RP)</label>
+                        <input type="text" id="displayNominal" class="form-control bg-light border-0 fw-bold" placeholder="0" required style="border-radius: 12px; padding: 12px; font-size: 18px; color: #1B1714;">
+                        <input type="hidden" name="nominal" id="realNominal">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">DESKRIPSI / KETERANGAN</label>
+                        <textarea class="form-control bg-light border-0" name="keterangan" rows="3" placeholder="Masukkan detail transaksi..." required style="border-radius: 12px; padding: 12px;"></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer border-0 px-4 pb-4">
+                    <button type="button" class="btn fw-medium text-muted border-0 bg-transparent" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-action-pill pill-primary px-4 py-2" style="border-radius: 12px;">Simpan Transaksi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL EDIT TRANSAKSI (SAMA DENGAN TAMBAH, CUMA ISI DAN JUDULNYA AJA YANG BERBEDA) -->
+ <div class="modal fade" id="modalEditTransaksi" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 24px; border: none; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
+            <div class="modal-header border-0 pt-4 px-4 pb-0">
+                <h5 class="fw-bold" style="color: #1B1714;">Edit Transaksi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <form id="formEdit" method="POST">
+                <div class="modal-body px-4 py-4">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">TANGGAL</label>
+                        <input type="date" class="form-control bg-light border-0" id="editTanggal" name="tanggal" required style="border-radius: 12px; padding: 12px;">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">NOMINAL (RP)</label>
+                        <input type="text" class="form-control bg-light border-0 fw-bold" id="editNominal" name="nominal" required style="border-radius: 12px; padding: 12px;">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">KETERANGAN</label>
+                        <textarea class="form-control bg-light border-0" id="editKeterangan" name="keterangan" rows="3" required style="border-radius: 12px; padding: 12px;"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4">
+                    <button type="button" class="btn text-muted" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-action-pill pill-primary px-4">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+    <script>
+
+        // 1. MASKING NOMINAL TAMBAH
+        const displayInput = document.getElementById('displayNominal');
+        const realInput = document.getElementById('realNominal');
+        displayInput.addEventListener('keyup', function(e) {
+            let numberString = this.value.replace(/[^,\d]/g, '').toString();
+            let split = numberString.split(',');
+            let sisa = split[0].length % 3;
+            let rupiah = split[0].substr(0, sisa);
+            let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+            if (ribuan) { let separator = sisa ? '.' : ''; rupiah += separator + ribuan.join('.'); }
+            this.value = rupiah;
+            realInput.value = numberString.replace(/\./g, '');
+        });
+
+        // 2. FUNGSI EDIT (Penting!)
+        function editTransaksi(id, tanggal, nominal, ket) {
+            document.getElementById('editTanggal').value = tanggal;
+            document.getElementById('editNominal').value = nominal;
+            document.getElementById('editKeterangan').value = ket;
+            document.getElementById('formEdit').action = "/admin-keuangan/finance/update/" + id;
+            var myModal = new bootstrap.Modal(document.getElementById('modalEditTransaksi'));
+            myModal.show();
+        }
+
+        // 3. KONFIRMASI HAPUS
+        function konfirmasiHapus(id) {
+            Swal.fire({
+                title: 'Yakin mau hapus?',
+                text: "Data transaksi " + id + " bakal hilang permanen!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Ya, hapus aja!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "/admin-keuangan/finance/delete/" + id;
+                }
+            });
+        }
+
+        // 4. FILTER TABEL (Biar interaktif)
+        document.addEventListener("DOMContentLoaded", function() {
+    // 1. Incer class kustom tab lu: .finance-tab
+    const tabs = document.querySelectorAll('.finance-tab');
+    
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function(e) {
+            // MATIKAN fungsi bawaan href="#" biar URL ga nambah pagar
+            e.preventDefault(); 
+            
+            // Pindahkan styling aktif ke tab yang diklik
+            tabs.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Ambil teks tab, terus kita bersihin dari angka badge di dalemnya
+            // Misal: "Pemasukan 82" diambil kata "pemasukan" aja
+            let rawText = this.textContent || this.innerText;
+            let filterValue = rawText.replace(/[0-9]/g, '').trim().toLowerCase();
+            
+            filterTabel(filterValue);
+        });
+    });
+
+    function filterTabel(kategori) {
+        const rows = document.querySelectorAll('tbody tr');
+        
+        rows.forEach(row => {
+            // Urutan kolom lu: 0=Checkbox, 1=ID & Tanggal, 2=TIPE
+            let kolomTipe = row.querySelectorAll('td')[2]; 
+            
+            if (kolomTipe) {
+                let teksTipe = kolomTipe.innerText.trim().toLowerCase();
+                
+                // Urusan filter menyaring data dummy
+                if (kategori.includes('semua')) {
+                    row.style.display = '';
+                } else if (teksTipe.includes(kategori)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        });
+    }
+});  
+
+   // 5. SIMULASI PROSES EXPORT (Biar ga beneran export tapi keliatan kayak lagi proses)
+document.getElementById('btnExport').addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    const btn = this;
+    const icon = document.getElementById('btnIcon');
+    const text = document.getElementById('btnText');
+    const spinner = document.getElementById('btnSpinner');
+
+    // 1. Matikan tombol biar gak bisa diklik berkali-kali
+    btn.disabled = true;
+    
+    // 2. Sembunyiin ikon file, tampilin spinner, ganti teks
+    icon.classList.add('d-none');
+    spinner.classList.remove('d-none');
+    text.innerText = "Processing...";
+
+    // 3. Simulasi proses download selama 3 detik
+    setTimeout(() => {
+        // Balikin ke kondisi awal setelah 3 detik
+        btn.disabled = false;
+        icon.classList.remove('d-none');
+        spinner.classList.add('d-none');
+        text.innerText = "Export Excel";
+        
+        // Munculin notif sukses kecil di pojok
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+        Toast.fire({
+            icon: 'success',
+            title: 'Laporan Excel berhasil diunduh!'
+        });
+    }, 3000); 
+});
+
+    </script>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        {% for category, message in messages %}
+          Swal.fire({
+            title: "{{ 'Berhasil!' if category == 'success' else 'Info' }}",
+            text: "{{ message }}",
+            icon: "{{ category }}", // Mengambil 'success', 'error', atau 'warning' dari Flask
+            confirmButtonColor: '#E8631C'
+          });
+        {% endfor %}
+      });
+    </script>
+    {% endif %}
+    {% endwith %}
+
+{% endblock %}
