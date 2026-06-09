@@ -1,0 +1,86 @@
+<div class="collapse mb-4" id="formBeritaSection">
+    <div class="stats-card">
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-3" style="border-bottom:1px solid #F2EFEA;">
+            <h6 class="fw-bold mb-0" id="formTitle">Tulis Artikel Baru</h6>
+            <button class="btn-close" data-bs-toggle="collapse" data-bs-target="#formBeritaSection"></button>
+        </div>
+        
+        <form action="/admin-humas/news" method="POST" enctype="multipart/form-data" id="mainFormBerita" class="needs-validation" novalidate>
+            <div class="row g-3">
+                <div class="col-12">
+                    <label class="form-label-admin">Judul Berita</label>
+                    <input type="text" name="judul" id="f_judul" class="input-admin" placeholder="Masukkan judul berita..." required>
+                    <div class="invalid-feedback">Judul berita wajib diisi.</div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label-admin">Kategori</label>
+                    <select name="kategori" id="f_kategori" class="input-admin" required>
+                        <option value="" disabled selected>-- Pilih Kategori --</option>
+                        <option value="Pengumuman">Pengumuman</option>
+                        <option value="Kegiatan">Kegiatan</option>
+                        <option value="Kajian">Kajian</option>
+                        <option value="Sosial">Sosial</option>
+                        <option value="Pendidikan">Pendidikan</option>
+                    </select>
+                    <div class="invalid-feedback">Silakan pilih kategori artikel.</div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label-admin">Lokasi</label>
+                    <input type="text" name="lokasi" id="f_lokasi" class="input-admin" placeholder="Tempat pelaksanaan..." required>
+                    <div class="invalid-feedback">Lokasi pelaksanaan berita/kegiatan wajib diisi.</div>
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label-admin">Gambar Berita (Maks 2MB)</label>
+                    <input type="file" name="thumbnail" id="fileInput" class="input-admin" accept=".jpg,.jpeg,.png,.webp,image/*">
+                    <div class="invalid-feedback" id="fileFeedback">Gambar berita wajib diunggah (Format: JPG/PNG/WEBP, Maks 2MB).</div>
+                    
+                    <div id="previewContainer" class="mt-2 d-none position-relative" style="width:200px;">
+                        <img id="imagePreview" src="#" class="img-thumbnail rounded-3" alt="Preview">
+                        <button type="button" id="removeImage" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-1">✕</button>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label-admin">Ringkasan Singkat</label>
+                    <textarea name="excerpt" id="f_excerpt" class="input-admin" rows="2" placeholder="Ringkasan untuk kartu depan..." required></textarea>
+                    <div class="invalid-feedback">Ringkasan singkat wajib diisi untuk tampilan beranda depan.</div>
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label-admin">Isi Berita Lengkap</label>
+                    <textarea name="isi" id="f_isi" class="input-admin" rows="7" placeholder="Tulis konten berita lengkap di sini..." required></textarea>
+                    <div class="invalid-feedback">Konten berita lengkap tidak boleh kosong.</div>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label-admin">Tanggal Berita</label>
+                    <input type="date" name="tanggal_kegiatan" id="f_tanggal" class="input-admin" required>
+                    <div class="invalid-feedback">Tanggal berita wajib ditentukan.</div>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label-admin">Status Publikasi</label>
+                    <select name="status" id="f_status" class="input-admin" required>
+                        <option value="draft">Draft</option>
+                        <option value="publish">Publish</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 d-flex align-items-end">
+                    <div class="form-check mb-2">
+                        <input type="checkbox" name="is_featured" class="form-check-input" id="checkFeatured">
+                        <label class="form-check-label fw-semibold" for="checkFeatured" style="font-size:13px;">Jadikan Berita Utama</label>
+                    </div>
+                </div>
+
+                <div class="col-12 d-flex justify-content-end gap-2 mt-2">
+                    <button type="button" class="btn-buka-web" data-bs-toggle="collapse" data-bs-target="#formBeritaSection">Batal</button>
+                    <button type="submit" class="btn-tulis-berita">Simpan Berita</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

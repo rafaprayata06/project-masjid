@@ -7,7 +7,8 @@ from models.user_model import User
 from flask_login import LoginManager
 from models.berita_model import Berita
 from routes.public_routes import public
-
+from models.kategori_model import Kategori
+from models.transaksi_model import Transaksi
 
 # TAMBAHAN BARU
 import os
@@ -33,7 +34,6 @@ db.init_app(app)
 
 # ================= MIGRATE =================
 migrate = Migrate(app, db)
-
 # ================= FLASK-LOGIN =================
 login_manager = LoginManager()
 login_manager.init_app(app)

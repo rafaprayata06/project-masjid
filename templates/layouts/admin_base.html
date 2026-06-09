@@ -92,7 +92,7 @@
                     {{ current_user.username[:2].upper() if current_user.username else 'AS' }}
                 </div>
                 <div class="profile-info">
-                    <p class="profile-name">{{ current_user.username or 'Ahmad Saputra' }}</p>
+                    <p class="profile-name">{{ current_user.name or 'Ahmad Saputra' }}</p>
                     <p class="profile-role">
                         {% if current_user.role == 'AS' %}Admin Super
                         {% elif current_user.role == 'AH' %}Admin Humas
@@ -126,7 +126,7 @@
         <div class="content-body">
             {%if '/dashboard' in request.path %}
             <h3 class="fw-bold text-dark mb-4">
-                Selamat datang kembali, {{ current_user.username or 'JEMBUT' }} 👋
+                Selamat datang kembali, {{ current_user.name or 'JEMBUT' }} 👋
             </h3>
             {% endif %}
             

@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for
 from controllers.admin_controller import admin_humas, admin_super, admin_keuangan, update_user_controller
 from controllers.management_humas.berita_management import store_berita, edit_berita
+from controllers.management_keuangan.keuangan import admin_keuangan_store,export_keuangan,edit_transaksi
 from flask_login import current_user
 from middleware.auth import login_required
 
@@ -94,3 +95,16 @@ def admin_keuangan_dashboard():
 @login_required
 def admin_keuangan_finance():
     return admin_keuangan()
+@admin.route("/admin-keuangan/finance/store", methods=["POST"])
+@login_required
+def admin_keuangan_create():
+    return admin_keuangan_store()
+
+@admin.route("/admin-keuangan/finance/export")
+def export_keuangan_file():
+     return export_keuangan()
+
+@admin.route( "/admin-keuangan/finance/update/<int:id>",methods=["POST"])
+@login_required
+def update_transaksi(id):
+    return edit_transaksi(id)

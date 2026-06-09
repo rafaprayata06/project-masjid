@@ -1,0 +1,67 @@
+<div class="stats-card h-100" id="previewPanel">
+
+    <div id="emptyState" class="d-flex flex-column align-items-center justify-content-center text-center" style="min-height:500px;">
+        <div style="font-size:48px;">👈</div>
+        <h6 class="fw-bold mt-3 mb-2">Pilih Berita Terlebih Dahulu</h6>
+        <p class="text-muted" style="font-size:13px; max-width:300px;">
+            Klik salah satu kartu berita di sebelah kiri untuk melihat preview atau edit.
+        </p>
+    </div>
+
+    <div id="detailState" class="d-none">
+
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-3" style="border-bottom:1px solid #F2EFEA;">
+            <div class="d-flex align-items-center gap-2">
+                <span id="p_status_badge" class="badge-live">🟢 Publish</span>
+                <small id="p_meta_top" class="text-muted" style="font-size:11px;"></small>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn-buka-web" id="btnEditAction">
+                    <i class="bi bi-pencil me-1"></i> Edit Data
+                </button>
+            </div>
+        </div>
+
+        <div class="berita-cover-preview mb-3">
+            <img id="p_banner" src="" alt="Cover" class="d-none" style="width:100%; max-height:260px; object-fit:cover; border-radius:12px;">
+            <div class="cover-placeholder" id="p_cover_placeholder">
+                <i class="bi bi-image" style="font-size:32px; color:#D1C9C0;"></i>
+                <span style="font-size:12px; color:#A39A90;">Foto Sampul · 1600 × 900 px direkomendasikan</span>
+            </div>
+        </div>
+
+        <h4 class="fw-bold mb-2" id="p_judul_text" style="font-family:'Playfair Display',serif; color:#1B1714;"></h4>
+
+        <p id="p_excerpt_text" style="font-size:14px; color:#8C8375; margin-bottom:12px;"></p>
+
+        <div style="font-size:14px; line-height:1.8; color:#5A5244; max-height:220px; overflow-y:auto;" id="p_isi_text"></div>
+
+        <div class="berita-meta-bottom mt-4 pt-3" style="border-top:1px solid #F2EFEA;">
+            <div class="meta-item">
+                <span class="meta-label">Kategori</span>
+                <span class="meta-value" id="p_kategori_text"></span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Lokasi</span>
+                <span class="meta-value" id="p_lokasi_text"></span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Status Publikasi</span>
+                <span class="meta-value" id="p_status_text"></span>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 mt-4 pt-3" style="border-top:1px solid #F2EFEA;">
+            <a id="btnPratinjau" href="#" target="_blank" class="btn-buka-web">
+                Pratinjau Halaman
+            </a>
+            <button id="btnSimpanDraft" class="btn-buka-web" onclick="ubahStatusBerita('draft')">
+                Simpan Draft
+            </button>
+            <button id="btnPublikasi" class="btn-tulis-berita" onclick="ubahStatusBerita('publish')">
+                Perbarui & Publikasi
+            </button>
+        </div>
+
+    </div>
+</div>

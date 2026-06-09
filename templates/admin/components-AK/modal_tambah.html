@@ -1,0 +1,74 @@
+<div class="modal fade" id="modalTambahTransaksi" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: 24px; border: none; box-shadow: 0 10px 40px rgba(0,0,0,0.1);">
+            <div class="modal-header border-0 pt-4 px-4 pb-0">
+                <h5 class="fw-bold" style="color: #1B1714;">Tambah Transaksi Baru</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/admin-keuangan/finance/store" method="POST" enctype="multipart/form-data" class="needs-validation" id="formTambahTransaksi" novalidate>
+                <input type="hidden" name="user_nim" value="{{ current_user.nim }}">
+                
+                <div class="modal-body px-4 py-4">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">TANGGAL TRANSAKSI</label>
+                        <input type="datetime-local" name="created_at" class="form-control bg-light border-0" required style="border-radius:12px;padding:12px;">
+                        <div class="invalid-feedback">Tanggal transaksi wajib diisi.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted d-block mb-3">JENIS TRANSAKSI</label>
+                        <div class="d-flex gap-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="jenis_filter" id="pemasukan" value="PEMASUKAN" checked>
+                                <label class="form-check-label text-success fw-medium" for="pemasukan">
+                                    <i class="bi bi-arrow-down-left me-1"></i> Pemasukan
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="jenis_filter" id="pengeluaran" value="PENGELUARAN">
+                                <label class="form-check-label text-danger fw-medium" for="pengeluaran">
+                                    <i class="bi bi-arrow-up-right me-1"></i> Pengeluaran
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">KATEGORI</label>
+                        <select id="kategoriSelect" name="kategori_id" class="form-select bg-light border-0" required style="border-radius:12px;padding:12px;">
+                            <option value="">Pilih Kategori</option>
+                            {% for kategori in kategori_list %}
+                            <option value="{{ kategori.id }}" data-jenis="{{ kategori.jenis }}">{{ kategori.nama }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="invalid-feedback">Silakan pilih kategori.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">NOMINAL (RP)</label>
+                        <input type="text" id="displayNominal" class="form-control bg-light border-0 fw-bold" placeholder="0" required style="border-radius:12px;padding:12px;font-size:18px;">
+                        <input type="hidden" name="jumlah" id="realNominal">
+                        <div class="invalid-feedback">Nominal wajib diisi dan harus lebih dari Rp 0.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">KETERANGAN</label>
+                        <textarea name="keterangan" id="keteranganInput" rows="3" class="form-control bg-light border-0" placeholder="Masukkan detail transaksi..." required style="border-radius:12px;padding:12px;"></textarea>
+                        <div class="invalid-feedback">Keterangan wajib diisi.</div>
+                    </div>
+                    <div id="buktiSection" class="mb-3 d-none">
+                        <label class="form-label small fw-bold text-muted">BUKTI TRANSAKSI</label>
+                        <input type="file" name="bukti_transaksi" id="buktiInput" class="form-control" accept=".jpg,.jpeg,.png,.webp,image/*">
+                        <div class="invalid-feedback">Bukti transaksi wajib diupload untuk transaksi pengeluaran.</div>
+                        <div id="previewContainer" class="position-relative mt-3 d-none">
+                            <img id="previewImage" class="img-fluid rounded shadow-sm border" style="max-height:220px;">
+                            <button type="button" id="removePreview" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4">
+                    <button type="button" class="btn text-muted" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-action-pill pill-primary px-4 py-2">Simpan Transaksi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

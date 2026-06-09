@@ -1,0 +1,304 @@
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // SUB-SCRIPT 1: OPERASIONAL FORM TAMBAH TRANSAKSI
+    const pemasukanRadio = document.getElementById('pemasukan');
+    const pengeluaranRadio = document.getElementById('pengeluaran');
+    const kategoriSelect = document.getElementById('kategoriSelect');
+    const buktiSection = document.getElementById('buktiSection');
+    const buktiInput = document.getElementById('buktiInput');
+    const previewContainer = document.getElementById('previewContainer');
+    const previewImage = document.getElementById('previewImage');
+    const removePreview = document.getElementById('removePreview');
+    const displayNominal = document.getElementById('displayNominal');
+    const realNominal = document.getElementById('realNominal');
+    const keteranganInput = document.getElementById('keteranganInput');
+    const formTambah = document.getElementById('formTambahTransaksi');
+
+    displayNominal.addEventListener('input', function() {
+        let angka = this.value.replace(/\D/g, '');
+        realNominal.value = angka;
+        this.value = Number(angka || 0).toLocaleString('id-ID');
+        if (Number(angka) > 0) {
+            this.setCustomValidity('');
+            this.classList.remove('is-invalid', 'is-valid');
+        }
+    });
+
+    function filterKategoriTambah() {
+        const jenisAktif = pemasukanRadio.checked ? 'PEMASUKAN' : 'PENGELUARAN';
+        Array.from(kategoriSelect.options).forEach(option => {
+            if (option.value === '') return;
+            option.hidden = (option.dataset.jenis !== jenisAktif);
+            option.disabled = (option.dataset.jenis !== jenisAktif);
+        });
+        kategoriSelect.value = '';
+        kategoriSelect.classList.remove('is-invalid', 'is-valid');
+    }
+
+    function toggleBuktiTambah() {
+        if (pengeluaranRadio.checked) {
+            buktiSection.classList.remove('d-none');
+        } else {
+            buktiSection.classList.add('d-none');
+            buktiInput.value = '';
+            buktiInput.setCustomValidity('');
+            buktiInput.classList.remove('is-invalid', 'is-valid');
+            previewImage.src = '';
+            previewContainer.classList.add('d-none');
+        }
+    }
+
+    pemasukanRadio.addEventListener('change', () => { filterKategoriTambah(); toggleBuktiTambah(); });
+    pengeluaranRadio.addEventListener('change', () => { filterKategoriTambah(); toggleBuktiTambah(); });
+
+    buktiInput.addEventListener('change', function () {
+        const file = this.files[0];
+        if (!file) return;
+        const ext = file.name.split('.').pop().toLowerCase();
+        if (!['jpg', 'jpeg', 'png', 'webp'].includes(ext)) {
+            this.setCustomValidity('Format file tidak valid');
+            this.classList.add('is-invalid');
+            this.reportValidity();
+            this.value = '';
+            return;
+        }
+        this.setCustomValidity('');
+        this.classList.remove('is-invalid');
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            previewImage.src = e.target.result;
+            previewContainer.classList.remove('d-none');
+        }
+        reader.readAsDataURL(file);
+    });
+
+    removePreview.addEventListener('click', function () {
+        buktiInput.value = '';
+        previewImage.src = '';
+        previewContainer.classList.add('d-none');
+        buktiInput.classList.remove('is-valid');
+    });
+
+    formTambah.addEventListener('submit', function(event) {
+        displayNominal.setCustomValidity('');
+        displayNominal.classList.remove('is-invalid', 'is-valid');
+        keteranganInput.setCustomValidity('');
+        keteranganInput.classList.remove('is-invalid', 'is-valid');
+        buktiInput.setCustomValidity('');
+        buktiInput.classList.remove('is-invalid', 'is-valid');
+
+        if (!keteranganInput.value.trim()) {
+            keteranganInput.setCustomValidity('Keterangan wajib diisi');
+            keteranganInput.classList.add('is-invalid');
+        } else {
+            keteranganInput.classList.add('is-valid');
+        }
+
+        if (!realNominal.value || Number(realNominal.value) <= 0) {
+            displayNominal.setCustomValidity('Nominal wajib diisi');
+            displayNominal.classList.add('is-invalid');
+        } else {
+            displayNominal.classList.add('is-valid');
+        }
+
+        if (pengeluaranRadio.checked && buktiInput.files.length === 0) {
+            buktiInput.setCustomValidity('Bukti transaksi wajib diupload');
+            buktiInput.classList.add('is-invalid');
+        } else if (pengeluaranRadio.checked) {
+            buktiInput.classList.add('is-valid');
+        }
+
+        if (!formTambah.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        formTambah.classList.add('was-validated');
+    }, false);
+
+    filterKategoriTambah();
+    toggleBuktiTambah();
+
+
+    // SUB-SCRIPT 2: OPERASIONAL JAVASCRIPT UNTUK LIST MODAL EDIT
+    document.querySelectorAll('.nominal-display').forEach(input => {
+        input.addEventListener('input', function() {
+            let realInput = this.parentElement.querySelector('.nominal-real');
+            let angka = this.value.replace(/\D/g,'');
+            realInput.value = angka;
+            this.value = Number(angka || 0).toLocaleString('id-ID');
+            if(Number(angka) > 0) {
+                this.setCustomValidity('');
+                this.classList.remove('is-invalid', 'is-valid');
+            }
+        });
+    });
+
+    document.querySelectorAll('.bukti-input').forEach(input => {
+        input.addEventListener('change', function() {
+            const file = this.files[0];
+            if (!file) return;
+            const ext = file.name.split('.').pop().toLowerCase();
+            if(!['jpg','jpeg','png','webp'].includes(ext)){
+                this.setCustomValidity('Format file tidak valid');
+                this.classList.add('is-invalid');
+                this.reportValidity();
+                this.value = '';
+                return;
+            }
+            this.setCustomValidity('');
+            this.classList.remove('is-invalid');
+            const reader = new FileReader();
+            const wrapper = this.parentElement.querySelector('.preview-baru');
+            const img = wrapper.querySelector('.gambar-preview');
+            reader.onload = e => {
+                img.src = e.target.result;
+                wrapper.classList.remove('d-none');
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+
+    document.querySelectorAll('.hapus-preview').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const wrapper = this.closest('.preview-baru');
+            wrapper.classList.add('d-none');
+            const section = this.closest('.bukti-edit-section');
+            section.querySelector('.bukti-input').value = '';
+        });
+    });
+
+    document.querySelectorAll('[id^="editTransaksi"]').forEach(modal => {
+        const formEditInstance = modal.querySelector('.form-edit-transaksi');
+        const radiosEdit = modal.querySelectorAll('.jenis-edit');
+        const kategoriEdit = modal.querySelector('.kategori-edit');
+        const buktiSectionEdit = modal.querySelector('.bukti-edit-section');
+        const buktiInputEdit = modal.querySelector('.bukti-input');
+
+        function filterKategoriEdit() {
+            const jenis = modal.querySelector('.jenis-edit:checked').value;
+            kategoriEdit.querySelectorAll('option').forEach(opt => {
+                opt.hidden = opt.dataset.jenis !== jenis;
+            });
+            if (jenis === 'PENGELUARAN') {
+                buktiSectionEdit.classList.remove('d-none');
+            } else {
+                buktiSectionEdit.classList.add('d-none');
+                buktiInputEdit.setCustomValidity('');
+                buktiInputEdit.classList.remove('is-invalid', 'is-valid');
+            }
+        }
+
+        radiosEdit.forEach(radio => radio.addEventListener('change', filterKategoriEdit));
+        filterKategoriEdit();
+
+        formEditInstance.addEventListener('submit', function(e) {
+            const jenis = modal.querySelector('.jenis-edit:checked').value;
+            const nominalDisplayEdit = modal.querySelector('.nominal-display');
+            const nominalRealEdit = modal.querySelector('.nominal-real');
+            const keteranganInputEdit = modal.querySelector('.keterangan-edit');
+            
+            nominalDisplayEdit.setCustomValidity('');
+            nominalDisplayEdit.classList.remove('is-invalid', 'is-valid');
+            buktiInputEdit.setCustomValidity('');
+            buktiInputEdit.classList.remove('is-invalid', 'is-valid');
+            keteranganInputEdit.setCustomValidity('');
+            keteranganInputEdit.classList.remove('is-invalid', 'is-valid');
+
+            if (!keteranganInputEdit.value.trim()) {
+                keteranganInputEdit.setCustomValidity('Keterangan wajib diisi');
+                keteranganInputEdit.classList.add('is-invalid');
+            } else {
+                keteranganInputEdit.classList.add('is-valid');
+            }
+
+            if(!nominalRealEdit.value || Number(nominalRealEdit.value) <= 0){
+                nominalDisplayEdit.setCustomValidity('Nominal wajib diisi');
+                nominalDisplayEdit.classList.add('is-invalid');
+            } else {
+                nominalDisplayEdit.classList.add('is-valid');
+            }
+
+            if(jenis === 'PENGELUARAN'){
+                const adaFileBaru = buktiInputEdit.files.length > 0;
+                const adaFileLama = modal.querySelector('.preview-lama') !== null;
+                if(!adaFileBaru && !adaFileLama){
+                    buktiInputEdit.setCustomValidity('Bukti transaksi wajib');
+                    buktiInputEdit.classList.add('is-invalid');
+                } else {
+                    buktiInputEdit.classList.add('is-valid');
+                }
+            }
+
+            if (!formEditInstance.checkValidity()) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            formEditInstance.classList.add('was-validated');
+        });
+    });
+
+
+    // SUB-SCRIPT 3: EVENT FILTER CLICKS PADA TAB FINANSIAL
+    const tabs = document.querySelectorAll(".finance-tab");
+    tabs.forEach(tab => {
+        tab.addEventListener("click", function (e) {
+            e.preventDefault();
+            tabs.forEach(t => t.classList.remove("active"));
+            this.classList.add("active");
+            filterTabel(this.dataset.filter);
+        });
+    });
+
+    function filterTabel(filter) {
+        const rows = document.querySelectorAll("tbody tr[data-jenis]");
+        rows.forEach(row => {
+            const jenis = (row.dataset.jenis || "").toLowerCase();
+            if (filter === "semua") {
+                row.style.display = "";
+            } else if (filter === "pemasukan" && jenis === "pemasukan") {
+                row.style.display = "";
+            } else if (filter === "pengeluaran" && jenis === "pengeluaran") {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
+
+});
+
+// SUB-SCRIPT 4: POP-UP KONFIRMASI TOMBOL HAPUS DATA (SWEETALERT)
+function konfirmasiHapus(id) {
+    Swal.fire({
+        title: 'Yakin mau hapus?',
+        text: "Data transaksi ID " + id + " bakal hilang permanen!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        confirmButtonText: 'Ya, hapus aja!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = "/admin-keuangan/finance/delete/" + id;
+        }
+    });
+}
+</script>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            {% for category, message in messages %}
+            Swal.fire({
+                title: "{{ 'Berhasil!' if category == 'success' else 'Info' }}",
+                text: "{{ message }}",
+                icon: "{{ category }}", 
+                confirmButtonColor: '#E8631C'
+            });
+            {% endfor %}
+        });
+    </script>
+    {% endif %}
+{% endwith %}
