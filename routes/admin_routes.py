@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for
-from controllers.admin_controller import admin_humas, admin_super, admin_keuangan, update_user_controller
+from controllers.admin_controller import admin_humas,admin_super, admin_keuangan, update_user_controller
 from controllers.management_humas.berita_management import store_berita, edit_berita
 from controllers.management_keuangan.keuangan import admin_keuangan_store,export_keuangan,edit_transaksi
 from flask_login import current_user
@@ -15,8 +15,7 @@ admin = Blueprint('admin', __name__)
 @admin.route("/admin-super/kelola-admin", methods=["GET"])
 @login_required
 def admin_super_kelola_admin():
-    return render_template("admin/components-KelolaAdmin/AS-users.html", user=current_user)
-
+    return admin_super()
 @admin.route("/admin-super/dashboard", methods=["GET"])
 @login_required
 def admin_dashboard_show():

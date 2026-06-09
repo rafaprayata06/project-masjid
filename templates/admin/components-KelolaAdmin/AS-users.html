@@ -244,143 +244,220 @@
   <div class="ka-table-wrap">
     <table class="ka-table">
       <thead>
-        <tr>
-          <th>Admin</th>
-          <th>NIM</th>
-          <th>Role</th>
-          <th>Status</th>
-          <th>Login Terakhir</th>
-          <th></th>
-        </tr>
+      <tr class="text-center">
+    <th>Admin</th>
+    <th>NIM</th>
+    <th>Jurusan</th>
+    <th>Jenis Kelamin</th>
+    <th>Role</th>
+    <th>Status Akun</th>
+    <th>Aksi</th>
+</tr>
       </thead>
-      <tbody id="adminTableBody">
-        <tr data-role="Admin Super" data-status="Aktif" data-name="Ahmad Saputra S.Kom." data-nim="2021103045">
-          <td>
-            <div class="admin-cell">
-              <div class="avatar av-orange">AS</div>
-              <div>
-                <div class="admin-name">Ahmad Saputra, S.Kom.</div>
-                <div class="admin-email">ahmad.saputra@albayan.id</div>
-              </div>
+      <tbody id="adminTableBody">z
+{% for user in users %}
+<tr>
+
+    <td>{{ user.name }}</td>
+
+    <td>{{ user.nim }}</td>
+
+    <td>{{ user.jurusan or '-' }}</td>
+
+    <td>{{ user.jenis_kelamin or '-' }}</td>
+
+    <td>
+        {% if user.role == "AS" %}
+            <span class="badge bg-primary">Admin Super</span>
+
+        {% elif user.role == "AK" %}
+            <span class="badge bg-success">Admin Keuangan</span>
+
+        {% elif user.role == "AH" %}
+            <span class="badge bg-info text-dark">Admin Humas</span>
+        {% endif %}
+    </td>
+
+    <td>
+        {% if user.active == 1 %}
+            <span class="badge bg-success">Aktif</span>
+
+        {% elif user.active == 0 %}
+            <span class="badge bg-warning text-dark">
+                Belum Verifikasi
+            </span>
+
+        {% elif user.active == 2 %}
+            <span class="badge bg-danger">
+                Nonaktif
+            </span>
+        {% endif %}
+    </td>
+
+    <td>
+        <div class="action-btns">
+{% if user.role == "AS" %}
+<span
+    data-bs-toggle="tooltip"
+    data-bs-placement="top"
+    title="Admin Super tidak dapat diedit">
+
+    <button
+        class="act-btn"
+        disabled
+        style="pointer-events:none;opacity:.5;">
+        ✏️
+    </button>
+
+</span>
+{% else %}
+<button
+    class="act-btn"
+    title="Edit"
+    data-bs-toggle="modal"
+    data-bs-target="#modalEditUser"
+    data-nim="{{ user.nim }}"
+    data-name="{{ user.name }}"
+    data-role="{{ user.role }}"
+    data-active="{{ user.active }}">
+    ✏️
+</button>
+{% endif %}
+            
+        </div>
+    </td>
+
+    <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const tooltipTriggerList = document.querySelectorAll(
+        '[data-bs-toggle="tooltip"]'
+    );
+
+    [...tooltipTriggerList].map(
+        tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl)
+    );
+});
+</script>
+<div class="modal fade" id="modalEditUser" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content"
+             style="border-radius:24px;border:none;box-shadow:0 10px 40px rgba(0,0,0,.1);">
+
+            <div class="modal-header border-0 pt-4 px-4 pb-0">
+                <h5 class="fw-bold">Edit User</h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"></button>
             </div>
-          </td>
-          <td><span class="nim">2021103045</span></td>
-          <td><span class="badge badge-super">Admin Super</span></td>
-          <td><span class="status-badge status-aktif">Aktif</span></td>
-          <td>
-            <div class="login-time">Sekarang</div>
-            <div class="login-sub">Sesi berjalan</div>
-          </td>
-          <td>
-            <div class="action-btns">
-              <button class="act-btn" title="Edit" onclick="editAdmin(this)">✏️</button>
-              <button class="act-btn" title="Reset password" onclick="resetPwd(this)">🔒</button>
-            </div>
-          </td>
-        </tr>
-        <tr data-role="Admin Keuangan" data-status="Aktif" data-name="Siti Aminah S.E." data-nim="2021104088">
-          <td>
-            <div class="admin-cell">
-              <div class="avatar av-peach">SA</div>
-              <div>
-                <div class="admin-name">Siti Aminah, S.E.</div>
-                <div class="admin-email">siti.aminah@albayan.id</div>
-              </div>
-            </div>
-          </td>
-          <td><span class="nim">2021104088</span></td>
-          <td><span class="badge badge-keuangan">Admin Keuangan</span></td>
-          <td><span class="status-badge status-aktif">Aktif</span></td>
-          <td>
-            <div class="login-time">5 menit lalu</div>
-            <div class="login-sub">Chrome · macOS</div>
-          </td>
-          <td>
-            <div class="action-btns">
-              <button class="act-btn" title="Edit" onclick="editAdmin(this)">✏️</button>
-              <button class="act-btn" title="Reset password" onclick="resetPwd(this)">🔒</button>
-              <button class="act-btn del" title="Hapus" onclick="deleteAdmin(this)">🗑️</button>
-            </div>
-          </td>
-        </tr>
-        <tr data-role="Admin Humas" data-status="Aktif" data-name="Hamidah Muslimah" data-nim="2020101012">
-          <td>
-            <div class="admin-cell">
-              <div class="avatar av-brown">HM</div>
-              <div>
-                <div class="admin-name">Hamidah Muslimah</div>
-                <div class="admin-email">hamidah@albayan.id</div>
-              </div>
-            </div>
-          </td>
-          <td><span class="nim">2020101012</span></td>
-          <td><span class="badge badge-humas">Admin Humas</span></td>
-          <td><span class="status-badge status-aktif">Aktif</span></td>
-          <td>
-            <div class="login-time">2 jam lalu</div>
-            <div class="login-sub">Safari · iPhone</div>
-          </td>
-          <td>
-            <div class="action-btns">
-              <button class="act-btn" title="Edit" onclick="editAdmin(this)">✏️</button>
-              <button class="act-btn" title="Reset password" onclick="resetPwd(this)">🔒</button>
-              <button class="act-btn del" title="Hapus" onclick="deleteAdmin(this)">🗑️</button>
-            </div>
-          </td>
-        </tr>
-        <tr data-role="Admin Keuangan" data-status="Nonaktif" data-name="Rizki Ananda" data-nim="2021104090">
-          <td>
-            <div class="admin-cell">
-              <div class="avatar av-rust">RA</div>
-              <div>
-                <div class="admin-name">Rizki Ananda</div>
-                <div class="admin-email">rizki.ananda@albayan.id</div>
-              </div>
-            </div>
-          </td>
-          <td><span class="nim">2021104090</span></td>
-          <td><span class="badge badge-keuangan">Admin Keuangan</span></td>
-          <td><span class="status-badge status-nonaktif">Nonaktif</span></td>
-          <td>
-            <div class="login-time">9 hari lalu</div>
-            <div class="login-sub">Belum login lagi</div>
-          </td>
-          <td>
-            <div class="action-btns">
-              <button class="act-btn" title="Edit" onclick="editAdmin(this)">✏️</button>
-              <button class="act-btn approve" title="Aktifkan" onclick="activateAdmin(this)">✓</button>
-            </div>
-          </td>
-        </tr>
-        <tr data-role="Admin Humas" data-status="Pending" data-name="Maulida Fitri" data-nim="2022105001">
-          <td>
-            <div class="admin-cell">
-              <div class="avatar av-teal">MF</div>
-              <div>
-                <div class="admin-name">Maulida Fitri</div>
-                <div class="admin-email">maulida@albayan.id</div>
-              </div>
-            </div>
-          </td>
-          <td><span class="nim">2022105001</span></td>
-          <td><span class="badge badge-humas">Admin Humas</span></td>
-          <td><span class="status-badge status-pending">Pending</span></td>
-          <td>
-            <div class="login-time">Belum pernah</div>
-            <div class="login-sub">Undangan terkirim</div>
-          </td>
-          <td>
-            <div class="action-btns">
-              <button class="act-btn" title="Edit" onclick="editAdmin(this)">✏️</button>
-              <button class="act-btn del" title="Batalkan undangan" onclick="deleteAdmin(this)">🗑️</button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
+
+            <form id="formEditUser" method="POST">
+
+                <div class="modal-body px-4 py-4">
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">
+                            NAMA
+                        </label>
+
+                        <input type="text"
+                               id="editName"
+                               class="form-control bg-light border-0"
+                               readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">
+                            ROLE
+                        </label>
+
+                        <select
+                            name="role"
+                            id="editRole"
+                            class="form-select bg-light border-0">
+
+                            <option value="">Tanpa Role</option>
+                            <option value="AH">Admin Humas</option>
+                            <option value="AK">Admin Keuangan</option>
+                            <option value="AS">Admin Super</option>
+
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted">
+                            STATUS AKUN
+                        </label>
+
+                        <select
+                            name="active"
+                            id="editActive"
+                            class="form-select bg-light border-0">
+
+                            <option value="0">Belum Verifikasi</option>
+                            <option value="1">Aktif</option>
+                            <option value="2">Nonaktif</option>
+
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer border-0 px-4 pb-4">
+                    <button type="button"
+                            class="btn text-muted"
+                            data-bs-dismiss="modal">
+                        Batal
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        Simpan Perubahan
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+</tr>
+{% endfor %}
+</tbody>
     </table>
   </div>
 </div>
 
+<script>
+const modalEditUser = document.getElementById('modalEditUser');
+
+modalEditUser.addEventListener('show.bs.modal', function (event) {
+
+    const button = event.relatedTarget;
+
+    const nim = button.getAttribute('data-nim');
+    const name = button.getAttribute('data-name');
+    const role = button.getAttribute('data-role');
+    const active = button.getAttribute('data-active');
+
+    document.getElementById('editName').value = name;
+    document.getElementById('editRole').value = role;
+    document.getElementById('editActive').value = active;
+
+    document.getElementById('formEditUser').action =
+        `/admin-super/users/update/${nim}`;
+
+    // Admin Super tidak boleh mengubah dirinya sendiri
+    if (
+        nim === "{{ current_user.nim }}" &&
+        role === "AS"
+    ) {
+        document.getElementById('editRole').disabled = true;
+    } else {
+        document.getElementById('editRole').disabled = false;
+    }
+});
+</script>
 <script>
   function filterTable() {
     const search = document.getElementById('searchInput').value.toLowerCase();

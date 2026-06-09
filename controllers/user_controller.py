@@ -90,7 +90,6 @@ def register_user():
 # ================= LOGIN PAGE =================
 def show_login():
     return render_template("auth/login.html")
-
 def login_system():
     if request.method == 'POST':
         nim = str(request.form.get('nim')).strip()
@@ -99,23 +98,28 @@ def login_system():
         user = User.query.filter_by(nim=nim).first()
 
         if user and check_password_hash(user.password, password):
+
+            # CEK STATUS DULU SEBELUM LOGIN
+            if int(user.active) == 2:
+                flash("Akun kamu sedang tidak aktif!", "error")
+                return redirect('/login')
+
             login_user(user)
 
             role = user.role.strip() if user.role else None
 
-            if user.active == 2:
-                flash("Akun kamu sedang tidak aktif!", "error")
-                return redirect('/login')
-
             if role == 'AS':
                 flash("Selamat datang, Admin Super!", "success")
                 return redirect('/admin-super/users')
+
             elif role == 'AK':
                 flash("Selamat datang, Admin Keuangan!", "success")
                 return redirect('/admin-keuangan')
+
             elif role == 'AH':
                 flash("Selamat datang, Admin Humas!", "success")
                 return redirect('/admin-humas/news')
+
             else:
                 flash("Role tidak dikenali!", "error")
                 return redirect('/login')
@@ -124,8 +128,6 @@ def login_system():
         return redirect('/login')
 
     return render_template("auth/login.html")
-
-
 # ================= LOGOUT =================
 @login_required
 def logout_system():

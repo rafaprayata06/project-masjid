@@ -30,7 +30,7 @@ def admin_super():
         ).all()
 
     is_empty = len(users) == 0
-    return render_template("admin/AS-users.html", user=current_user,users=users, is_empty=is_empty)
+    return render_template("admin/components-KelolaAdmin/AS-users.html", user=current_user,users=users, is_empty=is_empty)
 
 def update_user_controller(nim):
     user = User.query.get_or_404(nim)
@@ -47,6 +47,8 @@ def update_user_controller(nim):
         flash("Role tidak valid", "error")
         return redirect("/admin-super/users")
 
+    if user.role == "AS":
+        flash("Admin Super tidak dapat diubah", "error")
     # UPDATE
     user.role = role if role != "" else None
     user.active = int(active)
@@ -54,7 +56,7 @@ def update_user_controller(nim):
     db.session.commit()
 
     flash("User berhasil diupdate", "success")
-    return redirect("/admin-super/users")
+    return redirect("/admin-super/kelola-admin")
 
 @login_required
 def admin_humas():
