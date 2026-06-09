@@ -1,0 +1,25 @@
+{% extends 'layouts/admin_base.html' %}
+
+{% block breadcrumb %}Dashboard Al-Bayan{% endblock %}
+
+{% block admin_content %}
+<div class="container-fluid px-0">
+    
+    <div class="row mb-4">
+        <div class="col-12">
+            {% include 'admin/components-AS/quick_actions.html' %}
+        </div>
+    </div>
+
+    {% include 'admin/components-AS/stats_cards.html' %}
+    {% include 'admin/components-AS/charts_main.html' %}
+    {% include 'admin/components-AS/bottom_sections.html' %}
+    
+
+
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+    {% include 'admin/components-AS/scripts_dashboard.html' %}
+{% endblock %}

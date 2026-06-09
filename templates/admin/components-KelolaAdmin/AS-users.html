@@ -1,0 +1,413 @@
+{% extends "layouts/admin_base.html" %}
+{% block title %}Kelola Admin{% endblock %}
+
+{% block admin_content %}
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .ka-page { font-family: 'Inter', sans-serif; color: #1a1a1a; padding: 32px 36px; background: #faf9f7; min-height: 100vh; }
+
+  .ka-breadcrumb { font-size: 12px; color: #aaa; margin-bottom: 6px; }
+  .ka-breadcrumb span { color: #888; }
+  .ka-breadcrumb span.active { color: #1a1a1a; font-weight: 500; }
+
+  .ka-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+  .ka-header h1 { font-size: 26px; font-weight: 700; color: #111; }
+
+  .ka-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .stat-card {
+    background: #fff; border: 1px solid #ede9e4; border-radius: 14px;
+    padding: 20px 22px; position: relative;
+  }
+  .stat-card-label { font-size: 10px; font-weight: 600; letter-spacing: .08em; color: #aaa; text-transform: uppercase; margin-bottom: 10px; }
+  .stat-card-icon {
+    position: absolute; top: 18px; right: 18px;
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  .stat-card-icon.red    { background: #fdecea; color: #e05a4a; }
+  .stat-card-icon.green  { background: #e6f7ed; color: #34a853; }
+  .stat-card-icon.yellow { background: #fef9e6; color: #f5a623; }
+  .stat-card-icon.blue   { background: #eef2ff; color: #5b7bf5; }
+  .stat-card-number { font-size: 30px; font-weight: 700; color: #111; line-height: 1; }
+  .stat-card-unit   { font-size: 12px; color: #888; margin-left: 4px; }
+  .stat-card-sub    { font-size: 11px; color: #bbb; margin-top: 4px; }
+
+  .ka-roles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px; }
+  .role-card {
+    background: #fff; border: 1px solid #ede9e4; border-radius: 14px; padding: 22px 24px;
+  }
+  .role-card-head { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+  .role-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center; font-size: 20px;
+  }
+  .role-icon.orange   { background: #e07a3a; color: #fff; }
+  .role-icon.teal     { background: #e6f4f1; color: #2da08a; }
+  .role-icon.lavender { background: #eeedf8; color: #7c6fd4; }
+  .role-card-title  { font-size: 15px; font-weight: 700; color: #111; }
+  .role-card-count  { font-size: 12px; color: #999; }
+  .role-card-perms  { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .role-card-perms li { font-size: 12.5px; color: #444; display: flex; align-items: center; gap: 7px; }
+  .role-card-perms li .check { color: #34a853; font-size: 13px; }
+  .role-card-perms li .cross { color: #e05a4a; font-size: 13px; }
+
+  .ka-filter { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .ka-filter-search {
+    display: flex; align-items: center; gap: 8px;
+    border: 1px solid #e0dbd4; border-radius: 8px; background: #fff;
+    padding: 8px 14px; flex: 1; max-width: 280px;
+  }
+  .ka-filter-search input { border: none; outline: none; font-size: 13px; color: #444; background: transparent; width: 100%; }
+  .ka-filter-search .icon { color: #bbb; font-size: 14px; }
+  .ka-filter select {
+    border: 1px solid #e0dbd4; border-radius: 8px; background: #fff;
+    padding: 8px 12px; font-size: 13px; color: #444; cursor: pointer; outline: none;
+  }
+  .ka-filter-count { margin-left: auto; font-size: 12px; color: #999; }
+
+  .ka-table-wrap { background: #fff; border: 1px solid #ede9e4; border-radius: 14px; overflow: hidden; }
+  .ka-table { width: 100%; border-collapse: collapse; }
+  .ka-table thead tr { background: #faf9f7; }
+  .ka-table thead th {
+    text-align: left; font-size: 10px; font-weight: 600;
+    letter-spacing: .08em; color: #aaa; text-transform: uppercase;
+    padding: 13px 18px; border-bottom: 1px solid #ede9e4;
+  }
+  .ka-table tbody tr { border-bottom: 1px solid #f3f0eb; transition: background .15s; }
+  .ka-table tbody tr:last-child { border-bottom: none; }
+  .ka-table tbody tr:hover { background: #fdfcfa; }
+  .ka-table tbody td { padding: 14px 18px; vertical-align: middle; font-size: 13px; }
+
+  .admin-cell { display: flex; align-items: center; gap: 12px; }
+  .avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0;
+  }
+  .av-orange { background: #e07a3a; }
+  .av-peach  { background: #f0a07a; }
+  .av-brown  { background: #b07050; }
+  .av-rust   { background: #c85a30; }
+  .av-teal   { background: #3aafa9; }
+  .admin-name  { font-weight: 600; color: #111; font-size: 13px; }
+  .admin-email { font-size: 11px; color: #aaa; }
+
+  .nim { font-weight: 600; color: #333; font-size: 13px; }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+  }
+  .badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+  .badge-super::before    { background: #e07a3a; }
+  .badge-keuangan::before { background: #2da08a; }
+  .badge-humas::before    { background: #7c6fd4; }
+  .badge-super    { background: #fff3ec; color: #c96930; }
+  .badge-keuangan { background: #e6f4f1; color: #2da08a; }
+  .badge-humas    { background: #eeedf8; color: #7c6fd4; }
+
+  .status-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+  }
+  .status-badge::before   { content: ''; width: 6px; height: 6px; border-radius: 50%; }
+  .status-aktif::before   { background: #34a853; }
+  .status-nonaktif::before{ background: #e05a4a; }
+  .status-pending::before { background: #f5a623; }
+  .status-aktif    { background: #e6f7ed; color: #34a853; }
+  .status-nonaktif { background: #fdecea; color: #e05a4a; }
+  .status-pending  { background: #fef9e6; color: #f5a623; }
+
+  .login-time { font-size: 12.5px; font-weight: 600; color: #111; }
+  .login-sub  { font-size: 11px; color: #aaa; }
+
+  .action-btns { display: flex; align-items: center; gap: 6px; }
+  .act-btn {
+    width: 30px; height: 30px; border-radius: 7px; border: 1px solid #e0dbd4;
+    background: #fff; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; cursor: pointer; color: #777; transition: all .15s;
+  }
+  .act-btn:hover         { border-color: #e07a3a; color: #e07a3a; background: #fff8f4; }
+  .act-btn.del:hover     { border-color: #e05a4a; color: #e05a4a; background: #fdecea; }
+  .act-btn.approve:hover { border-color: #34a853; color: #34a853; background: #e6f7ed; }
+
+  @media (max-width: 900px) {
+    .ka-stats { grid-template-columns: repeat(2,1fr); }
+    .ka-roles { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="ka-page">
+  <div class="ka-breadcrumb">Beranda · Admin · <span class="active">Kelola Admin</span></div>
+
+  <div class="ka-header">
+    <h1>Kelola Admin</h1>
+  </div>
+
+  <!-- Stat Cards -->
+  <div class="ka-stats">
+    <div class="stat-card">
+      <div class="stat-card-label">Total Admin</div>
+      <div class="stat-card-icon red">👥</div>
+      <div><span class="stat-card-number">5</span><span class="stat-card-unit">akun</span></div>
+      <div class="stat-card-sub">3 role berbeda</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Sedang Aktif</div>
+      <div class="stat-card-icon green">✓</div>
+      <div><span class="stat-card-number">4</span><span class="stat-card-unit">online</span></div>
+      <div class="stat-card-sub">1 belum login 7 hari</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Menunggu Aktivasi</div>
+      <div class="stat-card-icon yellow">⏳</div>
+      <div><span class="stat-card-number">1</span><span class="stat-card-unit">undangan</span></div>
+      <div class="stat-card-sub">Dikirim ke 2022×××××</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Admin Super</div>
+      <div class="stat-card-icon blue">★</div>
+      <div><span class="stat-card-number">1</span><span class="stat-card-unit">akun</span></div>
+      <div class="stat-card-sub">Akses penuh sistem</div>
+    </div>
+  </div>
+
+  <!-- Role Cards -->
+  <div class="ka-roles">
+    <div class="role-card">
+      <div class="role-card-head">
+        <div class="role-icon orange">★</div>
+        <div>
+          <div class="role-card-title">Admin Super</div>
+          <div class="role-card-count">1 akun</div>
+        </div>
+      </div>
+      <ul class="role-card-perms">
+        <li><span class="check">✓</span> Akses semua modul</li>
+        <li><span class="check">✓</span> Kelola admin &amp; role</li>
+        <li><span class="check">✓</span> Pengaturan sistem</li>
+      </ul>
+    </div>
+    <div class="role-card">
+      <div class="role-card-head">
+        <div class="role-icon teal">💳</div>
+        <div>
+          <div class="role-card-title">Admin Keuangan</div>
+          <div class="role-card-count">2 akun</div>
+        </div>
+      </div>
+      <ul class="role-card-perms">
+        <li><span class="check">✓</span> Kelola transaksi keuangan</li>
+        <li><span class="check">✓</span> Verifikasi &amp; laporan</li>
+        <li><span class="cross">✕</span> Kelola berita &amp; admin</li>
+      </ul>
+    </div>
+    <div class="role-card">
+      <div class="role-card-head">
+        <div class="role-icon lavender">📋</div>
+        <div>
+          <div class="role-card-title">Admin Humas</div>
+          <div class="role-card-count">2 akun</div>
+        </div>
+      </div>
+      <ul class="role-card-perms">
+        <li><span class="check">✓</span> Kelola berita &amp; galeri</li>
+        <li><span class="check">✓</span> Kelola jadwal imam</li>
+        <li><span class="cross">✕</span> Kelola keuangan &amp; admin</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Filter Bar -->
+  <div class="ka-filter">
+    <div class="ka-filter-search">
+      <span class="icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Cari nama atau NIM..." oninput="filterTable()">
+    </div>
+    <select id="filterRole" onchange="filterTable()">
+      <option value="">Semua Role</option>
+      <option value="Admin Super">Admin Super</option>
+      <option value="Admin Keuangan">Admin Keuangan</option>
+      <option value="Admin Humas">Admin Humas</option>
+    </select>
+    <select id="filterStatus" onchange="filterTable()">
+      <option value="">Semua Status</option>
+      <option value="Aktif">Aktif</option>
+      <option value="Nonaktif">Nonaktif</option>
+      <option value="Pending">Pending</option>
+    </select>
+    <span class="ka-filter-count" id="filterCount">5 admin terdaftar</span>
+  </div>
+
+  <!-- Table -->
+  <div class="ka-table-wrap">
+    <table class="ka-table">
+      <thead>
+        <tr>
+          <th>Admin</th>
+          <th>NIM</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>Login Terakhir</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="adminTableBody">
+        <tr data-role="Admin Super" data-status="Aktif" data-name="Ahmad Saputra S.Kom." data-nim="2021103045">
+          <td>
+            <div class="admin-cell">
+              <div class="avatar av-orange">AS</div>
+              <div>
+                <div class="admin-name">Ahmad Saputra, S.Kom.</div>
+                <div class="admin-email">ahmad.saputra@albayan.id</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="nim">2021103045</span></td>
+          <td><span class="badge badge-super">Admin Super</span></td>
+          <td><span class="status-badge status-aktif">Aktif</span></td>
+          <td>
+            <div class="login-time">Sekarang</div>
+            <div class="login-sub">Sesi berjalan</div>
+          </td>
+          <td>
+            <div class="action-btns">
+              <button class="act-btn" title="Edit" onclick="editAdmin(this)">✏️</button>
+              <button class="act-btn" title="Reset password" onclick="resetPwd(this)">🔒</button>
+            </div>
+          </td>
+        </tr>
+        <tr data-role="Admin Keuangan" data-status="Aktif" data-name="Siti Aminah S.E." data-nim="2021104088">
+          <td>
+            <div class="admin-cell">
+              <div class="avatar av-peach">SA</div>
+              <div>
+                <div class="admin-name">Siti Aminah, S.E.</div>
+                <div class="admin-email">siti.aminah@albayan.id</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="nim">2021104088</span></td>
+          <td><span class="badge badge-keuangan">Admin Keuangan</span></td>
+          <td><span class="status-badge status-aktif">Aktif</span></td>
+          <td>
+            <div class="login-time">5 menit lalu</div>
+            <div class="login-sub">Chrome · macOS</div>
+          </td>
+          <td>
+            <div class="action-btns">
+              <button class="act-btn" title="Edit" onclick="editAdmin(this)">✏️</button>
+              <button class="act-btn" title="Reset password" onclick="resetPwd(this)">🔒</button>
+              <button class="act-btn del" title="Hapus" onclick="deleteAdmin(this)">🗑️</button>
+            </div>
+          </td>
+        </tr>
+        <tr data-role="Admin Humas" data-status="Aktif" data-name="Hamidah Muslimah" data-nim="2020101012">
+          <td>
+            <div class="admin-cell">
+              <div class="avatar av-brown">HM</div>
+              <div>
+                <div class="admin-name">Hamidah Muslimah</div>
+                <div class="admin-email">hamidah@albayan.id</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="nim">2020101012</span></td>
+          <td><span class="badge badge-humas">Admin Humas</span></td>
+          <td><span class="status-badge status-aktif">Aktif</span></td>
+          <td>
+            <div class="login-time">2 jam lalu</div>
+            <div class="login-sub">Safari · iPhone</div>
+          </td>
+          <td>
+            <div class="action-btns">
+              <button class="act-btn" title="Edit" onclick="editAdmin(this)">✏️</button>
+              <button class="act-btn" title="Reset password" onclick="resetPwd(this)">🔒</button>
+              <button class="act-btn del" title="Hapus" onclick="deleteAdmin(this)">🗑️</button>
+            </div>
+          </td>
+        </tr>
+        <tr data-role="Admin Keuangan" data-status="Nonaktif" data-name="Rizki Ananda" data-nim="2021104090">
+          <td>
+            <div class="admin-cell">
+              <div class="avatar av-rust">RA</div>
+              <div>
+                <div class="admin-name">Rizki Ananda</div>
+                <div class="admin-email">rizki.ananda@albayan.id</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="nim">2021104090</span></td>
+          <td><span class="badge badge-keuangan">Admin Keuangan</span></td>
+          <td><span class="status-badge status-nonaktif">Nonaktif</span></td>
+          <td>
+            <div class="login-time">9 hari lalu</div>
+            <div class="login-sub">Belum login lagi</div>
+          </td>
+          <td>
+            <div class="action-btns">
+              <button class="act-btn" title="Edit" onclick="editAdmin(this)">✏️</button>
+              <button class="act-btn approve" title="Aktifkan" onclick="activateAdmin(this)">✓</button>
+            </div>
+          </td>
+        </tr>
+        <tr data-role="Admin Humas" data-status="Pending" data-name="Maulida Fitri" data-nim="2022105001">
+          <td>
+            <div class="admin-cell">
+              <div class="avatar av-teal">MF</div>
+              <div>
+                <div class="admin-name">Maulida Fitri</div>
+                <div class="admin-email">maulida@albayan.id</div>
+              </div>
+            </div>
+          </td>
+          <td><span class="nim">2022105001</span></td>
+          <td><span class="badge badge-humas">Admin Humas</span></td>
+          <td><span class="status-badge status-pending">Pending</span></td>
+          <td>
+            <div class="login-time">Belum pernah</div>
+            <div class="login-sub">Undangan terkirim</div>
+          </td>
+          <td>
+            <div class="action-btns">
+              <button class="act-btn" title="Edit" onclick="editAdmin(this)">✏️</button>
+              <button class="act-btn del" title="Batalkan undangan" onclick="deleteAdmin(this)">🗑️</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  function filterTable() {
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    const role   = document.getElementById('filterRole').value;
+    const status = document.getElementById('filterStatus').value;
+    const rows   = document.querySelectorAll('#adminTableBody tr');
+    let visible  = 0;
+    rows.forEach(row => {
+      const match =
+        (row.dataset.name.toLowerCase().includes(search) || row.dataset.nim.includes(search)) &&
+        (!role   || row.dataset.role   === role)   &&
+        (!status || row.dataset.status === status);
+      row.style.display = match ? '' : 'none';
+      if (match) visible++;
+    });
+    document.getElementById('filterCount').textContent = visible + ' admin terdaftar';
+  }
+
+  function editAdmin(btn)     { alert('Fitur edit – sambungkan ke backend.'); }
+  function resetPwd(btn)      { if (confirm('Reset password admin ini?')) alert('Link reset dikirim.'); }
+  function deleteAdmin(btn)   { if (confirm('Hapus admin ini?')) btn.closest('tr').style.opacity = '.4'; }
+  function activateAdmin(btn) {
+    if (confirm('Aktifkan akun ini?')) {
+      const badge = btn.closest('tr').querySelector('.status-badge');
+      badge.textContent = 'Aktif';
+      badge.className = 'status-badge status-aktif';
+    }
+  }
+</script>
+{% endblock admin_content %}

@@ -52,9 +52,8 @@
                     </a>
 
                     <div class="menu-section-label">Administrasi</div>
-                    <a href="/admin-super/users" class="menu-item {{ 'active' if '/users' in request.path else '' }}">
-                        <i class="bi bi-people"></i> Kelola Admin
-                    </a>
+                    <a href="{{ url_for('admin.admin_super_kelola_admin') }}" class="menu-item {{ 'active' if '/kelola-admin' in request.path else '' }}"><i class="bi bi-people"></i> Kelola Admin
+                     </a>
                     <a href="/admin-super/settings" class="menu-item {{ 'active' if '/settings' in request.path else '' }}">
                         <i class="bi bi-gear"></i> Pengaturan
                     </a>

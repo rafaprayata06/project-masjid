@@ -12,10 +12,15 @@ admin = Blueprint('admin', __name__)
 # BAGIAN ADMIN SUPER (Udah Fix, Gak Bakal Bentrok)
 # ====================================================================
 
+@admin.route("/admin-super/kelola-admin", methods=["GET"])
+@login_required
+def admin_super_kelola_admin():
+    return render_template("admin/components-KelolaAdmin/AS-users.html", user=current_user)
+
 @admin.route("/admin-super/dashboard", methods=["GET"])
 @login_required
 def admin_dashboard_show():
-    return render_template("admin/AS-users.html", user=current_user)
+    return render_template("admin/AS.htmL", user=current_user)
 
 @admin.route("/admin-super/finance", methods=["GET"])
 @login_required
