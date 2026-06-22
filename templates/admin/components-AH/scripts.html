@@ -28,79 +28,94 @@ document.addEventListener("DOMContentLoaded", function() {
             const penulis  = this.getAttribute('data-penulis');
             const views    = this.getAttribute('data-views');
 
-            document.getElementById('p_judul_text').innerText = judul;
-            document.getElementById('p_excerpt_text').innerText = excerpt;
-            document.getElementById('p_isi_text').innerText = isi;
-            document.getElementById('p_kategori_text').innerText = kategori;
-            document.getElementById('p_lokasi_text').innerText = lokasi || '-';
-            document.getElementById('p_meta_top').innerText = `Diedit: ${tanggal} oleh ${penulis} · ${views} views`;
-            document.getElementById('p_status_text').innerText = status === 'publish' ? 'Publish (publik)' : 'Draft';
-            document.getElementById('btnPratinjau').href = `/berita/${id}`;
+            if(document.getElementById('p_judul_text')) document.getElementById('p_judul_text').innerText = judul;
+            if(document.getElementById('p_excerpt_text')) document.getElementById('p_excerpt_text').innerText = excerpt;
+            if(document.getElementById('p_isi_text')) document.getElementById('p_isi_text').innerText = isi;
+            if(document.getElementById('p_kategori_text')) document.getElementById('p_kategori_text').innerText = kategori;
+            if(document.getElementById('p_lokasi_text')) document.getElementById('p_lokasi_text').innerText = lokasi || '-';
+            if(document.getElementById('p_meta_top')) document.getElementById('p_meta_top').innerText = `Diedit: ${tanggal} oleh ${penulis} · ${views} views`;
+            if(document.getElementById('p_status_text')) document.getElementById('p_status_text').innerText = status === 'publish' ? 'Publish (publik)' : 'Draft';
+            if(document.getElementById('btnPratinjau')) document.getElementById('btnPratinjau').href = `/berita/${id}`;
 
             const badge = document.getElementById('p_status_badge');
-            badge.innerText = status === 'publish' ? '🟢 Publish' : '⚪ Draft';
-            badge.className = status === 'publish' ? 'badge-live' : 'badge-draft-list';
+            if (badge) {
+                badge.innerText = status === 'publish' ? '🟢 Publish' : '⚪ Draft';
+                badge.className = status === 'publish' ? 'badge-live' : 'badge-draft-list';
+            }
 
             const banner = document.getElementById('p_banner');
             const placeholder = document.getElementById('p_cover_placeholder');
-            if (imgUrl) {
-                banner.src = imgUrl;
-                banner.classList.remove('d-none');
-                placeholder.classList.add('d-none');
-            } else {
-                banner.classList.add('d-none');
-                placeholder.classList.remove('d-none');
+            if (banner && placeholder) {
+                if (imgUrl) {
+                    banner.src = imgUrl;
+                    banner.classList.remove('d-none');
+                    placeholder.classList.add('d-none');
+                } else {
+                    banner.classList.add('d-none');
+                    placeholder.classList.remove('d-none');
+                }
             }
 
-            document.getElementById('btnSimpanDraft').dataset.id = id;
-            document.getElementById('btnPublikasi').dataset.id = id;
+            if(document.getElementById('btnSimpanDraft')) document.getElementById('btnSimpanDraft').dataset.id = id;
+            if(document.getElementById('btnPublikasi')) document.getElementById('btnPublikasi').dataset.id = id;
 
             // SISTEM PEMINDAHAN DATA KE FORM EDIT SAAT TOMBOL EDIT DIKLIK
-            document.getElementById('btnEditAction').onclick = function() {
-                // Ubah status ke mode edit agar validasi gambar melonggar
-                modeForm = 'edit';
-                
-                const collapseElement = document.getElementById('formBeritaSection');
-                const collapse = new bootstrap.Collapse(collapseElement, { toggle: false });
-                collapse.show();
-                
-                document.getElementById('formTitle').innerText = 'Edit Data Berita';
-                if(formBerita) formBerita.action = `/admin-humas/news/update/${id}`;
-                if(formBerita) formBerita.classList.remove('was-validated'); 
+            const btnEdit = document.getElementById('btnEditAction');
+            if (btnEdit) {
+                btnEdit.onclick = function() {
+                    modeForm = 'edit';
+                    
+                    const collapseElement = document.getElementById('formBeritaSection');
+                    if (collapseElement) {
+                        const collapse = new bootstrap.Collapse(collapseElement, { toggle: false });
+                        collapse.show();
+                    }
+                    
+                    if(document.getElementById('formTitle')) document.getElementById('formTitle').innerText = 'Edit Data Berita';
+                    if(formBerita) formBerita.action = `/admin-humas/news/update/${id}`;
+                    if(formBerita) formBerita.classList.remove('was-validated'); 
 
-                const fileInput = document.getElementById('fileInput');
-                if (fileInput) {
-                    fileInput.classList.remove('is-invalid');
-                    fileInput.setCustomValidity('');
-                }
+                    const fileInput = document.getElementById('fileInput');
+                    if (fileInput) {
+                        fileInput.classList.remove('is-invalid');
+                        fileInput.setCustomValidity('');
+                    }
 
-                document.getElementById('f_judul').value = judul;
-                document.getElementById('f_kategori').value = kategori;
-                document.getElementById('f_lokasi').value = lokasi;
-                document.getElementById('f_excerpt').value = excerpt;
-                document.getElementById('f_isi').value = isi;
-                document.getElementById('f_tanggal').value = tanggal;
-                document.getElementById('f_status').value = status;
-                document.getElementById('checkFeatured').checked = (featured === 'true');
+                    if(document.getElementById('f_judul')) document.getElementById('f_judul').value = judul;
+                    if(document.getElementById('f_kategori')) document.getElementById('f_kategori').value = kategori;
+                    if(document.getElementById('f_lokasi')) document.getElementById('f_lokasi').value = lokasi;
+                    if(document.getElementById('f_excerpt')) document.getElementById('f_excerpt').value = excerpt;
+                    if(document.getElementById('f_isi')) document.getElementById('f_isi').value = isi;
+                    if(document.getElementById('f_tanggal')) document.getElementById('f_tanggal').value = tanggal;
+                    if(document.getElementById('f_status')) document.getElementById('f_status').value = status;
+                    if(document.getElementById('checkFeatured')) document.getElementById('checkFeatured').checked = (featured === 'true');
 
-                const filePreviewImg = document.getElementById('imagePreview');
-                const filePreviewContainer = document.getElementById('previewContainer');
-                if (imgUrl) {
-                    filePreviewImg.src = imgUrl;
-                    filePreviewContainer.classList.remove('d-none');
-                } else {
-                    filePreviewContainer.classList.add('d-none');
-                }
+                    const filePreviewImg = document.getElementById('imagePreview');
+                    const filePreviewContainer = document.getElementById('previewContainer');
+                    if (filePreviewImg && filePreviewContainer) {
+                        if (imgUrl) {
+                            filePreviewImg.src = imgUrl;
+                            filePreviewContainer.classList.remove('d-none');
+                        } else {
+                            filePreviewContainer.classList.add('d-none');
+                        }
+                    }
 
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            };
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                };
+            }
 
-            emptyState.classList.add('d-none');
+            if(emptyState) emptyState.classList.add('d-none');
+            if (detailState) {
             detailState.classList.remove('d-none');
+            detailState.classList.remove('preview-show');
+            void detailState.offsetWidth;
+            detailState.classList.add('preview-show');
+            }
         });
     });
 
-    // SUB-SCRIPT 2: FORM VALIDASI KUSTOM UNTUK HALAMAN HUMAS (CERDAS & ANTI-MACET)
+    // SUB-SCRIPT 2: FORM VALIDASI KUSTOM UNTUK HALAMAN HUMAS
     if (formBerita) {
         formBerita.addEventListener('submit', function(event) {
             const fileInput = document.getElementById('fileInput');
@@ -111,14 +126,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 fileInput.classList.remove('is-invalid');
                 fileInput.setCustomValidity('');
 
-                // JIKA MODE TULIS BARU: Wajib upload file gambar
                 if (modeForm === 'tulis_baru' && fileInput.files.length === 0) {
                     fileInput.setCustomValidity('Gambar wajib diisi');
                     if (fileFeedback) fileFeedback.innerText = 'Gambar berita wajib diunggah untuk kelengkapan artikel baru.';
                     fileInput.classList.add('is-invalid');
                     isFileValid = false;
                 } 
-                // JIKA USER MEMILIH FILE BARU (Berlaku pas Tulis Baru maupun Edit) -> Cek Syarat File!
                 else if (fileInput.files.length > 0) {
                     const file = fileInput.files[0];
                     const ext = file.name.split('.').pop().toLowerCase();
@@ -128,7 +141,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         if (fileFeedback) fileFeedback.innerText = 'Format gambar harus berupa JPG, JPEG, PNG, atau WEBP.';
                         fileInput.classList.add('is-invalid');
                         isFileValid = false;
-                    } else if (file.size > 2097152) { // 2MB
+                    } else if (file.size > 2097152) {
                         fileInput.setCustomValidity('Ukuran file terlalu besar');
                         if (fileFeedback) fileFeedback.innerText = 'Ukuran file gambar terlalu besar, maksimal berukuran 2MB.';
                         fileInput.classList.add('is-invalid');
@@ -137,12 +150,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             }
 
-            // Gabungkan validasi teks bawaan HTML5 dan kustom file gambar kita
             if (!formBerita.checkValidity() || !isFileValid) {
                 event.preventDefault();
                 event.stopPropagation();
                 
-                // Layar fokus otomatis ke input pertama yang masih kosong/salah
                 const firstInvalid = formBerita.querySelector(':invalid, .is-invalid');
                 if (firstInvalid) {
                     firstInvalid.focus();
@@ -159,57 +170,72 @@ document.addEventListener("DOMContentLoaded", function() {
             this.classList.add('active');
             const status = this.dataset.status;
             cards.forEach(card => {
-                card.classList.toggle('d-none',
+                card.classList.toggle('filtered-out-tab',
                     status !== 'all' && card.dataset.status !== status
                 );
             });
+            currentVisibleCount = itemsPerPage;
+            updateVisibility();
         });
     });
 
     // SUB-SCRIPT 4: REAL-TIME KEYWORD FILTER SEARCH INPUT
-    document.getElementById('searchBerita').addEventListener('input', function() {
-        const kw = this.value.toLowerCase();
-        cards.forEach(card => {
-            card.classList.toggle('d-none', !card.dataset.judul.toLowerCase().includes(kw));
+    const searchInput = document.getElementById('searchBerita');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const kw = this.value.toLowerCase();
+            cards.forEach(card => {
+                card.classList.toggle('filtered-out-search', !card.dataset.judul.toLowerCase().includes(kw));
+            });
+            currentVisibleCount = itemsPerPage;
+            updateVisibility();
         });
-    });
+    }
 
     // SUB-SCRIPT 5: DROPDOWN FILTER KATEGORI BERITA
-    document.getElementById('filterKategori').addEventListener('change', function() {
-        const kat = this.value;
-        cards.forEach(card => {
-            card.classList.toggle('d-none', kat !== '' && card.dataset.kategori !== kat);
+    const filterKat = document.getElementById('filterKategori');
+    if (filterKat) {
+        filterKat.addEventListener('change', function() {
+            const kat = this.value;
+            cards.forEach(card => {
+                card.classList.toggle('filtered-out-cat', kat !== '' && card.dataset.kategori !== kat);
+            });
+            currentVisibleCount = itemsPerPage;
+            updateVisibility();
         });
-    });
+    }
 
     // SUB-SCRIPT 6: MANAJEMEN PRATINJAU GAMBAR DI INPUT FILE FORM
-    const fileInput = document.getElementById('fileInput');
-    if (fileInput) {
-        fileInput.addEventListener('change', function() {
+    const fileInputOpt = document.getElementById('fileInput');
+    if (fileInputOpt) {
+        fileInputOpt.addEventListener('change', function() {
             const file = this.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = e => {
-                    document.getElementById('imagePreview').src = e.target.result;
-                    document.getElementById('previewContainer').classList.remove('d-none');
+                    if(document.getElementById('imagePreview')) document.getElementById('imagePreview').src = e.target.result;
+                    if(document.getElementById('previewContainer')) document.getElementById('previewContainer').classList.remove('d-none');
                 };
                 reader.readAsDataURL(file);
             }
         });
         
-        document.getElementById('removeImage').addEventListener('click', function() {
-            fileInput.value = '';
-            document.getElementById('previewContainer').classList.add('d-none');
-            document.getElementById('imagePreview').src = '#';
-        });
+        const removeImgBtn = document.getElementById('removeImage');
+        if (removeImgBtn) {
+            removeImgBtn.addEventListener('click', function() {
+                fileInputOpt.value = '';
+                if(document.getElementById('previewContainer')) document.getElementById('previewContainer').classList.add('d-none');
+                if(document.getElementById('imagePreview')) document.getElementById('imagePreview').src = '#';
+            });
+        }
     }
 
-    // Pasang fungsi resetFormBerita ke scope window agar tombol "Tulis Berita Baru" di luar file bisa akses
+    // Pasang fungsi resetFormBerita ke scope window
     window.resetFormBerita = function() {
-        modeForm = 'tulis_baru'; // Kembalikan status mode ke tulis baru
+        modeForm = 'tulis_baru';
         const targetForm = document.getElementById('mainFormBerita');
         if (targetForm) {
-            document.getElementById('formTitle').innerText = 'Tulis Artikel Baru';
+            if(document.getElementById('formTitle')) document.getElementById('formTitle').innerText = 'Tulis Artikel Baru';
             targetForm.action = '/admin-humas/news';
             targetForm.reset();
             targetForm.classList.remove('was-validated');
@@ -226,17 +252,68 @@ document.addEventListener("DOMContentLoaded", function() {
         if (previewContainer) previewContainer.classList.add('d-none');
         if (imagePreview) imagePreview.src = '#';
     };
+
+    // ==========================================
+    // LOGIKA MUAT BERITA LAINNYA (LOAD MORE) - FIX TOTAL
+    // ==========================================
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+    const itemsPerPage = 5; // Isikan 5 sesuai keinginan awalmu (Di screenshot beritamu ada 4, tombol otomatis HILANG)
+    let currentVisibleCount = itemsPerPage;
+
+    function updateVisibility() {
+        if (!loadMoreBtn) return;
+
+        // Cari kartu yang sama sekali tidak terkena filter apapun
+        const activeFilterCards = Array.from(cards).filter(card => {
+            return !card.classList.contains('filtered-out-tab') && 
+                   !card.classList.contains('filtered-out-search') && 
+                   !card.classList.contains('filtered-out-cat');
+        });
+
+        // Kontrol tombol muat lainnya
+        if (activeFilterCards.length <= currentVisibleCount) {
+            loadMoreBtn.setAttribute('style', 'display: none !important;');
+        } else {
+            loadMoreBtn.setAttribute('style', 'display: inline-flex !important;');
+        }
+
+        // Tampilkan/sembunyikan card menggunakan style visibility murni agar tidak merusak layout asli admin.css
+        cards.forEach(card => {
+            if (activeFilterCards.includes(card)) {
+                const index = activeFilterCards.indexOf(card);
+                if (index < currentVisibleCount) {
+                    card.style.setProperty('display', '', ''); // Kembalikan ke display css aslinya
+                } else {
+                    card.style.setProperty('display', 'none', 'important');
+                }
+            } else {
+                card.style.setProperty('display', 'none', 'important');
+            }
+        });
+    }
+
+    // Eksekusi pertama kali saat halaman siap
+    updateVisibility();
+
+    if (loadMoreBtn) {
+        loadMoreBtn.addEventListener('click', function() {
+            currentVisibleCount += itemsPerPage;
+            updateVisibility();
+        });
+    }
 });
 
-// SUB-SCRIPT 7: MENGUBAH STATUS SECARA CEPAT VIA FORM GENERATOR DINAMIS
+// SUB-SCRIPT 7: UBAH STATUS VIA FORM DINAMIS
 function ubahStatusBerita(newStatus) {
     const btn = newStatus === 'draft'
         ? document.getElementById('btnSimpanDraft')
         : document.getElementById('btnPublikasi');
-    const id = btn.dataset.id;
+    const id = btn ? btn.dataset.id : null;
     if (!id) return;
 
     const card = document.querySelector('.news-card.aktif');
+    if (!card) return;
+
     const form = document.createElement('form');
     form.method = 'POST';
     form.action = `/admin-humas/news/update/${id}`;

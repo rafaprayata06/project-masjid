@@ -1,4 +1,3 @@
-
 from flask import request, redirect, flash
 from flask_login import current_user
 from werkzeug.utils import secure_filename
@@ -417,3 +416,117 @@ def edit_transaksi(id):
     return redirect(
         "/admin-keuangan/finance"
     )
+
+def search_transaksi_ajax():
+    from flask import jsonify
+
+    q = request.args.get("q", "").strip()
+    jenis = request.args.get("jenis", "")
+    kategori_id = request.args.get("kategori_id", "")
+    bulan = request.args.get("bulan", "")
+    tanggal_awal = request.args.get("tanggal_awal", "")
+    tanggal_akhir = request.args.get("tanggal_akhir", "")
+
+    query = Transaksi.query.join(Kategori)
+
+    # Filter search teks (keterangan & nama kategori)
+    if q:
+        query = query.filter(
+            db.or_(
+                Transaksi.keterangan.ilike(f"%{q}%"),
+                Kategori.nama.ilike(f"%{q}%")
+            )
+        )
+
+    if jenis:
+        query = query.filter(Kategori.jenis == jenis)
+
+    if kategori_id:
+        query = query.filter(Transaksi.kategori_id == int(kategori_id))
+
+    if bulan:
+        query = query.filter(
+            db.extract("month", Transaksi.created_at) == int(bulan)
+        )
+
+    if tanggal_awal:
+        query = query.filter(
+            Transaksi.created_at >= datetime.strptime(tanggal_awal, "%Y-%m-%d")
+        )
+
+    if tanggal_akhir:
+        query = query.filter(
+            Transaksi.created_at <= datetime.strptime(tanggal_akhir, "%Y-%m-%d")
+        )
+
+    transaksi_list = query.order_by(Transaksi.created_at.desc()).limit(50).all()
+
+    hasil = []
+    for t in transaksi_list:
+        hasil.append({
+            "id": t.id,
+            "keterangan": t.keterangan,
+            "jumlah": float(t.jumlah),
+            "jenis": t.kategori.jenis,
+            "kategori": t.kategori.nama,
+            "tanggal": t.created_at.strftime("%d %b - %H:%M"),
+            "bukti": bool(t.bukti_transaksi),
+            "edit_url": f"/admin-keuangan/finance/update/{t.id}",
+            "delete_url": f"/admin-keuangan/finance/delete/{t.id}",
+        })
+
+    return jsonify({"transaksi": hasil, "total": len(hasil)})
+
+def search_transaksi_partial():
+    from flask import render_template, jsonify
+
+    if current_user.role not in ["AK", "AS"]:
+        return jsonify({"error": "Unauthorized"}), 403
+
+    page = request.args.get('page', 1, type=int)
+    q = request.args.get("q", "").strip()
+    jenis = request.args.get("jenis", "")
+    kategori_id = request.args.get("kategori_id", "")
+    bulan = request.args.get("bulan", "")
+    tanggal_awal = request.args.get("tanggal_awal", "")
+    tanggal_akhir = request.args.get("tanggal_akhir", "")
+
+    kategori_list = Kategori.query.order_by(Kategori.nama).all()
+    query = Transaksi.query.join(Kategori)
+
+    if q:
+        query = query.filter(
+            db.or_(
+                Transaksi.keterangan.ilike(f"%{q}%"),
+                Kategori.nama.ilike(f"%{q}%")
+            )
+        )
+    if jenis:
+        query = query.filter(Kategori.jenis == jenis)
+    if kategori_id:
+        query = query.filter(Transaksi.kategori_id == int(kategori_id))
+    if bulan:
+        query = query.filter(db.extract("month", Transaksi.created_at) == int(bulan))
+    if tanggal_awal:
+        query = query.filter(
+            Transaksi.created_at >= datetime.strptime(tanggal_awal, "%Y-%m-%d")
+        )
+    if tanggal_akhir:
+        from datetime import time as dtime
+        tgl_akhir_dt = datetime.strptime(tanggal_akhir, "%Y-%m-%d")
+        query = query.filter(
+            Transaksi.created_at <= datetime.combine(tgl_akhir_dt, dtime.max)
+        )
+
+    pagination = query.order_by(Transaksi.created_at.desc()).paginate(
+        page=page, per_page=10, error_out=False
+    )
+    transaksi_list = pagination.items
+
+    html = render_template(
+        "admin/components-AK/table.html",
+        transaksi_list=transaksi_list,
+        pagination=pagination,
+        kategori_list=kategori_list
+    )
+    return html

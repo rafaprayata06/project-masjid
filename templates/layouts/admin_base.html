@@ -14,6 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <title>{% block title %}Al-Bayan Hub Admin{% endblock %}</title>
+    {% block styles %}{% endblock %}
 </head>
 
 <body>
@@ -35,7 +36,7 @@
                     <a href="{{ url_for('admin.admin_dashboard_show') }}" class="menu-item {{ 'active' if request.path == '/admin-super/dashboard' else '' }}">
                         <i class="bi bi-grid"></i> Dashboard
                     </a>
-                    <a href="{{ url_for('admin.admin_super_finance') }}" class="menu-item {{ 'active' if request.path == '/admin-super/finance' else '' }}">
+                    <a href="{{ url_for('admin.admin_keuangan_finance') }}" class="menu-item {{ 'active' if '/admin-keuangan/finance' in request.path else '' }}">
                         <i class="bi bi-cash-stack"></i> Kelola Keuangan
                     </a>
                     <a href="/admin-super/schedules" class="menu-item {{ 'active' if '/schedules' in request.path else '' }}">
@@ -60,13 +61,13 @@
 
                 {% elif current_user.role == 'AH' %}
                     <div class="menu-section-label">Menu Utama</div>
-                    <a href="/admin-humas/dashboard" class="menu-item {{ 'active' if '/dashboard' in request.path else '' }}">
+                    <a href="/admin-humas/dashboard" class="menu-item {{ 'active' if request.path == '/admin-humas/dashboard' else '' }}">
                         <i class="bi bi-grid"></i> Dashboard
                     </a>
                     <a href="/admin-humas/schedules" class="menu-item {{ 'active' if '/schedules' in request.path else '' }}">
                         <i class="bi bi-person-badge"></i> Kelola Jadwal Imam
                     </a>
-                    <a href="{{ url_for('admin.admin_humas_show') }}" class="menu-item {{ 'active' if '/news' in request.path else '' }}">
+                    <a href="{{ url_for('admin.admin_humas_news') }}" class="menu-item {{ 'active' if request.path == '/admin-humas/news' else '' }}">
                         <i class="bi bi-newspaper"></i> Kelola Berita
                     </a>
                     <a href="/admin-humas/gallery" class="menu-item {{ 'active' if '/gallery' in request.path else '' }}">
@@ -125,7 +126,7 @@
         <div class="content-body">
             {%if '/dashboard' in request.path %}
             <h3 class="fw-bold text-dark mb-4">
-                Selamat datang kembali, {{ current_user.name or 'JEMBUT' }} 👋
+                Selamat datang kembali, {{ current_user.name }} 👋
             </h3>
             {% endif %}
             

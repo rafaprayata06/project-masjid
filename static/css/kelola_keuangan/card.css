@@ -1,0 +1,140 @@
+/* ==========================================================================
+   COMPONENT: CARDS KEUANGAN (cards.html) - PREMIUM UPGRADE
+   ========================================================================== */
+
+/* --- RACIKAN ANIMASI SUPER RINGAN & CEPAT --- */
+@keyframes lightEntrance {
+    0% {
+        opacity: 0;
+        /* Jarak lompat diperkecil jadi 8px saja agar transisi super lancar */
+        transform: translateY(8px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-entrance {
+    opacity: 0;
+    /* Durasi dicepatkan ke 0.4 detik agar terasa responsif dan lincah */
+    animation: lightEntrance 0.4s cubic-bezier(0.215, 0.610, 0.355, 1.000) forwards;
+}
+
+/* Jeda stagger dibuat sekelebat mata (super rapat) */
+.stagger-1 { animation-delay: 0.02s; }
+.stagger-2 { animation-delay: 0.05s; }
+.stagger-3 { animation-delay: 0.08s; }
+.stagger-4 { animation-delay: 0.11s; }
+.stagger-table { animation-delay: 0.15s; }
+
+/* ==========================================================================
+   1. BOX UTAMA CARD & EFEK HOVER (ANTI GETAR / GLITCH)
+   ========================================================================== */
+.content-body .row > div > div {
+    background: #FFFFFF !important;
+    border: 1px solid #F0F0F0 !important; 
+    border-radius: 16px !important;
+    padding: 18px !important;
+    min-height: 135px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
+    
+    /* FIX: Spesifik animasi, jangan pakai 'all' */
+    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.4s ease, border-color 0.4s ease !important; 
+    
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    cursor: pointer;
+
+    /* FIX: Kunci elemen biar teks nggak blur/geser saat di-hover */
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    -webkit-font-smoothing: subpixel-antialiased;
+}
+
+/* Efek aura latar belakang pas di-hover */
+.content-body .row > div > div::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: -1;
+    border-radius: 16px;
+}
+
+/* 2. Efek Hover Card Melayang & Glow */
+.content-body .row > div > div:hover {
+    /* FIX: Hapus scale(1.01), pakai translateY saja biar teks tetap stabil */
+    transform: translateY(-6px) translateZ(0);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.06) !important;
+    border-color: transparent !important; 
+}
+
+.content-body .row > div > div:hover::before {
+    opacity: 1;
+}
+
+/* ==========================================================================
+   WARNA TEMA PER CARD (Borders, Backgrounds & Text Highlight)
+   ========================================================================= */
+
+/* --- CARD 1: PEMASUKAN (Hijau) --- */
+.content-body .row > div:nth-child(1) > div {
+    border-left: 5px solid #4E9F6D !important;
+}
+.content-body .row > div:nth-child(1) > div::before {
+    background: linear-gradient(135deg, rgba(78, 159, 109, 0.08) 0%, rgba(255,255,255,0) 80%);
+}
+.content-body .row > div:nth-child(1) > div:hover h3,
+.content-body .row > div:nth-child(1) > div:hover div[style*="font-size"] {
+    color: #4E9F6D !important; 
+}
+
+/* --- CARD 2: PENGELUARAN (Merah) --- */
+.content-body .row > div:nth-child(2) > div {
+    border-left: 5px solid #D96B62 !important;
+}
+.content-body .row > div:nth-child(2) > div::before {
+    background: linear-gradient(135deg, rgba(217, 107, 98, 0.08) 0%, rgba(255,255,255,0) 80%);
+}
+.content-body .row > div:nth-child(2) > div:hover h3,
+.content-body .row > div:nth-child(2) > div:hover div[style*="font-size"] {
+    color: #D96B62 !important; 
+}
+
+/* --- CARD 3: SALDO AKTIF (Oranye) --- */
+.content-body .row > div:nth-child(3) > div {
+    border-left: 5px solid #D36334 !important;
+}
+.content-body .row > div:nth-child(3) > div::before {
+    background: linear-gradient(135deg, rgba(211, 99, 52, 0.08) 0%, rgba(255,255,255,0) 80%);
+}
+.content-body .row > div:nth-child(3) > div:hover h3,
+.content-body .row > div:nth-child(3) > div:hover div[style*="font-size"] {
+    color: #D36334 !important; 
+}
+
+/* --- CARD 4: PERLU VERIFIKASI (Kuning/Emas) --- */
+.content-body .row > div:nth-child(4) > div {
+    border-left: 5px solid #D69E2E !important;
+}
+.content-body .row > div:nth-child(4) > div::before {
+    /* Konversi hex #D69E2E ke rgba: 214, 158, 46 */
+    background: linear-gradient(135deg, rgba(214, 158, 46, 0.08) 0%, rgba(255,255,255,0) 80%);
+}
+.content-body .row > div:nth-child(4) > div:hover h3,
+.content-body .row > div:nth-child(4) > div:hover div[style*="font-size"] {
+    color: #D69E2E !important; 
+}
+
+/* ==========================================================================
+   TYPOGRAPHY
+   ========================================================================== */
+
+/* Format Teks Label (Kecil & Abu-abu) */
+.content-body .row > div p,
+.content-body .row > div .text-muted {
+    transition: color 0.3s ease;
+}

@@ -1,0 +1,118 @@
+/* ==========================================================================
+   COMPONENT: BUTTONS ACTION (button.css)
+   ========================================================================== */
+
+/* Base Style untuk Action Pill Button */
+.btn-action-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    border-radius: 30px !important;
+    border: none !important;
+    transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* --- 1. BUTTON EXPORT EXCEL (Secondary) --- */
+.pill-secondary {
+    background-color: #f1f3f5 !important;
+    color: #495057 !important;
+    border: 1px solid #dee2e6 !important;
+}
+
+.pill-secondary i {
+    transition: transform 0.3s ease !important;
+}
+
+/* Hover Export Excel */
+.pill-secondary:hover {
+    background-color: #e9ecef !important;
+    color: #212529 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Animasi Icon Panah Excel Naik */
+.pill-secondary:hover i {
+    transform: translateY(-3px);
+}
+
+/* --- 2. BUTTON TAMBAH TRANSAKSI (Primary) --- */
+.pill-primary {
+    background: linear-gradient(135deg, #4E9F6D 0%, #3d8456 100%) !important;
+}
+
+/* Hover Tambah Transaksi */
+.pill-primary:hover {
+    background: linear-gradient(135deg, #5cb47d 0%, #4E9F6D 100%) !important;
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 8px 20px rgba(78, 159, 109, 0.3) !important;
+}
+
+/* Efek Klik (Active State) */
+.btn-action-pill:active {
+    transform: translateY(-1px) scale(0.98) !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+
+/* ==========================================================================
+   UPDATED COMPONENT: FINANCE FILTER & BUTTONS
+   ========================================================================== */
+
+/* --- 1. BUTTON SEARCH (ORANYE) --- */
+.btn-search-filter {
+    background: #E2660E !important;
+    border: none !important;
+    transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
+    box-shadow: 0 4px 10px rgba(226, 102, 14, 0.15) !important;
+}
+
+/* Hover Search: Sedikit membesar & glowing oranye */
+.btn-search-filter:hover {
+    background: #f3751b !important;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 15px rgba(226, 102, 14, 0.3) !important;
+}
+
+/* Animasi icon kaca pembesar berputar dikit pas di-hover */
+.btn-search-filter:hover i {
+    display: inline-block;
+    animation: rotateSearch 0.5s ease-in-out;
+}
+
+@keyframes rotateSearch {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(-15deg); }
+    100% { transform: rotate(0deg); }
+}
+
+
+/* --- 2. BUTTON RESET (OUTLINE/BORDER) --- */
+.btn-reset-filter {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: #6c757d !important;
+    background-color: transparent !important;
+    border: 1px solid #dee2e6 !important;
+    transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
+}
+
+/* Hover Reset: Berubah gelap modern & amblas dikit pas diklik */
+.btn-reset-filter:hover {
+    background-color: #f8f9fa !important;
+    color: #212529 !important;
+    border-color: #6c757d !important;
+    transform: translateY(-1px);
+}
+
+/* Efek Active State untuk kedua button saat ditekan */
+.btn-search-filter:active,
+.btn-reset-filter:active {
+    transform: translateY(1px) scale(0.97) !important;
+}
+
+

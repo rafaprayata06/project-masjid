@@ -1,59 +1,75 @@
-<div class="finance-tab-container border-bottom bg-white px-4 pt-3">
-    <div class="d-flex gap-4">
-        <a href="#" class="finance-tab active" data-filter="semua">
-            Semua <span class="tab-badge">{{ total_transaksi }}</span>
+<div class="finance-tab-container bg-white px-4 pt-3 w-100">
+    <div class="d-flex" style="gap: 40px !important;">
+        <a href="/admin-keuangan/finance" class="finance-tab pb-2 text-decoration-none {% if not request.args.get('jenis') and not request.args.get('status') %}active{% endif %}">
+            Semua <span class="finance-tab-badge">{{ total_transaksi }}</span>
         </a>
-        <a href="#" class="finance-tab" data-filter="pemasukan">
-            Pemasukan <span class="tab-badge">{{ total_pemasukan }}</span>
+        <a href="/admin-keuangan/finance?jenis=PEMASUKAN" class="finance-tab pb-2 text-decoration-none {% if request.args.get('jenis') == 'PEMASUKAN' %}active{% endif %}">
+            Pemasukan <span class="finance-tab-badge">{{ total_pemasukan }}</span>
         </a>
-        <a href="#" class="finance-tab" data-filter="pengeluaran">
-            Pengeluaran <span class="tab-badge">{{ total_pengeluaran }}</span>
+        <a href="/admin-keuangan/finance?jenis=PENGELUARAN" class="finance-tab pb-2 text-decoration-none {% if request.args.get('jenis') == 'PENGELUARAN' %}active{% endif %}">
+            Pengeluaran <span class="finance-tab-badge">{{ total_pengeluaran }}</span>
+        </a>
+        <a href="/admin-keuangan/finance?status=perlu_verifikasi" class="finance-tab pb-2 text-decoration-none {% if request.args.get('status') == 'perlu_verifikasi' %}active{% endif %}">
+            Perlu Verifikasi <span class="finance-tab-badge">0</span>
+        </a>
+        <a href="/admin-keuangan/finance?status=draft" class="finance-tab pb-2 text-decoration-none {% if request.args.get('status') == 'draft' %}active{% endif %}">
+            Draft <span class="finance-tab-badge">0</span>
         </a>
     </div>
 </div>
 
-<form method="GET" action="/admin-keuangan/finance">
-    <div class="row g-3 align-items-center mt-1">
-        <div class="col-md-2">
-            <select name="jenis" class="form-select rounded-pill">
-                <option value="">Semua Jenis</option>
-                <option value="PEMASUKAN" {% if request.args.get('jenis') == 'PEMASUKAN' %}selected{% endif %}>Pemasukan</option>
-                <option value="PENGELUARAN" {% if request.args.get('jenis') == 'PENGELUARAN' %}selected{% endif %}>Pengeluaran</option>
-            </select>
+<form id="filterFormAK" method="GET" action="/admin-keuangan/finance" class="w-100 mb-2 px-4">
+    <!-- Jaga-jaga kalau lagi di tab Perlu Verifikasi, filternya gak hilang -->
+    {% if request.args.get('status') %}
+    <input type="hidden" name="status" value="{{ request.args.get('status') }}">
+    {% endif %}
+
+    <div class="filter-ak-wrapper">
+        
+        <div class="filter-ak-search input-group">
+            <span class="input-group-text">
+                <i class="bi bi-search text-muted"></i>
+            </span>
+            <input type="text" name="q" class="form-control"
+                placeholder="Cari deskripsi, kategori..."
+                value="{{ request.args.get('q', '') }}">
         </div>
-        <div class="col-md-2">
-            <select name="kategori_id" class="form-select rounded-pill">
-                <option value="">Semua Kategori</option>
-                {% for kategori in kategori_list %}
-                <option value="{{ kategori.id }}" {% if request.args.get('kategori_id') == kategori.id|string %}selected{% endif %}>
-                    {{ kategori.nama }}
-                </option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="col-md-2">
-            <select name="bulan" class="form-select rounded-pill">
-                <option value="">Semua Bulan</option>
-                {% for bulan in range(1,13) %}
-                <option value="{{ bulan }}" {% if request.args.get('bulan') == bulan|string %}selected{% endif %}>
-                    {{ bulan }}
-                </option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="col-md-2">
-            <input type="date" name="tanggal_awal" class="form-control rounded-pill" value="{{ request.args.get('tanggal_awal', '') }}">
-        </div>
-        <div class="col-md-2">
-            <input type="date" name="tanggal_akhir" class="form-control rounded-pill" value="{{ request.args.get('tanggal_akhir', '') }}">
-        </div>
-        <div class="col-md-1">
-            <button type="submit" class="btn w-100 rounded-pill text-white" style="background:#E2660E; border:none;">
-                <i class="bi bi-search"></i>
-            </button>
-        </div>
-        <div class="col-md-1">
-            <a href="/admin-keuangan/finance" class="btn btn-outline-secondary w-100 rounded-pill">Reset</a>
-        </div>
+
+        <select name="jenis" class="form-select filter-ak-select" onchange="this.form.submit()">
+            <option value="">Semua Jenis</option>
+            <option value="PEMASUKAN" {% if request.args.get('jenis') == 'PEMASUKAN' %}selected{% endif %}>Pemasukan</option>
+            <option value="PENGELUARAN" {% if request.args.get('jenis') == 'PENGELUARAN' %}selected{% endif %}>Pengeluaran</option>
+        </select>
+
+        <select name="kategori_id" class="form-select filter-ak-select" onchange="this.form.submit()">
+            <option value="">Semua Kategori</option>
+            {% for kategori in kategori_list %}
+            <option value="{{ kategori.id }}" {% if request.args.get('kategori_id') == kategori.id|string %}selected{% endif %}>
+                {{ kategori.nama }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <select name="bulan" class="form-select filter-ak-select" onchange="this.form.submit()">
+            <option value="">Semua Bulan</option>
+            {% for b in range(1,13) %}
+            <option value="{{ b }}" {% if request.args.get('bulan') == b|string %}selected{% endif %}>
+                Bulan {{ b }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <input type="date" name="tanggal_awal" class="form-control filter-ak-date"
+            value="{{ request.args.get('tanggal_awal', '') }}" onchange="this.form.submit()">
+
+        <input type="date" name="tanggal_akhir" class="form-control filter-ak-date"
+            value="{{ request.args.get('tanggal_akhir', '') }}" onchange="this.form.submit()">
+
+        <a href="/admin-keuangan/finance" class="btn-reset-ak">
+            <i class="bi bi-arrow-counterclockwise btn-reset-ak__icon"></i>
+            <span>Reset Filter</span>
+        </a>
+
+        <button type="submit" class="d-none"></button>
     </div>
 </form>

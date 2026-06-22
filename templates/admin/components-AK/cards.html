@@ -1,26 +1,75 @@
-<div class="row g-3 mb-4 justify-content-center">
-    <div class="col-md-3">
-        <div class="stats-card p-3">
-            <small class="text-muted" style="font-size: 12px;">Total Pemasukan</small>
-            <div class="fw-bold my-1" style="font-size:24px;color:#1B1714;">
+<div class="row g-2 mb-4 w-100 m-0">
+
+    <div class="col-12 col-md-3 px-2 animate-entrance stagger-1">
+        <div class="stats-card p-4 bg-white h-100 shadow-sm"
+            style="border-radius:16px; border:1px solid #EBEBEB; border-left:5px solid #4E9F6D;">
+            <small class="text-muted d-block mb-2"
+                style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">
+                Total Pemasukan · Bulan Ini
+            </small>
+            <div class="fw-bold mb-2"
+                style="font-size:24px;color:#1B1714;font-family:'Poppins',sans-serif;">
                 Rp {{ "{:,.0f}".format(total_pemasukan_card) }}
             </div>
+            <small style="font-size:13px;color:#4E9F6D;font-weight:500;">
+                ↑ 8,2% dari April
+            </small>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="stats-card p-3">
-            <small class="text-muted" style="font-size: 12px;">Total Pengeluaran</small>
-            <div class="fw-bold my-1" style="font-size:24px;color:#1B1714;">
+
+    <div class="col-12 col-md-3 px-2 animate-entrance stagger-2">
+        <div class="stats-card p-4 bg-white h-100 shadow-sm"
+            style="border-radius:16px; border:1px solid #EBEBEB; border-left:5px solid #D96B62;">
+            <small class="text-muted d-block mb-2"
+                style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">
+                Total Pengeluaran · Bulan Ini
+            </small>
+            <div class="fw-bold mb-2"
+                style="font-size:24px;color:#1B1714;font-family:'Poppins',sans-serif;">
                 Rp {{ "{:,.0f}".format(total_pengeluaran_card) }}
             </div>
+            <small style="font-size:13px;color:#D96B62;font-weight:500;">
+                ↑ 3,1% dari April
+            </small>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="stats-card p-3">
-            <small class="text-muted" style="font-size: 12px;">Saldo Aktif</small>
-            <div class="fw-bold my-1" style="font-size:24px;color:#1B1714;">
+
+    <div class="col-12 col-md-3 px-2 animate-entrance stagger-3">
+        <div class="stats-card p-4 bg-white h-100 shadow-sm"
+            style="border-radius:16px; border:1px solid #EBEBEB; border-left:5px solid #D36334;">
+            <small class="text-muted d-block mb-2"
+                style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">
+                Saldo Aktif
+            </small>
+            <div class="fw-bold mb-2"
+                style="font-size:24px;color:#1B1714;font-family:'Poppins',sans-serif;">
                 Rp {{ "{:,.0f}".format(saldo_aktif) }}
             </div>
+            <small class="text-muted" style="font-size:13px;">
+                Per 14 Mei 2026 · 13:06
+            </small>
         </div>
     </div>
+
+    <div class="col-12 col-md-3 px-2 animate-entrance stagger-4">
+        <div class="stats-card p-4 bg-white h-100 shadow-sm position-relative"
+            style="border-radius:16px; border:1px solid #EBEBEB; border-left:5px solid #D69E2E;">
+            <small class="text-muted d-block mb-2"
+                style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">
+                Perlu Verifikasi
+            </small>
+            <div class="fw-bold mb-2"
+                style="font-size:24px;color:#A85B1A;font-family:'Poppins',sans-serif;">
+                Rp {{ "{:,.0f}".format(total_perlu_verifikasi or 0) }}
+            </div>
+            <small class="text-muted" style="font-size:13px;">
+                {{ jumlah_transaksi_pending or 0 }} transaksi menunggu
+            </small>
+            <span class="position-absolute badge rounded-pill bg-warning text-dark"
+                style="top:15px;right:15px;font-size:10px;">
+                {{ jumlah_transaksi_pending or 0 }}
+            </span>
+        </div>
+    </div>
+
 </div>

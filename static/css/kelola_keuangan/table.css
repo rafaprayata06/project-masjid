@@ -1,0 +1,179 @@
+/* ==========================================================================
+   COMPONENT: TABLE TRANSAKSI (table.html)
+   ========================================================================== */
+
+/* SISI TABEL - SEKARANG BENERAN RAPET */
+.finance-table {
+    border-collapse: collapse !important; /* Diubah ke collapse biar beneran rapet & border menyatu */
+    width: 100%;
+    margin-top: 0 !important; /* Nol-kan margin atas biar rapet tanpa sekat kosong */
+}
+
+.finance-table thead th {
+    height: 58px;
+    padding: 0 16px !important; /* FIX: Ditambahkan 'px' yang tadinya hilang */
+    vertical-align: middle !important;
+    line-height: normal;
+    background-color: #FAFAFA !important;
+    border-top: 1px solid #EBEBEB !important;
+    border-bottom: 1px solid #EBEBEB !important;
+    color: #9CA3AF !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* Animasi transisi baris saat di-hover */
+.finance-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+/* Mengatur Line bawah dan kerapian jarak isi tabel */
+.finance-table tbody td {
+    padding: 16px 12px !important;
+    border-bottom: 1px solid #F2EFEA !important;
+    vertical-align: middle !important;
+}
+
+/* Styling badge kategori umum */
+.finance-table tbody .badge, 
+.finance-table tbody [class*="badge-"] {
+    border-radius: 8px !important;
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+}
+
+/* ==========================================================================
+   STYLE TIPOGRAFI TEXT NOMINAL & KETERANGAN MODERN
+   ========================================================================== */
+
+.text-keterangan-modern {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: #4A443C !important; 
+    letter-spacing: 0.1px;
+}
+
+.nominal-pemasukan {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #4E9F6D !important;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.3px;
+}
+
+.nominal-pengeluaran {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #D96B62 !important;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.3px;
+}
+
+/* FIX BENTROK: Ditambah spesifisitas agar menang dari selector badge umum di atas */
+.finance-table tbody .badge-kapsul {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 6px 14px !important; /* Paksa padding kapsul */
+    font-size: 11px !important;     /* Paksa ukuran font kapsul */
+    border-radius: 50px !important; /* Paksa bulat sempurna */
+    letter-spacing: 0.3px;
+    line-height: 1;
+}
+
+/* Warna khusus Pemasukan & Terverifikasi (Hijau Pastel) */
+.kapsul-hijau {
+    background-color: #ECFDF5;
+    color: #059669;
+    border: 1px solid #A7F3D0;
+}
+
+/* Warna khusus Pengeluaran (Merah Pastel) */
+.kapsul-merah {
+    background-color: #FEF2F2;
+    color: #DC2626;
+    border: 1px solid #FECACA;
+}
+
+/* Warna khusus Perlu Verifikasi (Kuning/Oranye Pastel) */
+.kapsul-kuning {
+    background-color: #FFFBEB;
+    color: #D97706;
+    border: 1px solid #FDE68A;
+}
+
+/* Biar jarak ikon dan teks lebih rapi */
+.badge-kapsul i {
+    margin-right: 6px;
+    font-size: 10px;
+}
+
+/* ==========================================================================
+   COMPONENT: PAGINATION CUSTOM
+   ========================================================================== */
+
+.custom-pagination {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.custom-pagination .page-item .page-link {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50% !important;
+    border: 1px solid #EBEBEB;
+    font-size: 13px;
+    font-weight: 500;
+    color: #6c757d;
+    background-color: #ffffff;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+/* Hover */
+.custom-pagination .page-item:not(.disabled):not(.active) .page-link:hover {
+    border-color: #E2660E;
+    color: #E2660E;
+    background-color: #fff8f3;
+}
+
+/* Active (halaman sekarang) */
+.custom-pagination .page-item.active .page-link {
+    background-color: #E2660E !important;
+    border-color: #E2660E !important;
+    color: #ffffff !important;
+    font-weight: 700;
+    box-shadow: 0 3px 10px rgba(226, 102, 14, 0.3);
+}
+
+/* Disabled */
+.custom-pagination .page-item.disabled .page-link {
+    color: #cccccc;
+    border-color: #f0f0f0;
+    background-color: #fafafa;
+    cursor: not-allowed;
+}
+
+/* Tombol prev & next (‹ ›) sedikit lebih besar */
+.custom-pagination .page-item:first-child .page-link,
+.custom-pagination .page-item:last-child .page-link {
+    font-size: 16px;
+    font-weight: 400;
+}
+
+/* Titik-titik (...) */
+.custom-pagination .page-item.disabled .page-link.bg-transparent {
+    border: none;
+    background: transparent !important;
+    color: #aaa;
+    width: auto;
+}

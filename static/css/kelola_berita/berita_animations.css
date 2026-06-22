@@ -1,0 +1,145 @@
+/* ======================================
+   PAGE ENTRY
+====================================== */
+
+@keyframes pageFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.page-entry {
+    opacity: 0;
+    animation: pageFadeUp .7s cubic-bezier(0.2,0.8,0.2,1) forwards;
+}
+
+.delay-1 { animation-delay: .1s; }
+.delay-2 { animation-delay: .2s; }
+.delay-3 { animation-delay: .3s; }
+.delay-4 { animation-delay: .4s; }
+.delay-5 { animation-delay: .5s; }
+
+
+/* ======================================
+   CARD BERITA
+====================================== */
+
+.berita-list-card {
+    position: relative;
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease,
+        border-color .25s ease;
+}
+
+.berita-list-card:hover {
+    box-shadow: 0 14px 35px rgba(0,0,0,.08);
+}
+
+.berita-list-card.aktif {
+    box-shadow: 0 12px 30px rgba(232,99,28,.12);
+    border-color: #E8631C;
+}
+
+
+/* ======================================
+   BUTTON
+====================================== */
+
+.btn-tulis-berita,
+.btn-buka-web {
+    transition:
+        transform .2s ease,
+        box-shadow .2s ease,
+        background .2s ease;
+}
+
+.btn-tulis-berita:hover,
+.btn-buka-web:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,.12);
+}
+
+.btn-tulis-berita:active,
+.btn-buka-web:active {
+    transform: scale(.97);
+}
+
+
+/* ======================================
+   INPUT
+====================================== */
+
+.input-admin {
+    transition:
+        border-color .25s ease,
+        box-shadow .25s ease,
+        transform .2s ease;
+}
+
+.input-admin:focus {
+    transform: translateY(-1px);
+    box-shadow: 0 0 0 4px rgba(232,99,28,.12);
+}
+
+
+/* ======================================
+   PREVIEW PANEL
+====================================== */
+
+.preview-show {
+    animation: previewFade .35s ease;
+}
+
+@keyframes previewFade {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* ======================================
+   FORM OPEN ANIMATION
+====================================== */
+
+#formBeritaSection .stats-card {
+    animation: formPop .35s ease;
+}
+
+@keyframes formPop {
+    from {
+        opacity: 0;
+        transform: scale(.97) translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+
+/* ======================================
+   TAB
+====================================== */
+
+.tab-berita {
+    transition: all .25s ease;
+}
+
+.tab-berita:hover {
+    transform: translateY(-2px);
+}
+
+.tab-berita.active {
+    transform: translateY(-2px);
+}

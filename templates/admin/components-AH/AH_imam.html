@@ -1,0 +1,761 @@
+{% extends 'layouts/admin_base.html' %}
+{% block breadcrumb %}Kelola Jadwal Imam{% endblock %}
+
+{% block admin_content %}
+<style>
+    /* UTILITIES & TYPOGRAPHY */
+    .text-orange { color: #D36334 !important; }
+    .text-dark-brown { color: #1B1714 !important; }
+    
+    /* GRADIENT & MAIN BUTTONS */
+    .bg-orange-gradient { 
+        background: linear-gradient(135deg, #E66A35, #C75525) !important; 
+        color: white !important; 
+        border: none; 
+    }
+    
+    /* ANIMASI HOVER & CLICK YANG LEBIH SMOOTH & BOUNCY */
+    .btn-custom {
+        border-radius: 10px !important;
+        transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) !important; 
+        font-weight: 600 !important;
+        transform-origin: center;
+    }
+
+    .bg-orange-gradient:hover {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 8px 20px rgba(211, 99, 52, 0.25);
+    }
+    
+    .btn-custom:active, 
+    .bg-orange-gradient:active {
+        transform: scale(0.95) !important;
+        box-shadow: 0 2px 5px rgba(211, 99, 52, 0.1) !important;
+        transition: all 0.1s ease !important;
+    }
+
+    .btn-outline-custom {
+        border: 1px solid #EAE5DD !important;
+        background: #FFFFFF !important;
+        color: #4A443E !important;
+    }
+    .btn-outline-custom:hover {
+        background: #FAFAFA !important;
+        border-color: #D36334 !important;
+        color: #D36334 !important;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
+    }
+    .btn-outline-custom:active {
+        transform: scale(0.95) !important;
+        background: #FFF7F2 !important;
+        box-shadow: none !important;
+        transition: all 0.1s ease !important;
+    }
+
+    /* ANIMASI HALUS MUNCULNYA HALAMAN */
+    @keyframes fadeSlideUp {
+        from { opacity: 0;transform: translateY(30px);}
+        to { opacity: 1;   transform: translateY(0); }
+    }
+    .animate-entry {
+        opacity: 0;
+        animation: fadeSlideUp 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+
+    /* STATS CARDS */
+    .imam-stats-card {
+        background: #FFFFFF;
+        border: 1px solid #F4F2EE;
+        border-radius: 16px;
+        padding: 18px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        box-shadow: 0 4px 12px rgba(27, 23, 20, 0.02);
+    }
+    .imam-stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(27, 23, 20, 0.08);
+        border-color: #EAE5DD;
+    }
+    .stats-title { font-size: 11px; font-weight: 700; color: #8C8375; text-transform: uppercase; letter-spacing: 0.5px; }
+    .stats-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .imam-stats-card:hover .stats-icon { transform: scale(1.15) rotate(5deg); }
+    
+    .stats-value { font-size: 24px; font-weight: 800; color: #1B1714; margin-top: 12px; line-height: 1; }
+    .stats-desc { font-size: 11px; color: #8C8375; margin-top: 6px; font-weight: 500; }
+
+    /* MAIN WRAPPER */
+    .imam-main-panel { 
+        background: #FFFFFF; 
+        border: 1px solid #F4F2EE; 
+        border-radius: 20px; 
+        overflow: hidden; 
+        box-shadow: 0 4px 20px rgba(0,0,0,0.015);
+    }
+    
+    /* FILTER BAR */
+    .imam-filter-bar { 
+        border-bottom: 1px solid #F4F2EE; 
+        padding: 14px 20px; 
+        background: #FCFBF9; 
+        display: flex; 
+        align-items: center; 
+        gap: 16px; 
+        flex-wrap: wrap; 
+    }
+    
+    .filter-pill { 
+        background: #FFFFFF; border: 1px solid #EAE5DD; color: #6C635A; 
+        font-size: 11px; font-weight: 600; padding: 6px 14px; 
+        border-radius: 20px; 
+        transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); 
+        cursor: pointer;
+    }
+    .filter-pill.active { 
+        background: #D36334; color: #FFFFFF; border-color: #D36334; 
+        box-shadow: 0 6px 12px rgba(211, 99, 52, 0.25); 
+    }
+    .filter-pill:hover:not(.active) { 
+        border-color: #D36334; color: #D36334; 
+        transform: translateY(-2px);
+    }
+    .filter-pill:active {
+        transform: scale(0.92) !important;
+        transition: all 0.1s ease;
+    }
+
+    /* TABLE STYLING */
+    .table-responsive { overflow-x: hidden; }
+    .table-jadwal { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
+    .table-jadwal th { 
+        text-align: center; padding: 14px 4px; 
+        border-bottom: 2px solid #F4F2EE; 
+        border-right: 1px dashed #F4F2EE; 
+        background: #FFFFFF; 
+    }
+    .table-jadwal th:last-child { border-right: none; }
+    .day-name { font-size: 10px; font-weight: 800; color: #A39A90; text-transform: uppercase; display: block; margin-bottom: 4px; letter-spacing: 1px;}
+    .day-date { font-size: 18px; color: #1B1714; font-weight: 800; }
+    
+    .today-highlight { background: #FFF8F5 !important; border-bottom: 2px solid #D36334 !important; }
+    .today-highlight .day-name { color: #D36334; }
+    .today-highlight .day-date { color: #D36334; }
+
+    .table-jadwal td { 
+        border-bottom: 1px dashed #F4F2EE; 
+        border-right: 1px dashed #F4F2EE; 
+        padding: 10px 8px; 
+        vertical-align: top; 
+        background: #FFFFFF;
+    }
+    .table-jadwal td:last-child { border-right: none; }
+    
+    .waktu-col { 
+        width: 70px; 
+        text-align: center; 
+        vertical-align: middle !important; 
+        background: #FCFBF9 !important; 
+        border-right: 1px solid #F4F2EE !important; 
+    }
+    .waktu-name { font-size: 11px; font-weight: 800; color: #6C635A; text-transform: uppercase; display: block; letter-spacing: 0.5px;}
+    .waktu-time { font-size: 11px; color: #A39A90; font-weight: 500; margin-top: 2px; display: block;}
+
+    /* SLOT CARDS */
+    .slot-card {
+        border-radius: 10px;
+        padding: 10px;
+        transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        cursor: pointer;
+        height: 100%;
+        min-height: 60px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        position: relative;
+        border: 1px solid transparent;
+        transform-origin: center;
+    }
+    .slot-card:hover { 
+        transform: translateY(-3px) scale(1.03); 
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08); 
+        z-index: 2; 
+    }
+    .slot-card:active {
+        transform: scale(0.96);
+    }
+    
+    .bg-soft-orange { background: #FFF7F2; border-color: #FDE8DE; border-left: 4px solid #D36334; }
+    .bg-soft-orange .imam-name { color: #A84920; }
+    
+    .bg-soft-green { background: #F4FBF7; border-color: #DEF5E7; border-left: 4px solid #2C7A5C; }
+    .bg-soft-green .imam-name { color: #1E5C44; }
+    
+    .bg-soft-blue { background: #F4F8FC; border-color: #DDEBF7; border-left: 4px solid #2C5C8A; }
+    .bg-soft-blue .imam-name { color: #1C4368; }
+    
+    .empty-slot { 
+        background: #FCFBF9; 
+        border: 1px dashed #D1C9C0; 
+        align-items: center; 
+        color: #A39A90; 
+    }
+    .empty-slot:hover { 
+        border-color: #D36334; 
+        background: #FFF7F2;
+        color: #D36334;
+    }
+
+    .imam-name { font-size: 12px; font-weight: 700; line-height: 1.3; margin-bottom: 3px; }
+    .imam-status { font-size: 10px; color: #8C8375; font-weight: 500; }
+
+    /* SIDEBAR KANAN & DAFTAR IMAM */
+    .sidebar-imam { 
+        background: #FFFFFF; 
+        border: 1px solid #F4F2EE; 
+        border-radius: 20px; 
+        padding: 24px; 
+        height: 100%; 
+        box-shadow: 0 4px 20px rgba(0,0,0,0.015);
+        overflow-x: hidden; 
+    }
+    .sidebar-imam-title { font-size: 14px; font-weight: 800; color: #1B1714; display: flex; align-items: center; gap: 8px; }
+    
+    .search-imam { position: relative; margin-bottom: 20px; }
+    .search-imam input { 
+        width: 100%; 
+        background: #F9F8F6; 
+        border: 1px solid #EAE5DD; 
+        border-radius: 12px; 
+        padding: 10px 14px 10px 36px; 
+        font-size: 12px; 
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); 
+    }
+    .search-imam input:focus { 
+        border-color: #D36334; 
+        outline: none; 
+        background: #FFFFFF; 
+        box-shadow: 0 0 0 4px rgba(211,99,52,0.15); 
+        transform: scale(1.01); 
+    }
+   
+    .search-imam i { 
+        position: absolute; 
+        left: 14px; 
+        top: 50%; 
+        transform: translateY(-50%); 
+        color: #A39A90; 
+        font-size: 14px; 
+        z-index: 5;
+        pointer-events: none; 
+        transition: color 0.3s ease; 
+    }
+    .search-imam:focus-within i { color: #D36334; }
+
+    .imam-list-wrapper {
+        max-height: 400px; 
+        overflow-y: auto; 
+        overflow-x: hidden; 
+        padding: 4px; 
+        margin: -4px; 
+    }
+
+    .imam-list-wrapper::-webkit-scrollbar { width: 4px; }
+    .imam-list-wrapper::-webkit-scrollbar-track { background: transparent; }
+    .imam-list-wrapper::-webkit-scrollbar-thumb { background: #EAE5DD; border-radius: 10px; }
+
+    .list-imam-item { 
+        display: flex; align-items: center; gap: 12px; padding: 12px; 
+        border: 1px solid #F4F2EE; border-radius: 14px; margin-bottom: 10px; 
+        cursor: grab; background: #FFFFFF; 
+        transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        width: 100%; 
+        box-sizing: border-box;
+    }
+    
+    .list-imam-item:hover { 
+        border-color: #D36334; 
+        box-shadow: 0 4px 12px rgba(211, 99, 52, 0.08); 
+        transform: translateX(2px) scale(1.01); 
+    }
+    
+    .list-imam-item:active {
+        cursor: grabbing;
+        transform: scale(0.96);
+        box-shadow: 0 2px 4px rgba(211, 99, 52, 0.05);
+        transition: all 0.1s ease;
+    }
+    
+    .imam-initial { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; flex-shrink: 0; }
+
+    /* Toggle Hari/Minggu/Bulan */
+    .view-toggle-wrapper {
+        background-color: #FCFBF9;
+        border: 1px solid #EAE5DD;
+        border-radius: 50px;
+        padding: 4px;
+        display: flex;
+        gap: 2px;
+    }
+    .btn-view {
+        background: transparent; border: none; color: #8C8375; 
+        font-weight: 600; font-size: 13px; border-radius: 50px; 
+        padding: 6px 16px; transition: 0.2s;
+    }
+    .btn-view.active {
+        background-color: #FFFFFF; color: #1B1714; 
+        box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    }
+
+    /* Tombol Navigasi Kanan (<, Hari Ini, >) */
+    .btn-nav-icon, .btn-today {
+        background-color: #FFFFFF; border: 1px solid #EAE5DD; 
+        border-radius: 12px; font-size: 13px; font-weight: 700; 
+        padding: 6px 14px; display: flex; align-items: center; 
+        justify-content: center; transition: 0.2s; color: #1B1714;
+    }
+    .btn-nav-icon { padding: 6px 12px; }
+    .btn-today { color: #D36334; }
+    .btn-nav-icon:hover, .btn-today:hover { background-color: #FCFBF9; }
+
+    /* =========================================
+       MODAL TAMBAH IMAM STYLING 
+       ========================================= */
+    .modal-content-custom {
+        border-radius: 20px;
+        border: none;
+        box-shadow: 0 20px 40px rgba(27, 23, 20, 0.15);
+        overflow: hidden;
+    }
+    
+    .modal-header-custom {
+        border-bottom: 1px solid #F4F2EE;
+        padding: 20px 24px;
+        background: #FFFFFF;
+    }
+    
+    .modal-body-custom {
+        padding: 24px;
+        background: #FCFBF9;
+    }
+    
+    .modal-footer-custom {
+        border-top: 1px solid #F4F2EE;
+        padding: 16px 24px;
+        background: #FFFFFF;
+    }
+
+    /* FORM INPUT KUSTOM */
+    .form-label-custom {
+        font-size: 12px;
+        font-weight: 700;
+        color: #6C635A;
+        margin-bottom: 8px;
+        display: block;
+    }
+    
+    .form-control-custom, .form-select-custom {
+        width: 100%;
+        background: #FFFFFF;
+        border: 1px solid #EAE5DD;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-size: 13px;
+        color: #1B1714;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    
+    .form-control-custom:focus, .form-select-custom:focus {
+        border-color: #D36334;
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(211,99,52,0.12);
+        transform: scale(1.01);
+    }
+
+    /* PILIHAN WARNA LABEL TEMA */
+    .color-picker-wrapper {
+        display: flex;
+        gap: 12px;
+    }
+    
+    .color-radio {
+        display: none;
+    }
+    
+    .color-label {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        border: 2px solid transparent;
+    }
+    
+    .color-label i {
+        color: white;
+        font-size: 18px;
+        opacity: 0;
+        transform: scale(0.5);
+        transition: all 0.2s ease;
+    }
+
+    .color-radio:checked + .color-label {
+        transform: scale(1.1);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+    
+    .color-radio:checked + .color-label i {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    .color-orange-theme { background: #D36334; }
+    .color-green-theme { background: #2C7A5C; }
+    .color-blue-theme { background: #2C5C8A; }
+    
+    /* ANIMASI MODAL MUNCUL */
+    .modal.fade .modal-dialog {
+        transform: scale(0.95);
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .modal.show .modal-dialog {
+        transform: scale(1);
+    }
+</style>
+
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 animate-entry" style="animation-delay: 0.1s;">
+    <div>
+        <h3 style="font-weight: 800; color: #1B1714; margin: 0; letter-spacing: -0.5px;">Kelola Jadwal Imam</h3>
+        <p class="text-muted mt-1" style="font-size: 13px; margin: 0; font-weight: 500;">Manajemen jadwal imam rawatib & muadzin harian.</p>
+    </div>
+    <div class="d-flex gap-2 mt-3 mt-md-0">
+        <button class="btn btn-custom btn-outline-custom btn-sm px-3 py-2"><i class="bi bi-calendar2-week me-2"></i>Export Kalender</button>
+        <button class="btn btn-custom btn-outline-custom btn-sm px-3 py-2"><i class="bi bi-upload me-2"></i>Publikasikan</button>
+        <button class="btn btn-custom bg-orange-gradient btn-sm px-4 py-2" data-bs-toggle="modal" data-bs-target="#tambahImamModal">
+            <i class="bi bi-plus-lg me-2"></i>Tambah Imam
+        </button>
+    </div>
+</div>
+
+<div class="row g-3 mb-4 animate-entry" style="animation-delay: 0.2s;">
+    <div class="col-md-3">
+        <div class="imam-stats-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <span class="stats-title">Imam Aktif</span>
+                <div class="stats-icon" style="background: #FFF0E6; color: #D36334;"><i class="bi bi-person-check-fill"></i></div>
+            </div>
+            <div>
+                <div class="stats-value">5 <span style="font-size: 12px; font-weight: 600; color: #8C8375;">orang</span></div>
+                <div class="stats-desc text-success"><i class="bi bi-arrow-up-right-circle-fill me-1"></i> +1 baru bulan ini</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="imam-stats-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <span class="stats-title">Slot Terisi</span>
+                <div class="stats-icon" style="background: #E8F5E9; color: #2E7D32;"><i class="bi bi-calendar-check-fill"></i></div>
+            </div>
+            <div>
+                <div class="stats-value">33 <span style="font-size: 16px; font-weight: 600; color: #8C8375;">/ 35</span></div>
+                <div class="stats-desc"><i class="bi bi-check-circle-fill text-success me-1"></i> 94% siap pekan ini</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="imam-stats-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <span class="stats-title">Perlu Perhatian</span>
+                <div class="stats-icon" style="background: #FFEBEE; color: #C62828;"><i class="bi bi-exclamation-triangle-fill"></i></div>
+            </div>
+            <div>
+                <div class="stats-value text-danger">2 <span style="font-size: 12px; font-weight: 600; color: #8C8375;">slot kosong</span></div>
+                <div class="stats-desc text-danger fw-bold">Ashar (Rab) · Maghrib (Ahd)</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="imam-stats-card">
+            <div class="d-flex justify-content-between align-items-start">
+                <span class="stats-title">Khotib Jumat</span>
+                <div class="stats-icon" style="background: #FFF8E1; color: #F9A825;"><i class="bi bi-megaphone-fill"></i></div>
+            </div>
+            <div>
+                <div class="stats-value">12 <span style="font-size: 12px; font-weight: 600; color: #8C8375;">pekan</span></div>
+                <div class="stats-desc"><i class="bi bi-shield-check me-1"></i> Aman hingga Agustus</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-xl-9 animate-entry" style="animation-delay: 0.3s;">
+        <div class="imam-main-panel">
+            
+            <div class="d-flex justify-content-between align-items-center p-4 border-bottom">
+                <div>
+                    <h5 style="margin: 0; font-weight: 800; color: #1B1714; display: flex; align-items: center; gap: 10px;">
+                        Tabel Penugasan <span class="badge bg-orange-gradient" style="font-size: 10px; padding: 4px 8px; border-radius: 6px;">PEKAN 20</span>
+                    </h5>
+                    <div style="font-size: 11px; color: #8C8375; margin-top: 6px; font-weight: 500;">11 - 17 Mei 2026 &nbsp;·&nbsp; Diperbarui oleh Ahmad Saputra</div>
+                </div>
+                <div class="d-flex gap-2 align-items-center">
+                    <div class="view-toggle-wrapper">
+                        <button class="btn btn-view">Hari</button>
+                        <button class="btn btn-view active">Minggu</button>
+                        <button class="btn btn-view">Bulan</button>
+                    </div>
+                    <button class="btn btn-nav-icon ms-2"><i class="bi bi-chevron-left"></i></button>
+                    <button class="btn btn-today">Hari Ini</button>
+                    <button class="btn btn-nav-icon"><i class="bi bi-chevron-right"></i></button>
+                </div>
+            </div>
+
+            <div class="imam-filter-bar">
+                <div class="d-flex align-items-center gap-2 pe-3" style="border-right: 2px solid #EAE5DD;">
+                    <button class="filter-pill active">Semua</button>
+                    <button class="filter-pill">Subuh</button>
+                    <button class="filter-pill">Dzuhur</button>
+                    <button class="filter-pill">Ashar</button>
+                    <button class="filter-pill">Maghrib</button>
+                    <button class="filter-pill">Isya</button>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 pe-3" style="border-right: 2px solid #EAE5DD;">
+                    <select class="form-select form-select-sm shadow-none" style="border-radius: 20px; border: 1px solid #EAE5DD; font-weight: 600; color: #6C635A; cursor: pointer; width: auto; font-size: 11px; padding: 6px 30px 6px 14px;">
+                        <option value="semua">Semua Imam</option>
+                        <option value="abdul_karim">Ust. Abdul Karim</option>
+                        <option value="muh_fauzi">Ust. Muh. Fauzi</option>
+                        <option value="ahmad_syahril">Ust. Ahmad Syahril</option>
+                        <option value="yusuf_mansur">Ust. Yusuf Mansur</option>
+                    </select>
+                </div>
+
+                <div class="d-flex align-items-center ps-2">
+                    <div class="form-check form-switch" style="margin: 0; padding-top: 2px;">
+                        <input class="form-check-input" type="checkbox" id="checkEmpty" style="cursor: pointer;">
+                        <label class="form-check-label text-muted" for="checkEmpty" style="font-size: 12px; font-weight: 600; cursor: pointer;">
+                            Fokus Slot Kosong
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive p-3">
+                <table class="table-jadwal">
+                    <thead>
+                        <tr>
+                            <th class="waktu-col border-bottom-0"></th>
+                            <th><span class="day-name">Sen</span><span class="day-date">11</span></th>
+                            <th><span class="day-name">Sel</span><span class="day-date">12</span></th>
+                            <th class="today-highlight" style="border-radius: 12px 12px 0 0;"><span class="day-name">Rab</span><span class="day-date">13</span></th>
+                            <th><span class="day-name">Kam</span><span class="day-date">14</span></th>
+                            <th><span class="day-name">Jum</span><span class="day-date">15</span></th>
+                            <th><span class="day-name">Sab</span><span class="day-date">16</span></th>
+                            <th><span class="day-name">Ahd</span><span class="day-date">17</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="waktu-col"><span class="waktu-name">Subuh</span><span class="waktu-time">04:38</span></td>
+                            <td><div class="slot-card bg-soft-orange"><div class="imam-name">Abdul Karim</div><div class="imam-status">Hafiz 30 juz</div></div></td>
+                            <td><div class="slot-card bg-soft-blue"><div class="imam-name">Ahmad Syahril</div><div class="imam-status">Cadangan</div></div></td>
+                            <td class="today-highlight"><div class="slot-card bg-soft-orange"><div class="imam-name">Abdul Karim</div><div class="imam-status">Hafiz 30 juz</div></div></td>
+                            <td><div class="slot-card bg-soft-green"><div class="imam-name">Yusuf Mansur</div><div class="imam-status">Pengisi kajian</div></div></td>
+                            <td><div class="slot-card bg-soft-green"><div class="imam-name">Muh. Fauzi</div><div class="imam-status">Lc., M.Ag.</div></div></td>
+                            <td><div class="slot-card bg-soft-orange"><div class="imam-name">Abdul Karim</div><div class="imam-status">Hafiz 30 juz</div></div></td>
+                            <td><div class="slot-card bg-soft-blue"><div class="imam-name">Ahmad Syahril</div><div class="imam-status">Cadangan</div></div></td>
+                        </tr>
+                        <tr>
+                            <td class="waktu-col"><span class="waktu-name">Dzuhur</span><span class="waktu-time">11:54</span></td>
+                            <td><div class="slot-card bg-soft-orange"><div class="imam-name">Abdul Karim</div><div class="imam-status">Hafiz 30 juz</div></div></td>
+                            <td><div class="slot-card bg-soft-green"><div class="imam-name">Yusuf Mansur</div><div class="imam-status">Pengisi kajian</div></div></td>
+                            <td class="today-highlight"><div class="slot-card bg-soft-blue"><div class="imam-name">Ahmad Syahril</div><div class="imam-status">Cadangan</div></div></td>
+                            <td><div class="slot-card bg-soft-orange"><div class="imam-name">Abdul Karim</div><div class="imam-status">Hafiz 30 juz</div></div></td>
+                            <td><div class="slot-card bg-soft-orange"><div class="imam-name">Muh. Fauzi</div><div class="imam-status">Akhlak Digital</div></div></td>
+                            <td><div class="slot-card bg-soft-orange"><div class="imam-name">Abdul Karim</div><div class="imam-status">Hafiz 30 juz</div></div></td>
+                            <td><div class="slot-card bg-soft-green"><div class="imam-name">Yusuf Mansur</div><div class="imam-status">Pengisi kajian</div></div></td>
+                        </tr>
+                        <tr>
+                            <td class="waktu-col"><span class="waktu-name">Ashar</span><span class="waktu-time">15:24</span></td>
+                            <td><div class="slot-card bg-soft-blue"><div class="imam-name">Ahmad Syahril</div><div class="imam-status">Cadangan</div></div></td>
+                            <td><div class="slot-card bg-soft-orange"><div class="imam-name">Abdul Karim</div><div class="imam-status">Hafiz 30 juz</div></div></td>
+                            <td class="today-highlight">
+                                <div class="slot-card empty-slot">
+                                    <span style="font-size: 11px; font-weight: 700;"><i class="bi bi-plus-circle-fill me-1 mb-1" style="font-size:14px; display:block;"></i> Isi Imam</span>
+                                </div>
+                            </td>
+                            <td><div class="slot-card bg-soft-orange"><div class="imam-name">Abdul Karim</div><div class="imam-status">Berikutnya</div></div></td>
+                            <td><div class="slot-card bg-soft-green"><div class="imam-name">Muh. Fauzi</div><div class="imam-status">Lc., M.Ag.</div></div></td>
+                            <td><div class="slot-card bg-soft-blue"><div class="imam-name">Ahmad Syahril</div><div class="imam-status">Cadangan</div></div></td>
+                            <td><div class="slot-card bg-soft-orange"><div class="imam-name">Abdul Karim</div><div class="imam-status">Hafiz 30 juz</div></div></td>
+                        </tr>
+                        <tr>
+                            <td class="waktu-col"><span class="waktu-name">Maghrib</span><span class="waktu-time">17:50</span></td>
+                            <td><div class="slot-card bg-soft-green"><div class="imam-name">Yusuf Mansur</div><div class="imam-status">Pengisi kajian</div></div></td>
+                            <td><div class="slot-card bg-soft-orange"><div class="imam-name">Abdul Karim</div><div class="imam-status">Hafiz 30 juz</div></div></td>
+                            <td class="today-highlight"><div class="slot-card bg-soft-blue"><div class="imam-name">Ahmad Syahril</div><div class="imam-status">Cadangan</div></div></td>
+                            <td><div class="slot-card bg-soft-green"><div class="imam-name">Yusuf Mansur</div><div class="imam-status">Pengisi kajian</div></div></td>
+                            <td><div class="slot-card bg-soft-green"><div class="imam-name">Muh. Fauzi</div><div class="imam-status">Lc., M.Ag.</div></div></td>
+                            <td><div class="slot-card bg-soft-orange"><div class="imam-name">Abdul Karim</div><div class="imam-status">Hafiz 30 juz</div></div></td>
+                            <td>
+                                <div class="slot-card empty-slot">
+                                    <span style="font-size: 11px; font-weight: 700;"><i class="bi bi-plus-circle-fill me-1 mb-1" style="font-size:14px; display:block;"></i> Isi Imam</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="p-4" style="background: linear-gradient(to right, #FCFAF7, #FFFFFF); border-top: 1px solid #F4F2EE; font-size: 12px; color: #8C8375;">
+                <div class="d-flex gap-2 align-items-center">
+                    <div style="background: #FFF0E6; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #D36334;">
+                        <i class="bi bi-lightbulb-fill"></i>
+                    </div>
+                    <div>
+                        <strong class="text-dark-brown">Tip Pintar:</strong> Kamu bisa melakukan <i>Drag & Drop</i> (tarik dan lepas) kartu imam dari panel kanan ke kotak jadwal yang masih kosong.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 animate-entry" style="animation-delay: 0.4s;">
+        <div class="sidebar-imam">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="sidebar-imam-title"><i class="bi bi-people-fill text-orange" style="font-size: 16px;"></i> Daftar Imam</div>
+                <button class="btn bg-orange-gradient btn-sm" style="border-radius: 8px; padding: 4px 10px;" data-bs-toggle="modal" data-bs-target="#tambahImamModal">
+                    <i class="bi bi-plus-lg text-white"></i>
+                </button>
+            </div>
+            
+            <div class="search-imam">
+                <i class="bi bi-search"></i>
+                <input type="text" placeholder="Cari nama imam...">
+            </div>
+
+            <div class="imam-list-wrapper" style="max-height: 400px; overflow-y: auto; padding-right: 5px;">
+                <div class="list-imam-item">
+                    <div class="imam-initial bg-orange-gradient text-white">AK</div>
+                    <div class="flex-grow-1">
+                        <div class="imam-name mb-0">Ust. Abdul Karim</div>
+                        <div class="imam-status">Hafiz 30 juz</div>
+                    </div>
+                    <i class="bi bi-grip-vertical text-muted" style="cursor: grab;"></i>
+                </div>
+                <div class="list-imam-item">
+                    <div class="imam-initial" style="background: #2C7A5C; color: white;">MF</div>
+                    <div class="flex-grow-1">
+                        <div class="imam-name mb-0">Ust. Muh. Fauzi</div>
+                        <div class="imam-status">Khotib Utama</div>
+                    </div>
+                    <i class="bi bi-grip-vertical text-muted" style="cursor: grab;"></i>
+                </div>
+                <div class="list-imam-item">
+                    <div class="imam-initial" style="background: #2C5C8A; color: white;">AS</div>
+                    <div class="flex-grow-1">
+                        <div class="imam-name mb-0">Ust. Ahmad Syahril</div>
+                        <div class="imam-status">Imam Cadangan</div>
+                    </div>
+                    <i class="bi bi-grip-vertical text-muted" style="cursor: grab;"></i>
+                </div>
+                <div class="list-imam-item">
+                    <div class="imam-initial" style="background: #8C6240; color: white;">YM</div>
+                    <div class="flex-grow-1">
+                        <div class="imam-name mb-0">Ust. Yusuf Mansur</div>
+                        <div class="imam-status">Pengisi Kajian</div>
+                    </div>
+                    <i class="bi bi-grip-vertical text-muted" style="cursor: grab;"></i>
+                </div>
+            </div>
+
+            <div class="mt-4 pt-4" style="border-top: 1px dashed #EAE5DD;">
+                <div class="stats-title mb-3">Tindakan Cepat</div>
+                <button class="btn btn-custom w-100 mb-2 py-2" style="background: #FFF7F2; border: 1px solid #FBD5C5; color: #D36334; font-size: 12px;">
+                    <i class="bi bi-back me-2"></i> Salin Jadwal Pekan Lalu
+                </button>
+                <button class="btn btn-custom btn-outline-custom w-100 py-2" style="font-size: 12px;">
+                    <i class="bi bi-magic me-2"></i> Isi Otomatis Slot Kosong
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="tambahImamModal" tabindex="-1" aria-labelledby="tambahImamModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-content-custom">
+            
+            <div class="modal-header modal-header-custom d-flex justify-content-between align-items-center">
+                <h5 class="mb-0" id="tambahImamModalLabel" style="font-weight: 800; color: #1B1714; display: flex; align-items: center; gap: 10px;">
+                    <div style="background: #FFF0E6; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #D36334; font-size: 16px;">
+                        <i class="bi bi-person-plus-fill"></i>
+                    </div>
+                    Tambah Imam Baru
+                </h5>
+                <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body modal-body-custom">
+                <form action="#" method="POST" id="formTambahImam">
+                    <div class="mb-3">
+                        <label for="namaImam" class="form-label-custom">Nama Lengkap Imam <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control-custom" id="namaImam" placeholder="Cth: Ust. Abdul Karim" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="statusImam" class="form-label-custom">Status / Keterangan Singkat</label>
+                        <input type="text" class="form-control-custom" id="statusImam" placeholder="Cth: Hafiz 30 Juz / Khotib Utama">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="kategoriImam" class="form-label-custom">Kategori Tugas</label>
+                        <select class="form-select-custom" id="kategoriImam">
+                            <option value="rawatib">Imam Rawatib Tetap</option>
+                            <option value="cadangan">Imam Cadangan / Pengganti</option>
+                            <option value="khotib">Khotib Jumat</option>
+                            <option value="kajian">Pengisi Kajian</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label-custom">Tema Warna Kartu Jadwal</label>
+                        <div class="color-picker-wrapper mt-2">
+                            <input type="radio" name="temaWarna" id="colorOrange" class="color-radio" value="orange" checked>
+                            <label for="colorOrange" class="color-label color-orange-theme">
+                                <i class="bi bi-check-lg"></i>
+                            </label>
+
+                            <input type="radio" name="temaWarna" id="colorGreen" class="color-radio" value="green">
+                            <label for="colorGreen" class="color-label color-green-theme">
+                                <i class="bi bi-check-lg"></i>
+                            </label>
+
+                            <input type="radio" name="temaWarna" id="colorBlue" class="color-radio" value="blue">
+                            <label for="colorBlue" class="color-label color-blue-theme">
+                                <i class="bi bi-check-lg"></i>
+                            </label>
+                        </div>
+                        <div style="font-size: 11px; color: #8C8375; margin-top: 8px;">Pilih warna untuk membedakan kategori imam di kalender.</div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer modal-footer-custom">
+                <button type="button" class="btn btn-custom btn-outline-custom px-4 py-2" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" form="formTambahImam" class="btn btn-custom bg-orange-gradient px-4 py-2">
+                    <i class="bi bi-save2 me-2"></i>Simpan Imam
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,4 +1,3 @@
-
 import re # Pastikan sudah di-import di bagian paling atas file
 from flask import render_template, request, redirect, flash
 from flask_login import login_user, logout_user, login_required, current_user
@@ -114,11 +113,11 @@ def login_system():
 
             elif role == 'AK':
                 flash("Selamat datang, Admin Keuangan!", "success")
-                return redirect('/admin-keuangan')
+                return redirect('/admin-keuangan/dashboard')
 
             elif role == 'AH':
                 flash("Selamat datang, Admin Humas!", "success")
-                return redirect('/admin-humas/news')
+                return redirect('/admin-humas/dashboard')
 
             else:
                 flash("Role tidak dikenali!", "error")

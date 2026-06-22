@@ -1,0 +1,433 @@
+/* ==========================================================
+   BLOCK BOOTSTRAP MODAL INLINE PADDING (ANTI GESER)
+========================================================== */
+
+/* 1. Cegah Bootstrap menambahkan padding-right ke body */
+body {
+    padding-right: 0 !important;
+}
+
+/* 2. Saat modal terbuka, matikan suntikan padding & tahan scrollbar */
+body.modal-open {
+    padding-right: 0 !important;
+    overflow-y: auto !important; 
+}
+
+/* 3. Pastikan wrapper utama kamu tetap stabil ukurannya */
+.admin-wrapper {
+    overflow-x: hidden;
+}
+
+/* ==========================================================
+   KEYFRAMES
+========================================================== */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOnly {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes growBar {
+    from {
+        width: 0 !important;
+    }
+}
+
+/* ==========================================================
+   CARD METRIC (UPGRADED TO ULTRA PREMIUM)
+========================================================== */
+.card-metric {
+    /* Spek Bodi Premium FinTech Style */
+    background: #ffffff !important;
+    border: 1px solid rgba(226, 232, 240, 0.8) !important; /* Garis pembatas tipis elegan */
+    border-radius: 16px !important; /* Lengkungan sudut disempurnakan */
+    padding: 1.5rem !important;    /* Ruang dalam diperlega agar teks bernafas */
+    
+    /* Konfigurasi Click Ripple & Animasi */
+    position: relative;
+    overflow: hidden;                  /* WAJIB: Biar gelombang riak tidak keluar dari card */
+    cursor: pointer;
+    user-select: none;
+
+    /* Multi-layered Soft Shadow (Efek kedalaman mewah) */
+    box-shadow: 
+        0 1px 3px rgba(0, 0, 0, 0.01),
+        0 4px 18px rgba(226, 232, 240, 0.6) !important;
+
+    /* Efek transisi pegas premium saat hover/lepas klik */
+    transition: 
+        transform 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+        box-shadow 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+        border-color 0.3s ease;
+
+    opacity: 0;
+    animation: fadeUp .6s cubic-bezier(.2,.8,.2,1) forwards;
+    will-change: transform, opacity;
+    transform: translateZ(0);
+}
+
+.click-ripple {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0);
+    animation: rippleEffect 0.55s ease-out;
+    width: 320px;
+    height: 320px;
+}
+
+@keyframes rippleEffect {
+    to {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0;
+    }
+}
+
+.row:first-child .col-xl-3:nth-child(1) .card-metric {
+    animation-delay: .05s;
+}
+
+.row:first-child .col-xl-3:nth-child(2) .card-metric {
+    animation-delay: .1s;
+}
+
+.row:first-child .col-xl-3:nth-child(3) .card-metric {
+    animation-delay: .15s;
+}
+
+.row:first-child .col-xl-3:nth-child(4) .card-metric {
+    animation-delay: .2s;
+}
+
+.card-metric:hover {
+    transform: translateY(-7px) scale(1.015); /* Melayang naik lebih smooth */
+    border-color: rgba(13, 110, 253, 0.18) !important; /* Pendaran biru tipis */
+    box-shadow: 
+        0 12px 20px rgba(0, 0, 0, 0.01),
+        0 24px 48px rgba(226, 232, 240, 0.9) !important;
+}
+
+.card-metric:active {
+    transform: translateY(2px) scale(0.96); /* Menekan kenyal ke dalam */
+    box-shadow: 
+        0 2px 6px rgba(0, 0, 0, 0.02),
+        0 4px 12px rgba(226, 232, 240, 0.4) !important;
+    transition: transform 0.08s cubic-bezier(0, 0, 0.2, 1); 
+}
+
+/* Micro-Typography (Otomatis merapikan spasi tulisan dalam card) */
+.card-metric small, 
+.card-metric .text-muted {
+    font-size: 10.5px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.8px !important;
+    font-weight: 700 !important;
+    color: #8a94a6 !important;
+}
+
+.card-metric h2, 
+.card-metric .h2,
+.card-metric [class*="fs-"] {
+    font-weight: 700 !important;
+    letter-spacing: -0.5px !important;
+    margin-top: 4px !important;
+    margin-bottom: 14px !important;
+}
+
+/* ==========================================================
+   ICON BOX (VERSI PREMIUM - ANTI KAKU & LEBIH SMOOTH)
+========================================================== */
+.icon-box {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+
+    /* Menggunakan kurva pegas (spring) yang sama dengan card agar gerakannya seirama */
+    transition:
+        transform .4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+        box-shadow .3s ease;
+    will-change: transform;
+}
+
+/* Saat Kursor di Atas Card (Icon membesar & miring anggun) */
+.card-metric:hover .icon-box {
+    transform: scale(1.12) rotate(8deg);
+    box-shadow: 0 8px 20px rgba(0,0,0,.08);
+}
+
+/* Saat Card Diklik (Icon ikut meresap masuk dengan putaran balik yang natural) */
+.card-metric:active .icon-box {
+    transform: scale(0.94) rotate(2deg); 
+    transition: transform 0.12s cubic-bezier(0, 0, 0.2, 1);
+    box-shadow: 0 2px 6px rgba(0,0,0,.02);
+}
+
+/* ==========================================================
+   PANEL
+========================================================== */
+.card-panel {
+    border-radius: 14px;
+
+    transition:
+        transform .3s ease,
+        box-shadow .3s ease;
+
+    opacity: 0;
+    animation: fadeUp .6s cubic-bezier(.2,.8,.2,1) forwards;
+
+    will-change: transform, opacity;
+    transform: translateZ(0);
+}
+
+.col-xl-7 .card-panel {
+    animation-delay: .25s;
+}
+
+.col-xl-5 .card-panel {
+    animation-delay: .35s;
+}
+
+.col-12 .card-panel {
+    animation-delay: .45s;
+}
+
+.card-panel:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(0,0,0,.06) !important;
+}
+
+/* ==========================================================
+   CHART
+========================================================== */
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 280px;
+
+    opacity: 0;
+    animation: fadeOnly .5s ease forwards;
+    animation-delay: .5s;
+}
+
+/* ==========================================================
+   BUTTON TAHUN BUKU
+========================================================== */
+.btn-year {
+    border: 1px solid #e8ecf2 !important;
+    background: #fff !important;
+    color: #374151 !important;
+
+    border-radius: 14px !important;
+    padding: 9px 18px !important;
+
+    font-size: 12px !important;
+    font-weight: 700 !important;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,.04);
+
+    transition:
+        all .3s cubic-bezier(.34,1.56,.64,1);
+}
+
+.btn-year:hover {
+    background: #f8fbff !important;
+    color: #0d6efd !important;
+    border-color: #dbe7ff !important;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 10px 22px rgba(13,110,253,.12);
+}
+
+.btn-year:active {
+    transform: scale(.96);
+}
+
+.btn-year:focus {
+    box-shadow:
+        0 0 0 .2rem rgba(13,110,253,.15) !important;
+}
+
+/* ==========================================================
+   DROPDOWN
+========================================================== */
+.dropdown-menu {
+    border: none !important;
+    border-radius: 16px !important;
+    overflow: hidden;
+    padding: .55rem;
+
+    box-shadow:
+        0 20px 40px rgba(0,0,0,.10);
+
+    animation: fadeOnly .2s ease;
+}
+
+.dropdown-item {
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 600;
+
+    transition: all .25s ease;
+}
+
+.dropdown-item:hover {
+    background: #f3f7ff;
+    color: #0d6efd;
+    transform: translateX(4px);
+}
+
+/* ==========================================================
+   TABLE
+========================================================== */
+.table-clean th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: .5px;
+    color: #6c757d;
+    padding: 10px 12px !important;
+    background-color: #fdfdfd;
+}
+
+.table-clean tbody tr td {
+    padding: 12px !important;
+    vertical-align: middle;
+    border-bottom: 1px solid #f1f3f5;
+}
+
+.table-clean tbody tr {
+    transition: all .25s ease;
+    cursor: pointer;
+}
+
+.table-clean tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* ==========================================================
+   BUTTON LIHAT BUKU KAS
+========================================================== */
+.btn-buku-kas {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+
+    color: #0d6efd;
+    font-size: 13px;
+    font-weight: 600;
+
+    transition: all .25s ease;
+}
+
+.btn-buku-kas:hover {
+    color: #0a58ca;
+}
+
+.arrow-move {
+    display: inline-block;
+    transition: transform .25s ease;
+}
+
+.btn-buku-kas:hover .arrow-move {
+    transform: translateX(5px);
+}
+
+/* ==========================================================
+   PROJECT BOX
+========================================================== */
+.project-box {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef !important;
+
+    transition:
+        transform .3s ease,
+        box-shadow .3s ease,
+        border-color .3s ease;
+}
+
+.project-box:hover {
+    transform: translateY(-4px);
+
+    background: #fff !important;
+    border-color: #ced4da !important;
+
+    box-shadow:
+        0 8px 18px rgba(0,0,0,.05);
+}
+
+/* ==========================================================
+   PROGRESS BAR
+========================================================== */
+.progress {
+    height: 7px;
+    border-radius: 10px;
+    background: #e9ecef;
+}
+
+.progress-bar {
+    animation: growBar 1.5s ease;
+    transition: width 1.5s cubic-bezier(.4,0,.2,1);
+}
+
+/* ==========================================================
+   PREMIUM FINANCIAL BADGES (KONSOLIDASI, DANA TERIKAT, DLL)
+========================================================== */
+.badge-financial {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    border-radius: 30px !important; /* Mengubah kotak kaku menjadi oval pill modern */
+    border: none !important;        /* Menghapus border kasar bawaan */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Varian Hijau Halus (Untuk Konsolidasi / Bebas Guna) */
+.badge-financial-success {
+    background: rgba(34, 197, 94, 0.12) !important;
+    color: #166534 !important;
+}
+
+/* Varian Kuning Halus (Untuk Dana Terikat) */
+.badge-financial-warning {
+    background: rgba(245, 158, 11, 0.12) !important;
+    color: #9a3412 !important;
+}
+
+/* --- LOGIKA ANIMASI HOVER & INTERAKSI --- */
+
+/* 1. Ketika CARD Utama di-hover, badge otomatis ikut terangkat anggun */
+.card-metric:hover .badge-financial {
+    transform: translateY(-2px);
+}
+
+/* 2. Ketika BADGE-nya sendiri didekati kursor (Efek interaktif mandiri) */
+.badge-financial:hover {
+    transform: scale(1.06) translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    filter: brightness(0.95); /* Warna menjadi sedikit lebih solid/tegas */
+}
