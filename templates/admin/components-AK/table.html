@@ -1,233 +1,292 @@
-<div class="table-responsive mt-3">
-    <table class="table align-middle finance-table mb-0">
-        <thead>
-            <tr>
-                <th>TANGGAL</th>
-                <th>KATEGORI</th>
-                <th>KETERANGAN</th>
-                <th>NOMINAL</th>
-                <th>BUKTI</th>
-                <th style="width:100px; padding-right:20px;">AKSI</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% if transaksi_list %}
-                {% for transaksi in transaksi_list %}
-                <tr data-jenis="{{ transaksi.kategori.jenis }}">
-                    <td>
-                        <div class="fw-semibold">{{ transaksi.created_at.strftime('%d %b %Y') }}</div>
-                        <small class="text-muted">{{ transaksi.created_at.strftime('%H:%M') }} WIB</small>
-                    </td>
-                    <td>
-                        {% if transaksi.kategori.jenis == 'PEMASUKAN' %}
-                        <span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-3 py-2">
-                            <i class="bi bi-arrow-up-right me-1"></i> {{ transaksi.kategori.nama }}
-                        </span>
-                        {% else %}
-                        <span class="badge rounded-pill bg-danger-subtle text-danger border border-danger-subtle px-3 py-2">
-                            <i class="bi bi-arrow-down-left me-1"></i> {{ transaksi.kategori.nama }}
-                        </span>
-                        {% endif %}
-                    </td>
-                    <td style="max-width:300px;">
-                        <span class="d-inline-block text-truncate" style="max-width:300px;">
-                            {{ transaksi.keterangan }}
-                        </span>
-                    </td>
-                    <td>
-                        {% if transaksi.kategori.jenis == 'PEMASUKAN' %}
-                        <span class="fw-bold text-success">+Rp {{ "{:,.0f}".format(transaksi.jumlah) }}</span>
-                        {% else %}
-                        <span class="fw-bold text-danger">-Rp {{ "{:,.0f}".format(transaksi.jumlah) }}</span>
-                        {% endif %}
-                    </td>
-                    <td>
+<section class="tabel-keuangan-container" id="tableContainerAK">
+
+    <div class="animate-entrance stagger-table" style="backface-visibility: hidden;">
+        
+        <div class="table-responsive mt-4">
+            <table class="table align-middle finance-table mb-0" style="border-collapse: separate; border-spacing: 0 10px;">
+                <thead>
+                    <tr class="text-muted" style="font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase;">
+                        <th style="width: 45px; vertical-align: middle;" class="ps-3">
+                            <input type="checkbox" class="form-check-input border-secondary-subtle">
+                        </th>
+                        <th style="vertical-align: middle;">ID & TANGGAL</th>
+                        <th style="vertical-align: middle;">TIPE</th>
+                        <th style="vertical-align: middle;">DESKRIPSI</th>
+                        <th style="vertical-align: middle;">KATEGORI</th>
+                        <th style="vertical-align: middle;">NOMINAL</th>
+                        <th style="vertical-align: middle;">STATUS</th>
+                        <th style="vertical-align: middle;">BUKTI</th>
+                        <th style="width:120px; padding-right:20px; vertical-align: middle;"></th>
+                    </tr>
+                </thead>
+                <tbody id="transaksiTbody">
+                    {% if transaksi_list %}
+                        {% for transaksi in transaksi_list %}
+                        <tr data-jenis="{{ transaksi.kategori.jenis }}" class="bg-white" style="box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: background-color 0.2s ease;">
+                            
+                            <td class="ps-3 rounded-start" style="vertical-align: middle;">
+                                <input type="checkbox" class="form-check-input border-secondary-subtle">
+                            </td>
+
+                            <td style="vertical-align: middle;">
+                                <div class="fw-bold text-dark" style="font-size: 12px;">#TRX2026{{ "%04d" | format(transaksi.id) }}</div>
+                                <small class="text-muted" style="font-size: 11px;">{{ transaksi.created_at.strftime('%d %b - %H:%M') }}</small>
+                            </td>
+
+                            <td style="vertical-align: middle;">
+                                {% if transaksi.kategori.jenis == 'PEMASUKAN' %}
+                                <span class="badge-kapsul kapsul-hijau">
+                                    <i class="bi bi-arrow-up-right text-success" style="stroke-width: 1px;"></i> Pemasukan
+                                </span>
+                                {% else %}
+                                <span class="badge-kapsul kapsul-merah">
+                                    <i class="bi bi-arrow-down-left text-danger" style="stroke-width: 1px;"></i> Pengeluaran
+                                </span>
+                                {% endif %}
+                            </td>
+
+                            <td style="max-width:250px; vertical-align: middle;">
+                                <div class="fw-semibold text-dark text-truncate" style="font-size: 12px;">{{ transaksi.keterangan }}</div>
+                                <small class="text-muted" style="font-size: 11px;">Tunai / Transfer</small> 
+                            </td>
+
+                            <td style="vertical-align: middle;">
+                                <span class="text-dark" style="font-size: 12px;">{{ transaksi.kategori.nama }}</span>
+                            </td>
+
+                            <td style="vertical-align: middle;">
+                                {% if transaksi.kategori.jenis == 'PEMASUKAN' %}
+                                    <span class="text-success fw-bold" style="font-size: 12px;">+Rp {{ "{:,.0f}".format(transaksi.jumlah).replace(',', '.') }}</span>
+                                {% else %}
+                                    <span class="text-danger fw-bold" style="font-size: 12px;">-Rp {{ "{:,.0f}".format(transaksi.jumlah).replace(',', '.') }}</span>
+                                {% endif %}
+                            </td>
+
+                            <td style="vertical-align: middle;">
+                                {% if loop.index == 2 or loop.index == 5 %}
+                                <span class="badge-kapsul kapsul-kuning">
+                                    <i class="bi bi-circle-fill" style="font-size: 7px;"></i> Perlu Verifikasi
+                                </span>
+                                {% else %}
+                                <span class="badge-kapsul kapsul-hijau">
+                                    <i class="bi bi-check-circle-fill" style="font-size: 11px;"></i> Terverifikasi
+                                </span>
+                                {% endif %}
+                            </td>
+
+                            <td style="vertical-align: middle;">
+                                {% if transaksi.bukti_transaksi %}
+                                    <span class="badge rounded-pill bg-light text-dark border px-3 py-1" style="font-size: 11px; font-weight: 500;">
+                                        <i class="bi bi-paperclip text-muted me-1"></i> 1 file
+                                    </span>
+                                {% else %}
+                                    <span class="badge rounded-pill bg-warning-subtle text-warning border border-warning-subtle px-3 py-1" style="font-size: 11px; font-weight: 500;">
+                                        Tanpa bukti
+                                    </span>
+                                {% endif %}
+                            </td>
+
+                            <td class="rounded-end" style="padding-right:20px; vertical-align: middle;">
+                                <div class="d-flex gap-1 justify-content-end">
+                                    <button type="button" class="btn btn-sm text-secondary p-1" data-bs-toggle="modal" data-bs-target="#editTransaksi{{ transaksi.id }}">
+                                        <i class="bi bi-pencil" style="font-size: 14px;"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm text-secondary p-1" data-bs-toggle="modal" data-bs-target="#detailTransaksi{{ transaksi.id }}">
+                                        <i class="bi bi-eye" style="font-size: 14px;"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm text-secondary p-1" onclick="konfirmasiHapus({{ transaksi.id }})">
+                                        <i class="bi bi-trash" style="font-size: 14px;"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="9" class="text-center py-5">
+                                <i class="bi bi-search" style="font-size:40px;color:#ccc;"></i>
+                                <div class="mt-3 fw-semibold">Data transaksi tidak ditemukan</div>
+                                <small class="text-muted">Coba ubah filter pencarian yang digunakan.</small>
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+    </div> 
+    
+    {% if transaksi_list %}
+        {% for transaksi in transaksi_list %}
+        <div class="modal fade modal-modern-edit" id="editTransaksi{{ transaksi.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            
+            <div class="modal-header border-0 pb-0">
+                <h5 class="fw-bold m-0">Edit Transaksi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <form action="/admin-keuangan/finance/update/{{ transaksi.id }}" method="POST" enctype="multipart/form-data" class="needs-validation form-edit-transaksi" novalidate>
+                <div class="modal-body">
+                    
+                    <div class="mb-3">
+                        <label class="form-label-custom">Tanggal Transaksi</label>
+                        <input type="datetime-local" name="created_at" class="form-control form-control-custom" required value="{{ transaksi.created_at.strftime('%Y-%m-%dT%H:%M') }}">
+                        <div class="invalid-feedback">Tanggal transaksi wajib diisi.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label-custom">Jenis Transaksi</label>
+                        <div class="toggle-container">
+                            <div class="toggle-option">
+                                <input type="radio" id="edit_pemasukan_{{ transaksi.id }}" name="jenis_filter_{{ transaksi.id }}" value="PEMASUKAN" class="jenis-edit" {% if transaksi.kategori.jenis == 'PEMASUKAN' %}checked{% endif %}>
+                                <label for="edit_pemasukan_{{ transaksi.id }}" class="toggle-label">
+                                    <i class="bi bi-arrow-up-right-circle-fill me-1"></i> Pemasukan
+                                </label>
+                            </div>
+                            <div class="toggle-option">
+                                <input type="radio" id="edit_pengeluaran_{{ transaksi.id }}" name="jenis_filter_{{ transaksi.id }}" value="PENGELUARAN" class="jenis-edit" {% if transaksi.kategori.jenis == 'PENGELUARAN' %}checked{% endif %}>
+                                <label for="edit_pengeluaran_{{ transaksi.id }}" class="toggle-label">
+                                    <i class="bi bi-arrow-down-left-circle-fill"></i> Pengeluaran
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label-custom">Kategori</label>
+                        <select name="kategori_id" class="form-select form-control-custom kategori-edit" required style="-webkit-appearance: none; appearance: none;">
+                            {% for kategori in kategori_list %}
+                            <option value="{{ kategori.id }}" data-jenis="{{ kategori.jenis }}" {% if transaksi.kategori_id == kategori.id %}selected{% endif %}>
+                                {{ kategori.nama }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <div class="invalid-feedback">Silakan pilih kategori.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label-custom">Nominal</label>
+                        <input type="text" class="form-control form-control-custom nominal-display" value="{{ '{:,.0f}'.format(transaksi.jumlah).replace(',', '.') }}" required>
+                        <input type="hidden" name="jumlah" class="nominal-real" value="{{ transaksi.jumlah }}">
+                        <div class="invalid-feedback">Nominal harus lebih dari Rp 0.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label-custom">Keterangan</label>
+                        <textarea name="keterangan" class="form-control form-control-custom keterangan-edit" rows="3" required>{{ transaksi.keterangan | trim }}</textarea>
+                        <div class="invalid-feedback">Keterangan wajib diisi.</div>
+                    </div>
+                    
+                    <div class="bukti-edit-section {% if transaksi.kategori.jenis == 'PEMASUKAN' %}d-none{% endif %}">
+                        <label class="form-label-custom">Bukti Transaksi</label>
                         {% if transaksi.bukti_transaksi %}
-                        <img src="{{ url_for('static', filename=transaksi.bukti_transaksi) }}" class="rounded border" width="60" height="60" style="object-fit:cover;">
-                        {% else %}
-                        <span class="badge rounded-pill text-bg-secondary">
-                            <i class="bi bi-image me-1"></i> Tidak Ada
-                        </span>
+                        <div class="mb-3 wadah-preview-lama">
+                            <img src="{{ url_for('static', filename=transaksi.bukti_transaksi) }}" class="img-fluid rounded border preview-lama" style="max-height:180px; width:100%; object-fit: cover; border-radius:12px;">
+                        </div>
                         {% endif %}
-                    </td>
-                    <td style="padding-right:20px;">
-                        <div class="d-flex gap-2">
-                            <button type="button" class="btn btn-sm text-secondary" data-bs-toggle="modal" data-bs-target="#editTransaksi{{ transaksi.id }}">
-                                <i class="bi bi-pencil"></i>
+                        
+                        <input type="file" name="bukti_transaksi" class="form-control form-control-custom bukti-input" accept=".jpg,.jpeg,.png,.webp,image/*" style="padding: 8px 12px;">
+                        <div class="invalid-feedback">Bukti transaksi wajib diupload untuk transaksi pengeluaran.</div>
+                        
+                        <div class="preview-baru mt-3 d-none position-relative">
+                            <img class="img-fluid rounded border gambar-preview" style="max-height:180px; width: 100%; object-fit: cover; border-radius: 12px;">
+                            <button type="button" class="btn btn-glass-hapus hapus-preview" style="position: absolute; top: 12px; right: 12px; z-index: 10;">
+                                <i class="bi bi-trash-fill me-1"></i> Hapus
                             </button>
-                            <button type="button" class="btn btn-sm text-secondary" data-bs-toggle="modal" data-bs-target="#detailTransaksi{{ transaksi.id }}">
-                                <i class="bi bi-eye"></i>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-
-                <div class="modal fade" id="editTransaksi{{ transaksi.id }}" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content" style="border-radius:24px; border:none; box-shadow:0 10px 40px rgba(0,0,0,.1);">
-                            <div class="modal-header border-0 pb-0">
-                                <h5 class="fw-bold">Edit Transaksi</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                            </div>
-                            <form action="/admin-keuangan/finance/update/{{ transaksi.id }}" method="POST" enctype="multipart/form-data" class="needs-validation form-edit-transaksi" novalidate>
-                                <div class="modal-body px-4 py-3">
-                                    <div class="mb-3">
-                                        <label class="form-label small fw-bold text-muted">TANGGAL TRANSAKSI</label>
-                                        <input type="datetime-local" name="created_at" class="form-control bg-light border-0" required value="{{ transaksi.created_at.strftime('%Y-%m-%dT%H:%M') }}" style="border-radius:12px;padding:12px;">
-                                        <div class="invalid-feedback">Tanggal transaksi wajib diisi.</div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label small fw-bold text-muted d-block mb-3">JENIS TRANSAKSI</label>
-                                        <div class="d-flex gap-4">
-                                            <div class="form-check">
-                                                <input class="form-check-input jenis-edit" type="radio" name="jenis_filter_{{ transaksi.id }}" value="PEMASUKAN" {% if transaksi.kategori.jenis == 'PEMASUKAN' %}checked{% endif %}>
-                                                <label class="form-check-label text-success">Pemasukan</label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input jenis-edit" type="radio" name="jenis_filter_{{ transaksi.id }}" value="PENGELUARAN" {% if transaksi.kategori.jenis == 'PENGELUARAN' %}checked{% endif %}>
-                                                <label class="form-check-label text-danger">Pengeluaran</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label small fw-bold text-muted">KATEGORI</label>
-                                        <select name="kategori_id" class="form-select bg-light border-0 kategori-edit" required style="border-radius:12px;padding:12px;">
-                                            {% for kategori in kategori_list %}
-                                            <option value="{{ kategori.id }}" data-jenis="{{ kategori.jenis }}" {% if transaksi.kategori_id == kategori.id %}selected{% endif %}>
-                                                {{ kategori.nama }}
-                                            </option>
-                                            {% endfor %}
-                                        </select>
-                                        <div class="invalid-feedback">Silakan pilih kategori.</div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label small fw-bold text-muted">NOMINAL</label>
-                                        <input type="text" class="form-control bg-light border-0 nominal-display" value="{{ '{:,.0f}'.format(transaksi.jumlah).replace(',', '.') }}" required style="border-radius:12px;padding:12px;">
-                                        <input type="hidden" name="jumlah" class="nominal-real" value="{{ transaksi.jumlah }}">
-                                        <div class="invalid-feedback">Nominal harus lebih dari Rp 0.</div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label small fw-bold text-muted">KETERANGAN</label>
-                                        <textarea name="keterangan" class="form-control bg-light border-0 keterangan-edit" rows="3" required style="border-radius:12px;padding:12px;">{{ transaksi.keterangan | trim }}</textarea>
-                                        <div class="invalid-feedback">Keterangan wajib diisi.</div>
-                                    </div>
-                                    <div class="bukti-edit-section {% if transaksi.kategori.jenis == 'PEMASUKAN' %}d-none{% endif %}">
-                                        <label class="form-label small fw-bold text-muted">BUKTI TRANSAKSI</label>
-                                        {% if transaksi.bukti_transaksi %}
-                                        <div class="mb-3 wadah-preview-lama">
-                                            <img src="{{ url_for('static', filename=transaksi.bukti_transaksi) }}" class="img-fluid rounded border preview-lama" style="max-height:220px;">
-                                        </div>
-                                        {% endif %}
-                                        <input type="file" name="bukti_transaksi" class="form-control bukti-input" accept=".jpg,.jpeg,.png,.webp,image/*">
-                                        <div class="invalid-feedback">Bukti transaksi wajib diupload untuk transaksi pengeluaran.</div>
-                                        <div class="preview-baru mt-3 d-none">
-                                            <img class="img-fluid rounded border gambar-preview" style="max-height:220px;">
-                                            <button type="button" class="btn btn-danger btn-sm hapus-preview mt-2">Hapus Preview</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer border-0">
-                                    <button type="button" class="btn text-muted" data-bs-dismiss="modal">Batal</button>
-                                    <button type="submit" class="btn btn-action-pill pill-primary">Update Transaksi</button>
-                                </div>
-                            </form>
                         </div>
                     </div>
                 </div>
-
-                <div class="modal fade" id="detailTransaksi{{ transaksi.id }}" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content" style="border-radius:24px; border:none; box-shadow:0 10px 40px rgba(0,0,0,.1);">
-                            <div class="modal-header border-0 pb-0">
-                                <h5 class="fw-bold">Detail Transaksi</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                            </div>
-                            <div class="modal-body px-4 py-3">
-                                <div class="mb-3">
-                                    <small class="text-muted d-block">TANGGAL</small>
-                                    <div class="fw-semibold">{{ transaksi.created_at.strftime('%d %b %Y %H:%M') }}</div>
-                                </div>
-                                <div class="mb-3">
-                                    <small class="text-muted d-block">KATEGORI</small>
-                                    <div>{{ transaksi.kategori.nama }}</div>
-                                </div>
-                                <div class="mb-3">
-                                    <small class="text-muted d-block">JENIS</small>
-                                    <div>{{ transaksi.kategori.jenis }}</div>
-                                </div>
-                                <div class="mb-3">
-                                    <small class="text-muted d-block">NOMINAL</small>
-                                    <div class="fw-bold">Rp {{ "{:,.0f}".format(transaksi.jumlah) }}</div>
-                                </div>
-                                <div class="mb-3">
-                                    <small class="text-muted d-block">KETERANGAN</small>
-                                    <div>{{ transaksi.keterangan }}</div>
-                                </div>
-                                <div class="mb-3">
-                                    <small class="text-muted d-block mb-2">BUKTI TRANSAKSI</small>
-                                    {% if transaksi.bukti_transaksi %}
-                                    <img src="{{ url_for('static', filename=transaksi.bukti_transaksi) }}" class="img-fluid rounded border">
-                                    {% else %}
-                                    <span class="badge text-bg-secondary">Tidak ada bukti transaksi</span>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-cancel-modern" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-submit-modern">Update Transaksi</button>
                 </div>
-                {% endfor %}
-            {% else %}
-                <tr>
-                    <td colspan="6" class="text-center py-5">
-                        <i class="bi bi-search" style="font-size:40px;color:#ccc;"></i>
-                        <div class="mt-3 fw-semibold">Data transaksi tidak ditemukan</div>
-                        <small class="text-muted">Coba ubah filter pencarian yang digunakan.</small>
-                    </td>
-                </tr>
-            {% endif %}
-        </tbody>
-    </table>
+            </form>
+        </div>
+    </div>
 </div>
 
-{% if pagination.pages > 1 %}
-<nav aria-label="Page navigation" class="mt-4">
-    <ul class="pagination custom-pagination justify-content-end align-items-center gap-2">
-        
-        {# TOMBOL SEBELUMNYA (PREVIOUS) #}
-        <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
-            <a class="page-link text-muted" href="{{ request.path }}?page={{ pagination.prev_num }}{% if request.args.get('jenis') %}&jenis={{ request.args.get('jenis') }}{% endif %}{% if request.args.get('kategori_id') %}&kategori_id={{ request.args.get('kategori_id') }}{% endif %}{% if request.args.get('bulan') %}&bulan={{ request.args.get('bulan') }}{% endif %}{% if request.args.get('tanggal_awal') %}&tanggal_awal={{ request.args.get('tanggal_awal') }}{% endif %}{% if request.args.get('tanggal_akhir') %}&tanggal_akhir={{ request.args.get('tanggal_akhir') }}{% endif %}">
-                <span>&lsaquo;</span>
-            </a>
-        </li>
+        <div class="modal fade" id="detailTransaksi{{ transaksi.id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="border-radius:24px; border:none; box-shadow:0 10px 40px rgba(0,0,0,.1);">
+                    <div class="modal-header border-0 pb-0">
+                        <h5 class="fw-bold">Detail Transaksi</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body px-4 py-3">
+                        <div class="mb-3">
+                            <small class="text-muted d-block">TANGGAL</small>
+                            <div class="fw-semibold">{{ transaksi.created_at.strftime('%d %b %Y %H:%M') }}</div>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted d-block">KATEGORI</small>
+                            <div>{{ transaksi.kategori.nama }}</div>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted d-block">JENIS</small>
+                            <div>{{ transaksi.kategori.jenis }}</div>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted d-block">NOMINAL</small>
+                            <div class="fw-bold">Rp {{ "{:,.0f}".format(transaksi.jumlah) }}</div>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted d-block">KETERANGAN</small>
+                            <div>{{ transaksi.keterangan }}</div>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted d-block mb-2">BUKTI TRANSAKSI</small>
+                            {% if transaksi.bukti_transaksi %}
+                            <img src="{{ url_for('static', filename=transaksi.bukti_transaksi) }}" class="img-fluid rounded border">
+                            {% else %}
+                            <span class="badge text-bg-secondary">Tidak ada bukti transaksi</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% endif %}
 
-        {# DAFTAR NOMOR HALAMAN DINAMIS #}
-        {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
-            {% if page_num %}
-                {% if page_num == pagination.page %}
-                    <li class="page-item active">
-                        <span class="page-link">{{ page_num }}</span>
-                    </li>
+    {% if pagination.pages > 1 %}
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination custom-pagination justify-content-end align-items-center gap-2">
+            <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                <a class="page-link text-muted" href="{{ request.path }}?page={{ pagination.prev_num }}{% if request.args.get('jenis') %}&jenis={{ request.args.get('jenis') }}{% endif %}{% if request.args.get('kategori_id') %}&kategori_id={{ request.args.get('kategori_id') }}{% endif %}{% if request.args.get('bulan') %}&bulan={{ request.args.get('bulan') }}{% endif %}{% if request.args.get('tanggal_awal') %}&tanggal_awal={{ request.args.get('tanggal_awal') }}{% endif %}{% if request.args.get('tanggal_akhir') %}&tanggal_akhir={{ request.args.get('tanggal_akhir') }}{% endif %}">
+                    <span>&lsaquo;</span>
+                </a>
+            </li>
+
+            {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                {% if page_num %}
+                    {% if page_num == pagination.page %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ page_num }}</span>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ request.path }}?page={{ page_num }}{% if request.args.get('jenis') %}&jenis={{ request.args.get('jenis') }}{% endif %}{% if request.args.get('kategori_id') %}&kategori_id={{ request.args.get('kategori_id') }}{% endif %}{% if request.args.get('bulan') %}&bulan={{ request.args.get('bulan') }}{% endif %}{% if request.args.get('tanggal_awal') %}&tanggal_awal={{ request.args.get('tanggal_awal') }}{% endif %}{% if request.args.get('tanggal_akhir') %}&tanggal_akhir={{ request.args.get('tanggal_akhir') }}{% endif %}">
+                                {{ page_num }}
+                            </a>
+                        </li>
+                    {% endif %}
                 {% else %}
-                    <li class="page-item">
-                        <a class="page-link" href="{{ request.path }}?page={{ page_num }}{% if request.args.get('jenis') %}&jenis={{ request.args.get('jenis') }}{% endif %}{% if request.args.get('kategori_id') %}&kategori_id={{ request.args.get('kategori_id') }}{% endif %}{% if request.args.get('bulan') %}&bulan={{ request.args.get('bulan') }}{% endif %}{% if request.args.get('tanggal_awal') %}&tanggal_awal={{ request.args.get('tanggal_awal') }}{% endif %}{% if request.args.get('tanggal_akhir') %}&tanggal_akhir={{ request.args.get('tanggal_akhir') }}{% endif %}">
-                            {{ page_num }}
-                        </a>
+                    <li class="page-item disabled">
+                        <span class="page-link border-0 bg-transparent text-muted">...</span>
                     </li>
                 {% endif %}
-            {% else %}
-                <li class="page-item disabled">
-                    <span class="page-link border-0 bg-transparent text-muted">...</span>
-                </li>
-            {% endif %}
-        {% endfor %}
+            {% endfor %}
 
-        {# TOMBOL SELANJUTNYA (NEXT) #}
-        <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
-            <a class="page-link text-muted" href="{{ request.path }}?page={{ pagination.next_num }}{% if request.args.get('jenis') %}&jenis={{ request.args.get('jenis') }}{% endif %}{% if request.args.get('kategori_id') %}&kategori_id={{ request.args.get('kategori_id') }}{% endif %}{% if request.args.get('bulan') %}&bulan={{ request.args.get('bulan') }}{% endif %}{% if request.args.get('tanggal_awal') %}&tanggal_awal={{ request.args.get('tanggal_awal') }}{% endif %}{% if request.args.get('tanggal_akhir') %}&tanggal_akhir={{ request.args.get('tanggal_akhir') }}{% endif %}">
-                <span>&rsaquo;</span>
-            </a>
-        </li>
+            <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                <a class="page-link text-muted" href="{{ request.path }}?page={{ pagination.next_num }}{% if request.args.get('jenis') %}&jenis={{ request.args.get('jenis') }}{% endif %}{% if request.args.get('kategori_id') %}&kategori_id={{ request.args.get('kategori_id') }}{% endif %}{% if request.args.get('bulan') %}&bulan={{ request.args.get('bulan') }}{% endif %}{% if request.args.get('tanggal_awal') %}&tanggal_awal={{ request.args.get('tanggal_awal') }}{% endif %}{% if request.args.get('tanggal_akhir') %}&tanggal_akhir={{ request.args.get('tanggal_akhir') }}{% endif %}">
+                    <span>&rsaquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    {% endif %}
 
-    </ul>
-</nav>
-{% endif %}
+</section>

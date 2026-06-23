@@ -1,0 +1,152 @@
+/* ==========================================================================
+   1. COMPONENT: FINANCE TABS (Header Navigasi)
+   ========================================================================== */
+.finance-tab-container {
+    padding-bottom: 0 !important;
+    border-radius: 12px 12px 0 0;
+    border-bottom: 1px solid #F0EDE8;
+    margin-bottom: 20px !important;
+    margin-top: 0px !important;
+}
+
+.finance-tab {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: #9CA3AF;
+    padding-bottom: 14px !important; 
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s ease, border-color 0.2s ease;
+    white-space: nowrap;
+}
+
+.finance-tab:hover {
+    color: #E2660E;
+    border-bottom: 2px solid #F5C9A8;
+}
+
+.finance-tab.active {
+    color: #E2660E !important;
+    border-bottom: 2px solid #E2660E !important;
+    font-weight: 600;
+}
+
+.finance-tab-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 20px;
+    background-color: #F3F4F6;
+    color: #6B7280;
+    margin-left: 5px;
+    line-height: 1.4;
+}
+
+.finance-tab.active .finance-tab-badge {
+    background-color: #FEF0E6;
+    color: #E2660E;
+}
+
+/* ==========================================================================
+   PERBAIKAN FILTER: UKURAN PIL LEBIH RAMPING & LAYOUT SESUAI MOCKUP
+   ========================================================================== */
+.filter-ak-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 10px; /* Jarak antar pil dikecilkan biar rapatnya pas mirip mockup */
+    width: 100%;
+    padding: 12px 0 0px 0 !important;
+    margin-bottom: 0 !important;
+    justify-content: flex-start;
+}
+
+/* Base style untuk dropdown dan date input biar lebih ramping */
+#filterFormAK .filter-ak-select,
+#filterFormAK .filter-ak-date {
+    height: 32px !important; /* Di-press dari 38px ke 32px biar ramping */
+    font-size: 12px !important; /* Ukuran teks disesuaikan */
+    border: 1px solid #EBEBEB !important;
+    border-radius: 50rem !important;
+    color: #2D2D2D !important;
+    background-color: #FFFFFF !important;
+    padding: 0 12px !important; /* Padding dalam dirapikan */
+    box-shadow: none !important;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+/* Lebar proporsional pas (Teks gak bakalan kepotong) */
+#filterFormAK .filter-ak-select { width: 135px !important; }
+#filterFormAK .filter-ak-date { width: 140px !important; }
+
+/* Focus State */
+#filterFormAK .filter-ak-select:focus,
+#filterFormAK .filter-ak-date:focus {
+    border-color: #E2660E !important;
+}
+
+/* ==========================================================================
+   SEARCH BAR MODERN (DIKECILKAN)
+   ========================================================================== */
+.filter-ak-search.input-group {
+    width: 220px !important; /* Di-press sedikit biar proporsional */
+    height: 32px !important;
+    border: 1px solid #EBEBEB !important;
+    border-radius: 50rem !important;
+    background-color: #FFFFFF !important;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.filter-ak-search .input-group-text {
+    background-color: transparent !important;
+    border: none !important;
+    padding-left: 12px !important;
+    padding-right: 4px !important;
+    font-size: 12px !important;
+}
+
+.filter-ak-search .form-control {
+    border: none !important;
+    background-color: transparent !important;
+    font-size: 12px !important;
+    height: 100% !important;
+    padding-left: 2px !important;
+    padding-right: 12px !important;
+    box-shadow: none !important;
+}
+
+/* ==========================================================================
+   BUTTON RESET FILTER (NEMPEL DI KIRI / MENGIKUTI ALUR FILTER)
+   ========================================================================== */
+.btn-reset-ak {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 32px; /* Samakan tinggi dengan yang lain */
+    padding: 0 14px;
+    border: 1px solid #EBEBEB;
+    border-radius: 50rem;
+    font-size: 12px;
+    font-weight: 500;
+    color: #2D2D2D;
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    background-color: #ffffff;
+    
+    /* KUNCI MOCKUP: Hilangkan margin-left: auto agar dia jajar lurus nempel di kiri */
+    margin-left: auto !important; 
+    
+    transition: all 0.2s ease;
+}
+
+.btn-reset-ak:hover {
+    color: #E2660E;
+    border-color: #E2660E;
+    background-color: #fff8f3;
+}

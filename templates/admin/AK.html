@@ -2,11 +2,24 @@
 
 {% block breadcrumb %}Kelola Keuangan Al-Bayan{% endblock %}
 
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/kelola_keuangan/card.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/kelola_keuangan/tabs_filter.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/kelola_keuangan/table.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/kelola_keuangan/button.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/kelola_keuangan/modal.css') }}">
+{% endblock %}
+
 {% block admin_content %}
     {% include 'admin/components-AK/headers.html' %}
     {% include 'admin/components-AK/cards.html' %}
     {% include 'admin/components-AK/tabs_filter.html' %}
-    {% include 'admin/components-AK/table.html' %}
+    
+    <div id="table-ajax-wrapper">
+        {% include 'admin/components-AK/table.html' %}
+    </div>
+
     {% include 'admin/components-AK/modal_tambah.html' %}
 {% endblock %}
 

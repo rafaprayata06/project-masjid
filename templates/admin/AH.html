@@ -1,10 +1,15 @@
 {% extends 'layouts/admin_base.html' %}
 {% block breadcrumb %}Kelola Berita & Pengumuman Al-Bayan{% endblock %}
 
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/kelola_berita/berita_animations.css') }}">
+{% endblock %}
+
 {% block admin_content %}
     {% include 'admin/components-AH/headers.html' %}
     {% include 'admin/components-AH/form_berita.html' %}
-    
     <div class="row g-4">
         <div class="col-lg-5">
             {% include 'admin/components-AH/list_sidebar.html' %}

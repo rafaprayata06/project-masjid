@@ -1,0 +1,60 @@
+/* ==========================================================================
+   STYLE KAPSUL & BADGE FINANSIAL MODERN (AL-BAYAN)
+   ========================================================================== */
+
+/* 1. Kapsul Kategori di Dalam Tabel */
+.badge-kategori-modern {
+    padding: 6px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 50px; /* Membuat bentuk kapsul bulat sempurna */
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 0.3px;
+}
+
+/* Variasi Warna Soft Pastel (Lebih Nyaman di Mata & Modern) */
+.kapsul-zakat {
+    background-color: #E3F2FD !important;
+    color: #1565C0 !important;
+}
+
+.kapsul-infaq {
+    background-color: #F3E5F5 !important;
+    color: #6A1B9A !important;
+}
+
+.kapsul-operasional {
+    background-color: #FFF3E0 !important;
+    color: #E65100 !important;
+}
+
+.kapsul-pemasukan-modern {
+    background-color: #E8F5E9 !important;
+    color: #2E7D32 !important;
+}
+
+.kapsul-pengeluaran-modern {
+    background-color: #FFEBEE !important;
+    color: #C62828 !important;
+}
+
+/* 2. Kapsul Angka Counter di Tab Menu Atas */
+.tab-badge-modern {
+    background-color: #F2EFEA;
+    color: #7A7268;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 50px;
+    display: inline-block;
+    margin-left: 5px;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Efek sinkronisasi warna pas tab-nya aktif */
+.finance-tab.active .tab-badge-modern {
+    background-color: #E2660E;
+    color: #FFFFFF;
+}

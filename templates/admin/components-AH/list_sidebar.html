@@ -1,4 +1,4 @@
-<div class="d-flex gap-1 mb-3" style="border-bottom:2px solid #F2EFEA; padding-bottom:0;">
+<div class="d-flex gap-1 mb-3 page-entry delay-3" style="border-bottom:2px solid #F2EFEA; padding-bottom:0;">
     <button class="tab-berita active" data-status="all">
         Semua <span class="tab-count">{{ semua_berita|length }}</span>
     </button>
@@ -7,6 +7,10 @@
     </button>
     <button class="tab-berita" data-status="draft">
         Draft <span class="tab-count">{{ semua_berita|selectattr('status','eq','draft')|list|length }}</span>
+    </button>
+
+    <button class="tab-berita" data-status="terjadwal">
+        Terjadwal <span class="tab-count">{{ semua_berita|selectattr('status','eq','terjadwal')|list|length }}</span>
     </button>
 </div>
 
@@ -88,4 +92,4 @@
     {% endfor %}
 </div>
 
-<button class="btn-buka-web w-100 mt-3 text-center justify-content-center">Muat berita lainnya</button>
+<button id="loadMoreBtn" class="btn-buka-web w-100 mt-3 text-center justify-content-center">Muat berita lainnya</button>
