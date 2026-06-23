@@ -92,7 +92,7 @@ def admin_keuangan_show():
 @admin.route("/admin-keuangan/dashboard", methods=["GET"])
 @login_required
 def admin_keuangan_dashboard():
-    return render_template("admin/AS-users.html", user=current_user)
+    return render_template("admin/AS.html", user=current_user)
 
 # 3. Alamat Kelola Keuangan (menangani halaman tabel transaksi)
 @admin.route("/admin-keuangan/finance", methods=["GET"])
