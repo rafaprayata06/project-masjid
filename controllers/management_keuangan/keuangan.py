@@ -44,9 +44,7 @@ def validate_transaksi_form(
         errors["keterangan"] = "Keterangan wajib diisi"
 
     return errors
-
-def handle_bukti_upload(file,old_bukti=None):
-
+def handle_bukti_upload(file, old_bukti=None):
     if not file or file.filename == "":
         return old_bukti
 
@@ -55,25 +53,32 @@ def handle_bukti_upload(file,old_bukti=None):
             "Format gambar harus JPG, JPEG, PNG, atau WEBP"
         )
 
-    file.seek(0, os.SEEK_END)
-    file_length = file.tell()
+    # ====================================================================
+    # FIX: Membaca file bytes secara langsung agar ukurannya akurat
+    # ====================================================================
+    file_data = file.read()
+    file_length = len(file_data)
+    
+    # KEMBALIKAN POINTER KE 0. Jika tidak, file yang disimpan akan berukuran 0 bytes (corrupt)
     file.seek(0)
 
     if file_length > MAX_FILE_SIZE:
         raise ValueError(
             "Ukuran gambar maksimal 2MB"
         )
+    # ====================================================================
 
     # HAPUS FILE LAMA JIKA ADA
     if old_bukti:
-
         old_path = os.path.join(
             "static",
             old_bukti
         )
-
         if os.path.exists(old_path):
-            os.remove(old_path)
+            try:
+                os.remove(old_path)
+            except Exception:
+                pass # Mengantisipasi jika file lama terkunci atau gagal dihapus
 
     filename = (
         f"{datetime.now().strftime('%Y%m%d%H%M%S')}_"
@@ -99,10 +104,10 @@ def handle_bukti_upload(file,old_bukti=None):
     file.save(file_path)
 
     return f"uploads/transaksi/{filename}"
+
+
 def admin_keuangan_store():
-
     try:
-
         kategori_id = request.form.get("kategori_id")
         jumlah = request.form.get("jumlah")
         created_at = request.form.get("created_at")
@@ -116,51 +121,45 @@ def admin_keuangan_store():
         )
 
         if errors:
-
             for error in errors.values():
                 flash(error, "error")
-
             return redirect("/admin-keuangan/finance")
 
         kategori = Kategori.query.get(kategori_id)
-
         if not kategori:
             flash("Kategori tidak ditemukan", "error")
             return redirect("/admin-keuangan/finance")
 
         file = request.files.get("bukti_transaksi")
-
         bukti_transaksi = None
 
-        # wajib upload jika kategori pengeluaran
+        # Wajib upload jika kategori pengeluaran
         if kategori.jenis == "PENGELUARAN":
-
             if not file or file.filename == "":
                 flash(
                     "Bukti transaksi wajib diupload untuk pengeluaran",
                     "error"
                 )
                 return redirect("/admin-keuangan/finance")
-
+            
+            # Memanggil fungsi upload (Jika > 2MB, otomatis melempar ValueError)
             bukti_transaksi = handle_bukti_upload(file)
+            
+        else:
+            # Jika PEMASUKAN, upload sifatnya opsional (hanya jika ada file)
+            if file and file.filename != "":
+                bukti_transaksi = handle_bukti_upload(file)
 
         transaksi = Transaksi(
-
             user_nim=current_user.nim,
-
             kategori_id=int(kategori_id),
-
             jumlah=float(jumlah),
-
             keterangan=keterangan,
-
             bukti_transaksi=bukti_transaksi,
-
             created_at=datetime.strptime(
                 created_at,
                 "%Y-%m-%dT%H:%M"
             )
-
         )
 
         db.session.add(transaksi)
@@ -172,13 +171,11 @@ def admin_keuangan_store():
         )
 
     except ValueError as e:
-
+        # Menangkap error ukuran atau format file dari handle_bukti_upload
         flash(str(e), "error")
 
     except Exception as e:
-
         db.session.rollback()
-
         flash(
             f"Gagal menambahkan transaksi: {str(e)}",
             "error"
