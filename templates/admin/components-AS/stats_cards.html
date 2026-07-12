@@ -1,42 +1,26 @@
-<div class="row g-4 mb-4">
-    <div class="col-md-3">
-        <div class="stats-card">
-            <div class="stats-label">Saldo Masjid <span class="badge bg-light text-danger ms-1" style="font-size: 10px;">Real-time</span></div>
-            <div class="stats-value">Rp 487,2jt</div>
-            <div class="stats-badge badge-up">
-                <i class="bi bi-arrow-up-short"></i> 12.4% <span class="ms-1 text-muted fw-normal">dari bulan lalu</span>
-            </div>
-            <div id="chart-spark-1" class="sparkline-box"></div>
+<div class="row g-3 mb-4">
+    <!-- Card Saldo -->
+    <div class="col-md-4">
+        <div class="card p-3 border-0 shadow-sm rounded-4">
+            <span class="text-muted small">Saldo Masjid</span>
+            <h4 class="fw-bold text-dark mt-1">Rp {{ "{:,.0f}".format(stats.saldo_masjid).replace(',', '.') }}</h4>
+            <small class="text-success"><i class="bi bi-arrow-up"></i> Real-time aktif</small>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="stats-card">
-            <div class="stats-label">Donasi Bulan Ini</div>
-            <div class="stats-value">Rp 142,8jt</div>
-            <div class="stats-badge badge-up">
-                <i class="bi bi-arrow-up-short"></i> 8.2% <span class="ms-1 text-muted fw-normal">dari April</span>
-            </div>
-            <div id="chart-spark-2" class="sparkline-box"></div>
+    <!-- Card Total Admin -->
+    <div class="col-md-4">
+        <div class="card p-3 border-0 shadow-sm rounded-4">
+            <span class="text-muted small">Total Pengguna Sistem</span>
+            <h4 class="fw-bold text-dark mt-1">{{ stats.total_admin }} User</h4>
+            <small class="text-primary">Admin terdaftar</small>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="stats-card">
-            <div class="stats-label">Total Donatur</div>
-            <div class="stats-value">847</div>
-            <div class="stats-badge badge-up">
-                <i class="bi bi-person-plus-fill me-1"></i> +31 <span class="ms-1 text-muted fw-normal">orang baru</span>
-            </div>
-            <div id="chart-spark-3" class="sparkline-box"></div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="stats-card">
-            <div class="stats-label">Berita Dipublikasi</div>
-            <div class="stats-value">24</div>
-            <div class="stats-badge text-muted">
-                <span class="fw-bold">5</span> draft, <span class="fw-bold">3</span> jadwal terbit
-            </div>
-            <div id="chart-spark-4" class="sparkline-box"></div>
+    <!-- Card Berita -->
+    <div class="col-md-4">
+        <div class="card p-3 border-0 shadow-sm rounded-4">
+            <span class="text-muted small">Berita Dipublikasi</span>
+            <h4 class="fw-bold text-dark mt-1">{{ stats.berita_publish }} Berita</h4>
+            <small class="text-warning">{{ stats.berita_draft }} draft tersimpan</small>
         </div>
     </div>
 </div>

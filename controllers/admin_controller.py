@@ -1,44 +1,132 @@
-from flask import Blueprint
-from flask import render_template, request, redirect, flash
+from flask import render_template, request, redirect, flash, abort, jsonify
 from flask_login import current_user, login_required
+from database.db import db
+from datetime import datetime, time as dtime
+from sqlalchemy import func, extract, or_
+
+# Import Semua Model secara Global di Atas
 from models.kategori_model import Kategori
 from models.transaksi_model import Transaksi
 from models.user_model import User
 from models.berita_model import Berita
-from flask import request, redirect, flash
-from database.db import db
-from datetime import datetime,time
-from sqlalchemy import func
-from flask import send_file
-from openpyxl import Workbook
-from io import BytesIO
+from models.ustadz_model import Ustadz
+from models.jadwal_khutbah_model import JadwalKhutbah
+from models.activity_log_model import ActivityLog
+# Pastikan nama berkas/subfolder model jadwal riil Anda sesuai di bawah ini:
 
+
+# ====================================================================
+# BAGIAN ADMIN SUPER
+# ====================================================================
 
 def admin_super():
-    if current_user.role != "AS":
+    if current_user.role != 'AS':
+        flash('Akses ditolak! Anda tidak memiliki izin untuk membuka halaman tersebut.', 'error')
         return redirect("/login")
 
-    keyword = request.args.get("q")
+    # --- 1. AMBIL DATA AGREGAT UNTUK STATS CARDS ---
+    pemasukan = db.session.query(func.sum(Transaksi.jumlah)).join(Kategori).filter(Kategori.jenis == 'PEMASUKAN').scalar() or 0
+    pengeluaran = db.session.query(func.sum(Transaksi.jumlah)).join(Kategori).filter(Kategori.jenis == 'PENGELUARAN').scalar() or 0
+    saldo_masjid = pemasukan - pengeluaran
 
-    if keyword:
-        users = User.query.filter(
-            User.name.ilike(f"%{keyword}%")
-        ).order_by(User.created_at.desc()).all()
-    else:
-        users = User.query.order_by(
-            User.created_at.desc()
-        ).all()
+    # Total User & Berita
+    total_admin = User.query.count()
+    total_berita_publish = Berita.query.filter_by(status='publish').count()
+    total_berita_draft = Berita.query.filter_by(status='draft').count()
 
-    is_empty = len(users) == 0
-    return render_template("admin/components-KelolaAdmin/AS-users.html", user=current_user,users=users, is_empty=is_empty)
+    stats = {
+        'saldo_masjid': saldo_masjid,
+        'total_admin': total_admin,
+        'berita_publish': total_berita_publish,
+        'berita_draft': total_berita_draft
+    }
 
+    # --- 2. AMBIL DATA DINAMIS 6 BULAN TERAKHIR UNTUK CHART ---
+    hari_ini = datetime.now().date()
+    bulan_sekarang = hari_ini.month
+    tahun_sekarang = hari_ini.year
+
+    # Ambil 6 bulan ke belakang
+    months_labels = []
+    pemasukan_6bulan = []
+    pengeluaran_6bulan = []
+    
+    nama_bulan_singkat = {
+        1: 'Jan', 2: 'Feb', 3: 'Mar', 4: 'Apr', 5: 'Mei', 6: 'Jun',
+        7: 'Jul', 8: 'Agu', 9: 'Sep', 10: 'Okt', 11: 'Nov', 12: 'Des'
+    }
+
+    for i in range(5, -1, -1):
+        m = bulan_sekarang - i
+        y = tahun_sekarang
+        if m <= 0:
+            m += 12
+            y -= 1
+        
+        months_labels.append(nama_bulan_singkat[m])
+        
+        # Ambil total pemasukan bulan spesifik
+        tot_in = db.session.query(func.sum(Transaksi.jumlah)).join(Kategori)\
+            .filter(Kategori.jenis == 'PEMASUKAN', extract('month', Transaksi.created_at) == m, extract('year', Transaksi.created_at) == y).scalar() or 0
+        # Ambil total pengeluaran bulan spesifik
+        tot_out = db.session.query(func.sum(Transaksi.jumlah)).join(Kategori)\
+            .filter(Kategori.jenis == 'PENGELUARAN', extract('month', Transaksi.created_at) == m, extract('year', Transaksi.created_at) == y).scalar() or 0
+            
+        pemasukan_6bulan.append(float(tot_in))
+        pengeluaran_6bulan.append(float(tot_out))
+
+    chart_payload = {
+        'labels': months_labels,
+        'pemasukan': pemasukan_6bulan,
+        'pengeluaran': pengeluaran_6bulan
+    }
+
+    # --- 3. JADWAL KHUTBAH / IMAM BULAN BERJALAN (VERSI HUMAS) ---
+    nama_bulan_id = {
+        1: 'Januari', 2: 'Februari', 3: 'Maret', 4: 'April', 5: 'Mei', 6: 'Juni',
+        7: 'Juli', 8: 'Agustus', 9: 'September', 10: 'Oktober', 11: 'November', 12: 'Desember'
+    }
+    label_bulan_aktif = nama_bulan_id.get(bulan_sekarang, "Bulan Ini")
+
+    jadwal_bulan_ini = JadwalKhutbah.query.join(Ustadz)\
+        .filter(extract('month', JadwalKhutbah.tanggal) == bulan_sekarang)\
+        .filter(extract('year', JadwalKhutbah.tanggal) == tahun_sekarang)\
+        .order_by(JadwalKhutbah.tanggal.asc()).all()
+
+    list_jadwal_tabel = []
+    for jw in jadwal_bulan_ini:
+        tgl = jw.tanggal
+        if isinstance(tgl, str):
+            tgl = datetime.strptime(tgl.split()[0], "%Y-%m-%d").date()
+        
+        hari_str = tgl.strftime('%d')
+        jumat_ke = ((tgl.day - 1) // 7) + 1
+        
+        list_jadwal_tabel.append({
+            'hari_label': f"Jum, {hari_str} {tgl.strftime('%b')}",
+            'sholat': f"Shalat Jumat - Pekan {jumat_ke}",
+            'ustadz': jw.ustadz.nama,
+            'is_next': (tgl >= hari_ini)
+        })
+
+    # --- 4. AKTIVITAS TERBARU ---
+    logs_terbaru = ActivityLog.query.order_by(ActivityLog.created_at.desc()).limit(5).all()
+
+    return render_template(
+        "admin/AS.html", 
+        user=current_user, 
+        stats=stats,             
+        chart=chart_payload, 
+        logs=logs_terbaru, 
+        schedules=list_jadwal_tabel,
+        label_bulan_aktif=label_bulan_aktif
+    )
 def update_user_controller(nim):
     user = User.query.get_or_404(nim)
 
     role = request.form.get("role")
     active = request.form.get("active")
 
-    # VALIDASI SEDERHANA
     if active not in ["0", "1", "2"]:
         flash("Status tidak valid", "error")
         return redirect("/admin-super/users")
@@ -49,7 +137,8 @@ def update_user_controller(nim):
 
     if user.role == "AS":
         flash("Admin Super tidak dapat diubah", "error")
-    # UPDATE
+        return redirect("/admin-super/users")
+
     user.role = role if role != "" else None
     user.active = int(active)
 
@@ -58,223 +147,210 @@ def update_user_controller(nim):
     flash("User berhasil diupdate", "success")
     return redirect("/admin-super/kelola-admin")
 
+
+# ====================================================================
+# BAGIAN ADMIN HUMAS
+# ====================================================================
+
 @login_required
 def admin_humas():
     if current_user.role not in ["AH", "AS"]:
         return redirect("/login")
-    berita =  Berita.query.order_by(Berita.id.desc()).all()
-    return render_template("admin/AH.html", user=current_user,semua_berita=berita)
+    berita = Berita.query.order_by(Berita.id.desc()).all()
+    return render_template("admin/AH.html", user=current_user, semua_berita=berita)
 
+@login_required
 def dashboard_humas():
     if current_user.role not in ["AH", "AS"]:
         return redirect("/login")
 
-    # 1. HITUNG METRIK DATA BERITA (Untuk diisi ke card stats nanti)
+    # 1. Perhitungan Statistik Berita
     total_berita = Berita.query.count()
-    
-    # 2. AMBIL DATA BERITA TERBARU (Untuk widget log aktivitas/terkini)
-    berita_terbaru = Berita.query.order_by(Berita.id.desc()).limit(5).all()
+    berita_publish = Berita.query.filter_by(status='publish').count() 
+    berita_draft = Berita.query.filter_by(status='draft').count()
 
-    # 3. RENDER TEMPLATE DENGAN PARAMETER VIEW DASHBOARD
+    # 2. Perhitungan Jumlah Ustadz Unik
+    total_ustadz = Ustadz.query.count()
+
+    # 3. Pengambilan Jadwal Dinamis Berdasarkan Bulan Berjalan Saat Ini
+    hari_ini = datetime.now().date()
+    bulan_sekarang = hari_ini.month
+    tahun_sekarang = hari_ini.year
+
+    nama_bulan_id = {
+        1: 'Januari', 2: 'Februari', 3: 'Maret', 4: 'April', 5: 'Mei', 6: 'Juni',
+        7: 'Juli', 8: 'Agustus', 9: 'September', 10: 'Oktober', 11: 'November', 12: 'Desember'
+    }
+    label_bulan_aktif = nama_bulan_id.get(bulan_sekarang, "Bulan Ini")
+
+    jadwal_bulan_ini = JadwalKhutbah.query.join(Ustadz)\
+        .filter(extract('month', JadwalKhutbah.tanggal) == bulan_sekarang)\
+        .filter(extract('year', JadwalKhutbah.tanggal) == tahun_sekarang)\
+        .order_by(JadwalKhutbah.tanggal.asc()).all()
+
+    list_jadwal_tabel = []
+    for idx, jw in enumerate(jadwal_bulan_ini):
+        tgl = jw.tanggal
+        if isinstance(tgl, str):
+            tgl = datetime.strptime(tgl.split()[0], "%Y-%m-%d").date()
+        
+        hari_str = tgl.strftime('%d')
+        jumat_ke = ((tgl.day - 1) // 7) + 1
+        
+        list_jadwal_tabel.append({
+            'hari_label': f"Jum, {hari_str} {tgl.strftime('%b')}",
+            'sholat': f"Shalat Jumat - Pekan {jumat_ke}",
+            'ustadz': jw.ustadz.nama,
+            'is_next': (tgl >= hari_ini) 
+        })
+
     return render_template(
         "admin/components-AH/AH_dashboard.html", 
         view="dashboard", 
         user=current_user,
         total_berita=total_berita,
-        berita_terbaru=berita_terbaru
-        
-    )
-
-def admin_imam_controller():
-    # Array Simulasi Data Mingguan Penuh untuk Loop Slicing di Frontend
-    daftar_jadwal_mock = [
-        {
-            "id": 1, "hari": "Senin", "tanggal": "15 Juni 2026", "terisi_count": 5,
-            "shubuh": "Ust. H. Ahmad Fauzi", "shubuh_muadzin": "Akhi Rian",
-            "dhuhur": "Ust. Rahmat Hidayat", "dhuhur_muadzin": "Akhi Farhan",
-            "ashar": "Ust. M. Ridwan", "ashar_muadzin": "Akhi Bilal",
-            "maghrib": "Ust. Dr. Syarifuddin", "maghrib_muadzin": "Akhi Rian",
-            "isya": "Ust. H. Ahmad Fauzi", "isya_muadzin": "Akhi Ilham"
-        },
-        {
-            "id": 2, "hari": "Selasa", "tanggal": "16 Juni 2026", "terisi_count": 5,
-            "shubuh": "Ust. M. Ridwan", "shubuh_muadzin": "Akhi Farhan",
-            "dhuhur": "Ust. Rahmat Hidayat", "dhuhur_muadzin": "Akhi Bilal",
-            "ashar": "Ust. H. Ahmad Fauzi", "ashar_muadzin": "Akhi Ilham",
-            "maghrib": "Ust. Dr. Syarifuddin", "maghrib_muadzin": "Akhi Farhan",
-            "isya": "Ust. Rahmat Hidayat", "isya_muadzin": "Akhi Rian"
-        },
-        {
-            "id": 3, "hari": "Rabu", "tanggal": "17 Juni 2026", "terisi_count": 5,
-            "shubuh": "Ust. H. Ahmad Fauzi", "shubuh_muadzin": "Akhi Bilal",
-            "dhuhur": "Ust. Dr. Syarifuddin", "dhuhur_muadzin": "Akhi Ilham",
-            "ashar": "Ust. M. Ridwan", "ashar_muadzin": "Akhi Rian",
-            "maghrib": "Ust. Rahmat Hidayat", "maghrib_muadzin": "Akhi Bilal",
-            "isya": "Ust. Dr. Syarifuddin", "isya_muadzin": "Akhi Farhan"
-        },
-        {
-            "id": 4, "hari": "Kamis", "tanggal": "18 Juni 2026", "terisi_count": 5,
-            "shubuh": "Ust. Dr. Syarifuddin", "shubuh_muadzin": "Akhi Ilham",
-            "dhuhur": "Ust. M. Ridwan", "dhuhur_muadzin": "Akhi Rian",
-            "ashar": "Ust. Rahmat Hidayat", "ashar_muadzin": "Akhi Farhan",
-            "maghrib": "Ust. H. Ahmad Fauzi", "maghrib_muadzin": "Akhi Ilham",
-            "isya": "Ust. M. Ridwan", "isya_muadzin": "Akhi Bilal"
-        },
-        {
-            "id": 5, "hari": "Jumat", "tanggal": "19 Juni 2026", "terisi_count": 5,
-            "shubuh": "Ust. Rahmat Hidayat", "shubuh_muadzin": "Akhi Rian",
-            "dhuhur": "Ust. H. Ahmad Fauzi", "dhuhur_muadzin": "Akhi Farhan",
-            "ashar": "Ust. Dr. Syarifuddin", "ashar_muadzin": "Akhi Bilal",
-            "maghrib": "Ust. M. Ridwan", "maghrib_muadzin": "Akhi Rian",
-            "isya": "Ust. H. Ahmad Fauzi", "isya_muadzin": "Akhi Ilham"
-        },
-        {
-            "id": 6, "hari": "Sabtu", "tanggal": "20 Juni 2026", "terisi_count": 5,
-            "shubuh": "Ust. M. Ridwan", "shubuh_muadzin": "Akhi Farhan",
-            "dhuhur": "Ust. Rahmat Hidayat", "dhuhur_muadzin": "Akhi Bilal",
-            "ashar": "Ust. H. Ahmad Fauzi", "ashar_muadzin": "Akhi Ilham",
-            "maghrib": "Ust. Dr. Syarifuddin", "maghrib_muadzin": "Akhi Farhan",
-            "isya": "Ust. Rahmat Hidayat", "isya_muadzin": "Akhi Rian"
-        },
-        {
-            "id": 7, "hari": "Ahad", "tanggal": "21 Juni 2026", "terisi_count": 5,
-            "shubuh": "Ust. Dr. Syarifuddin", "shubuh_muadzin": "Akhi Bilal",
-            "dhuhur": "Ust. M. Ridwan", "dhuhur_muadzin": "Akhi Ilham",
-            "ashar": "Ust. Rahmat Hidayat", "ashar_muadzin": "Akhi Rian",
-            "maghrib": "Ust. H. Ahmad Fauzi", "maghrib_muadzin": "Akhi Bilal",
-            "isya": "Ust. Dr. Syarifuddin", "isya_muadzin": "Akhi Farhan"
-        }
-    ]
-
-    return render_template(
-        "admin/components-AH/AH_imam.html", 
-        user=current_user, 
-        daftar_jadwal=daftar_jadwal_mock
+        berita_publish=berita_publish,
+        berita_draft=berita_draft,
+        total_ustadz=total_ustadz,
+        list_jadwal_tabel=list_jadwal_tabel,
+        label_bulan_aktif=label_bulan_aktif
     )
 
 
-def admin_imam_update_row_controller(id):
-    shubuh = request.form.get("shubuh")
-    maghrib = request.form.get("maghrib")
-    
-    flash(f"Simulasi Sukses: Jadwal ID {id} diperbarui (Subuh: {shubuh}, Maghrib: {maghrib})", "success")
-    return redirect("/admin-humas/schedules")
-
-
-def admin_imam_store_controller():
-    tgl_mulai = request.form.get("tanggal_mulai")
-    tgl_selesai = request.form.get("tanggal_selesai")
-    
-    flash(f"Simulasi Sukses: Inisialisasi pekan baru {tgl_mulai} s/d {tgl_selesai}", "success")
-    return redirect("/admin-humas/schedules")
-
-
+# ====================================================================
+# BAGIAN ADMIN KEUANGAN
+# ====================================================================
 
 def admin_keuangan():
     if current_user.role not in ["AK", "AS"]:
-        return redirect("/login")
+        abort(403)
 
-    # Ambil parameter dari request URL
     page = request.args.get('page', 1, type=int)
-    jenis = request.args.get("jenis")
-    kategori_id = request.args.get("kategori_id")
-    bulan = request.args.get("bulan")
-    tanggal_awal = request.args.get("tanggal_awal")
-    tanggal_akhir = request.args.get("tanggal_akhir")
+    q = request.args.get("q", "").strip()
+    jenis = request.args.get("jenis", "")
+    kategori_id = request.args.get("kategori_id", "")
+    bulan = request.args.get("bulan", "")
+    tanggal_awal = request.args.get("tanggal_awal", "")
+    tanggal_akhir = request.args.get("tanggal_akhir", "")
 
     kategori_list = Kategori.query.order_by(Kategori.nama).all()
     query = Transaksi.query.join(Kategori)
 
-    # FILTER BERDASARKAN INPUT USER
-    if kategori_id:
-        query = query.filter(Transaksi.kategori_id == int(kategori_id))
+    if q:
+        query = query.filter(
+            or_(
+                Transaksi.keterangan.ilike(f"%{q}%"),
+                Kategori.nama.ilike(f"%{q}%")
+            )
+        )
+
     if jenis:
         query = query.filter(Kategori.jenis == jenis)
+
+    if kategori_id:
+        query = query.filter(Transaksi.kategori_id == int(kategori_id))
+
     if bulan:
-        query = query.filter(db.extract("month", Transaksi.created_at) == int(bulan))
+        query = query.filter(extract("month", Transaksi.created_at) == int(bulan))
+
     if tanggal_awal:
         query = query.filter(Transaksi.created_at >= datetime.strptime(tanggal_awal, "%Y-%m-%d"))
+
     if tanggal_akhir:
         tgl_akhir_dt = datetime.strptime(tanggal_akhir, "%Y-%m-%d")
-        tgl_akhir_max = datetime.combine(tgl_akhir_dt, time.max)
-        query = query.filter(Transaksi.created_at <= tgl_akhir_max)
+        query = query.filter(Transaksi.created_at <= datetime.combine(tgl_akhir_dt, dtime.max))
 
-    # PAGINATION: Dipaksa batasi maksimal 10 data per halaman
-    pagination = (
-        query
-        .order_by(Transaksi.created_at.desc())
-        .paginate(page=page, per_page=10, error_out=False)
-    )
-    transaksi_list = pagination.items 
+    pagination = query.order_by(Transaksi.created_at.desc()).paginate(page=page, per_page=10, error_out=False)
+    transaksi_list = pagination.items
 
-    # HITUNG TOTAL UNTUK CARD INFORMASI
-    total_transaksi = Transaksi.query.count()
-    total_pemasukan = Transaksi.query.join(Kategori).filter(Kategori.jenis == "PEMASUKAN").count()
-    total_pengeluaran = Transaksi.query.join(Kategori).filter(Kategori.jenis == "PENGELUARAN").count()
-    
-    total_pemasukan_card = db.session.query(func.sum(Transaksi.jumlah)).join(Kategori).filter(Kategori.jenis == "PEMASUKAN").scalar() or 0
-    total_pengeluaran_card = db.session.query(func.sum(Transaksi.jumlah)).join(Kategori).filter(Kategori.jenis == "PENGELUARAN").scalar() or 0
+    dashboard_query = Transaksi.query.join(Kategori).all()
+    total_pemasukan_card = 0
+    total_pengeluaran_card = 0
+
+    for trx in dashboard_query:
+        if trx.kategori.jenis == "PEMASUKAN":
+            total_pemasukan_card += trx.jumlah
+        elif trx.kategori.jenis == "PENGELUARAN":
+            total_pengeluaran_card += trx.jumlah
+
     saldo_aktif = total_pemasukan_card - total_pengeluaran_card
+    total_perlu_verifikasi = 0
+    jumlah_transaksi_pending = 0
+
+    summary_query = query.order_by(None).all()
+    total_pemasukan_filter = 0
+    total_pengeluaran_filter = 0
+
+    for trx in summary_query:
+        if trx.kategori.jenis == "PEMASUKAN":
+            total_pemasukan_filter += trx.jumlah
+        elif trx.kategori.jenis == "PENGELUARAN":
+            total_pengeluaran_filter += trx.jumlah
+
+    saldo_filter = total_pemasukan_filter - total_pengeluaran_filter
+    jumlah_transaksi_filter = len(summary_query)
 
     return render_template(
         "admin/AK.html",
-        user=current_user,
-        kategori_list=kategori_list,
         transaksi_list=transaksi_list,
-        pagination=pagination, 
-        total_transaksi=total_transaksi,
-        total_pemasukan=total_pemasukan,
-        total_pengeluaran=total_pengeluaran,
+        pagination=pagination,
+        kategori_list=kategori_list,
         total_pemasukan_card=total_pemasukan_card,
         total_pengeluaran_card=total_pengeluaran_card,
-        saldo_aktif=saldo_aktif
+        saldo_aktif=saldo_aktif,
+        total_perlu_verifikasi=total_perlu_verifikasi,
+        jumlah_transaksi_pending=jumlah_transaksi_pending,
+        total_pemasukan_filter=total_pemasukan_filter,
+        total_pengeluaran_filter=total_pengeluaran_filter,
+        saldo_filter=saldo_filter,
+        jumlah_transaksi_filter=jumlah_transaksi_filter
     )
 
 def dashboard_keuangan():
     if current_user.role not in ["AK", "AS"]:
         return redirect("/login")
 
-    # 1. AMBIL WAKTU SEKARANG (UNTUK FILTER BULANAN)
-    bulan_sekarang = datetime.now().month
-    tahun_sekarang = datetime.now().year
+    tahun_dipilih = request.args.get('tahun', default=datetime.now().year, type=int)
 
-    # 2. HITUNG METRIK GLOBAL (PEMASUKAN VS PENGELUARAN)
     total_pemasukan = db.session.query(func.sum(Transaksi.jumlah)).join(Kategori).filter(Kategori.jenis == "PEMASUKAN").scalar() or 0
     total_pengeluaran = db.session.query(func.sum(Transaksi.jumlah)).join(Kategori).filter(Kategori.jenis == "PENGELUARAN").scalar() or 0
     saldo_aktif = total_pemasukan - total_pengeluaran
 
-    # 3. KAS SPESIFIK (MEMISAHKAN ZAKAT & INFAQ/SEDEKAH)
-    # Menghitung nominal pemasukan yang nama kategorinya mengandung kata 'Zakat'
-    kas_zakat = db.session.query(func.sum(Transaksi.jumlah)).join(Kategori).filter(
-        Kategori.jenis == "PEMASUKAN", 
-        Kategori.nama.ilike('%zakat%')
-    ).scalar() or 0
-    
-    # Sisa pemasukan lainnya otomatis masuk kategori Infaq/Sedekah/Lainnya
-    kas_infaq = total_pemasukan - kas_zakat
+    pemasukan_bulanan = [0] * 12
+    pengeluaran_bulanan = [0] * 12
 
-    # 4. PENGELUARAN BULAN INI (DITAMPILKAN DI CARD KE-4)
-    pengeluaran_bulan_ini = db.session.query(func.sum(Transaksi.jumlah)).join(Kategori).filter(
-        Kategori.jenis == "PENGELUARAN",
-        db.extract("month", Transaksi.created_at) == bulan_sekarang,
-        db.extract("year", Transaksi.created_at) == tahun_sekarang
-    ).scalar() or 0
+    data_in = db.session.query(
+        extract('month', Transaksi.created_at).label('bulan'),
+        func.sum(Transaksi.jumlah).label('total')
+    ).join(Kategori).filter(Kategori.jenis == "PEMASUKAN", extract('year', Transaksi.created_at) == tahun_dipilih).group_by('bulan').all()
 
-    # 5. LIMIT DATA: Hanya ambil 5 Transaksi Paling Baru (Tanpa filter/pagination ribet)
-    transaksi_terbaru = (
-        Transaksi.query.join(Kategori)
-        .order_by(Transaksi.created_at.desc())
-        .limit(5)
-        .all()
-    )
+    data_out = db.session.query(
+        extract('month', Transaksi.created_at).label('bulan'),
+        func.sum(Transaksi.jumlah).label('total')
+    ).join(Kategori).filter(Kategori.jenis == "PENGELUARAN", extract('year', Transaksi.created_at) == tahun_dipilih).group_by('bulan').all()
 
-    # 6. LEMPAR DATA KE FILE HTML DASHBOARD BARU
+    for row in data_in:
+        pemasukan_bulanan[int(row.bulan) - 1] = float(row.total)
+
+    for row in data_out:
+        pengeluaran_bulanan[int(row.bulan) - 1] = float(row.total)
+
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return jsonify({
+            'pemasukan': pemasukan_bulanan,
+            'pengeluaran': pengeluaran_bulanan
+        })
+
+    transaksi_terbaru = Transaksi.query.join(Kategori).order_by(Transaksi.created_at.desc()).limit(5).all()
+
     return render_template(
         "admin/components-AK/AK-dashboard.html",
         user=current_user,
+        total_pemasukan=total_pemasukan,
+        total_pengeluaran=total_pengeluaran,
         saldo_aktif=saldo_aktif,
-        kas_zakat=kas_zakat,
-        kas_infaq=kas_infaq,
-        pengeluaran_bulan_ini=pengeluaran_bulan_ini,
+        chart_pemasukan=pemasukan_bulanan,
+        chart_pengeluaran=pengeluaran_bulanan,
+        tahun_dipilih=tahun_dipilih,
         transaksi_terbaru=transaksi_terbaru
     )

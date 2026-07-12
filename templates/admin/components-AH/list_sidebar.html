@@ -9,9 +9,7 @@
         Draft <span class="tab-count">{{ semua_berita|selectattr('status','eq','draft')|list|length }}</span>
     </button>
 
-    <button class="tab-berita" data-status="terjadwal">
-        Terjadwal <span class="tab-count">{{ semua_berita|selectattr('status','eq','terjadwal')|list|length }}</span>
-    </button>
+    
 </div>
 
 <div class="d-flex gap-2 mb-3">

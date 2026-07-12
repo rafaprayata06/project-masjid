@@ -9,7 +9,32 @@
 {# 2. CUSTOM CSS STYLES & ANIMATIONS #}
 {# ==================================================================== #}
 {% block styles %}
-<link rel="stylesheet"href="{{ url_for('static', filename='css/dashboard_keuangan/animation.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard_keuangan/animation.css') }}">
+<style>
+    .stats-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+        position: relative;
+        overflow: hidden;
+    }
+    .stats-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 .5rem 1rem rgba(0,0,0,.08)!important;
+    }
+    /* Style untuk efek ripple dinamis */
+    .click-ripple {
+        position: absolute;
+        border-radius: 50%;
+        transform: scale(0);
+        animation: rippleEffect 0.55s ease-out;
+        pointer-events: none;
+    }
+    @keyframes rippleEffect {
+        to {
+            transform: scale(4);
+            opacity: 0;
+        }
+    }
+</style>
 {% endblock %}
 
 {# ==================================================================== #}
@@ -18,244 +43,63 @@
 {% block admin_content %}
 <div class="container-fluid p-0">
 
-    <!-- ROW 1: 4 CARD METRIK (Ukuran Pas & Balanced) -->
-    <div class="row g-3 mb-4 align-items-stretch">
-        
-        <!-- Total Saldo -->
-        <div class="col-xl-3 col-md-6">
-            <div class="card card-metric shadow-sm h-100">
-                <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                        <p class="text-muted small fw-bold text-uppercase mb-2" style="font-size: 11px; letter-spacing: 0.5px;">Total Saldo Kas</p>
-                        <h4 class="fw-bold text-dark mb-0" style="font-size: 24px; letter-spacing: -0.5px;">Rp {{ "{:,.0f}".format((kas_infaq or 0) + (kas_zakat or 0) + (dana_sosial or 0)) }}</h4>
-                    </div>
-                    <div class="icon-box text-primary" style="background-color: #E8F0FE;">
-                        <i class="bi bi-bank"></i>
-                    </div>
+    <div class="row g-3 mb-4 justify-content-center align-items-stretch">
+        <div class="col-12 col-md-4 px-2 animate-entrance stagger-1">
+            <div class="stats-card p-4 bg-white h-100 shadow-sm" style="border-radius:16px; border:1px solid #EBEBEB; border-left:5px solid #4E9F6D;">
+                <small class="text-muted d-block mb-2" style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Total Pemasukan</small>
+                <div class="fw-bold mb-2 text-success" style="font-size:24px;font-family:'Poppins',sans-serif;">
+                    Rp {{ "{:,.0f}".format(total_pemasukan) }}
                 </div>
-                <div class="mt-4 pt-2 d-flex align-items-center justify-content-between border-top border-light">
-                    <span class="badge-financial badge-financial-success"><i class="bi bi-check-circle"></i> Konsolidasi</span>
-                    <span class="text-muted" style="font-size: 12px;">Semua Rekening</span>
-                </div>
+                <input type="hidden" class="card-type-detector" value="success">
             </div>
         </div>
 
-        <!-- Kas Operasional -->
-        <div class="col-xl-3 col-md-6">
-            <div class="card card-metric shadow-sm h-100">
-                <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                        <p class="text-muted small fw-bold text-uppercase mb-2" style="font-size: 11px; letter-spacing: 0.5px;">Kas Operasional</p>
-                        <h4 class="fw-bold text-success mb-0" style="font-size: 24px; letter-spacing: -0.5px;">Rp {{ "{:,.0f}".format(kas_infaq or 0) }}</h4>
-                    </div>
-                    <div class="icon-box text-success" style="background-color: #E6F4EA;">
-                        <i class="bi bi-lightning-charge"></i>
-                    </div>
+        <div class="col-12 col-md-4 px-2 animate-entrance stagger-2">
+            <div class="stats-card p-4 bg-white h-100 shadow-sm" style="border-radius:16px; border:1px solid #EBEBEB; border-left:5px solid #D96B62;">
+                <small class="text-muted d-block mb-2" style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Total Pengeluaran</small>
+                <div class="fw-bold mb-2 text-danger" style="font-size:24px;font-family:'Poppins',sans-serif;">
+                    Rp {{ "{:,.0f}".format(total_pengeluaran) }}
                 </div>
-                <div class="mt-4 pt-2 d-flex align-items-center justify-content-between border-top border-light">
-                    <span class="text-muted" style="font-size: 12px;">Infaq Jumat & Umum</span>
-                    <span class="text-success fw-semibold" style="font-size: 12px;">Bebas Guna</span>
-                </div>
+                <input type="hidden" class="card-type-detector" value="danger">
             </div>
         </div>
 
-        <!-- Kas Zakat -->
-        <div class="col-xl-3 col-md-6">
-            <div class="card card-metric shadow-sm h-100">
-                <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                        <p class="text-muted small fw-bold text-uppercase mb-2" style="font-size: 11px; letter-spacing: 0.5px;">Kas Zakat & Wakaf</p>
-                        <h4 class="fw-bold text-warning mb-0" style="font-size: 24px; letter-spacing: -0.5px;">Rp {{ "{:,.0f}".format(kas_zakat or 0) }}</h4>
-                    </div>
-                    <div class="icon-box text-warning" style="background-color: #FEF7E0;">
-                        <i class="bi bi-journal-bookmark"></i>
-                    </div>
+        <div class="col-12 col-md-4 px-2 animate-entrance stagger-3">
+            <div class="stats-card p-4 bg-white h-100 shadow-sm" style="border-radius:16px; border:1px solid #EBEBEB; border-left:5px solid #D36334;">
+                <small class="text-muted d-block mb-2" style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Saldo Aktif</small>
+                <div class="fw-bold mb-2" style="font-size:24px;color:#1B1714;font-family:'Poppins',sans-serif;">
+                    Rp {{ "{:,.0f}".format(saldo_aktif) }}
                 </div>
-                <div class="mt-4 pt-2 d-flex align-items-center justify-content-between border-top border-light">
-                    <span class="badge-financial badge-financial-warning"><i class="bi bi-lock"></i> Dana Terikat</span>
-                    <span class="text-muted" style="font-size: 12px;">Khusus Asnaf</span>
-                </div>
+                <input type="hidden" class="card-type-detector" value="warning">
             </div>
         </div>
-
-        <!-- Kas Sosial -->
-        <div class="col-xl-3 col-md-6">
-            <div class="card card-metric shadow-sm h-100">
-                <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                        <p class="text-muted small fw-bold text-uppercase mb-2" style="font-size: 11px; letter-spacing: 0.5px;">Kas Sosial & Santunan</p>
-                        <h4 class="fw-bold text-info mb-0" style="font-size: 24px; letter-spacing: -0.5px;">Rp {{ "{:,.0f}".format(dana_sosial or 0) }}</h4>
-                    </div>
-                    <div class="icon-box text-info" style="background-color: #E4F7FB;">
-                        <i class="bi bi-heart-pulse"></i>
-                    </div>
-                </div>
-                <div class="mt-4 pt-2 d-flex align-items-center justify-content-between border-top border-light">
-                    <span class="text-muted" style="font-size: 12px;">Alokasi Bulan Ini</span>
-                    <span class="text-danger fw-semibold" style="font-size: 12px;">
-                        <i class="bi bi-arrow-down"></i> Terpakai {{ persentase_sosial_terpakai or 0 }}%
-                    </span>
-                </div>
-            </div>
-        </div>
-
     </div>
 
-    <!-- ROW 2: CHART & TABEL (Proporsional & Seimbang) -->
     <div class="row g-3 mb-4 align-items-stretch">
-        
-        <!-- KOLOM CHART -->
-        <div class="col-xl-7">
-            <div class="card card-panel border-0 shadow-sm p-4 bg-white h-100">
+        <div class="col-xl-12">
+            <div class="card card-panel border-0 shadow-sm p-4 bg-white h-100" style="border-radius: 16px;">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
                         <h5 class="fw-bold text-dark mb-1" style="font-size: 16px;">Arus Finansial Al-Bayan</h5>
                         <p class="text-muted small mb-0">Perbandingan realisasi Pemasukan vs Pengeluaran Program</p>
                     </div>
                     <div class="dropdown">
-                        <button class="btn-year dropdown-toggle" type="button" id="yearDropdownBtn" data-bs-toggle="dropdown"><i class="bi bi-calendar3 me-1"></i>
-                        Tahun Buku 2026
+                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" id="yearDropdownBtn" data-bs-toggle="dropdown">
+                            <i class="bi bi-calendar3 me-1"></i> Tahun Buku {{ tahun_dipilih }}
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="font-size: 13px;">
-                            <li><a class="dropdown-item fw-medium" href="#" onclick="changeYear('2026')">Tahun Buku 2026</a></li>
-                            <li><a class="dropdown-item fw-medium" href="#" onclick="changeYear('2025')">Tahun Buku 2025</a></li>
+                            <li><a class="dropdown-item fw-medium" href="#" onclick="changeYear(2026)">Tahun Buku 2026</a></li>
+                            <li><a class="dropdown-item fw-medium" href="#" onclick="changeYear(2025)">Tahun Buku 2025</a></li>
                         </ul>
                     </div>
                 </div>
-                <div class="chart-container">
+                <div class="chart-container" style="position: relative; height:320px;">
                     <canvas id="financeChart"></canvas>
                 </div>
             </div>
         </div>
-
-        <!-- KOLOM TABEL MUTASI -->
-        <div class="col-xl-5">
-            <div class="card card-panel border-0 shadow-sm p-4 bg-white h-100">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div>
-                        <h5 class="fw-bold text-dark mb-1" style="font-size: 16px;">Log Mutasi Terakhir</h5>
-                        <p class="text-muted small mb-0">Audit rincian transaksi</p>
-                    </div>
-                    <a href="{{ url_for('admin.admin_keuangan_finance') }}" class="btn-buku-kas text-decoration-none fw-semibold">
-                        Lihat Buku Kas <span class="arrow-move">→</span>
-                    </a>
-                </div>
-
-                <div class="table-responsive">
-                    <table class="table table-clean align-middle mb-0" style="font-size: 13px;">
-                        <thead>
-                            <tr>
-                                <th class="ps-2">Detail Transaksi</th>
-                                <th>Sumber Dana</th>
-                                <th class="text-end pe-2">Nominal</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% if transaksi_terbaru %}
-                                {% for tx in transaksi_terbaru %}
-                                <tr>
-                                    <td class="ps-2">
-                                        <div class="fw-bold text-dark text-capitalize" style="font-size: 13px;">{{ tx.keterangan }}</div>
-                                        <div class="text-muted pt-0.5" style="font-size: 11px;">{{ tx.tanggal }}</div>
-                                    </td>
-                                    <td>
-                                        {% if 'zakat' in tx.keterangan.lower() or tx.kategori == 'Zakat' %}
-                                            <span class="badge rounded-pill bg-warning-subtle text-warning border border-warning-subtle px-2.5 py-1" style="font-size: 10px;">Terikat (Zakat)</span>
-                                        {% elif 'listrik' in tx.keterangan.lower() or 'operasional' in tx.keterangan.lower() %}
-                                            <span class="badge rounded-pill bg-danger-subtle text-danger border border-danger-subtle px-2.5 py-1" style="font-size: 10px;">Operasional</span>
-                                        {% else %}
-                                            <span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-2.5 py-1" style="font-size: 10px;">Infaq Umum</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="text-end pe-2">
-                                        {% if tx.jenis == 'masuk' or tx.jumlah > 0 %}
-                                            <span class="text-success fw-bold" style="font-size: 13px;">+ Rp {{ "{:,.0f}".format(tx.jumlah | abs) }}</span>
-                                        {% else %}
-                                            <span class="text-danger fw-bold" style="font-size: 13px;">- Rp {{ "{:,.0f}".format(tx.jumlah | abs) }}</span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            {% else %}
-                                <tr>
-                                    <td colspan="3" class="text-center py-5 text-muted">
-                                        <i class="bi bi-file-earmark-x d-block mb-2 text-secondary" style="font-size: 28px;"></i>
-                                        Belum ada mutasi tercatat hari ini.
-                                    </td>
-                                </tr>
-                            {% endif %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
     </div>
 
-    <!-- ROW 3: PROGRES PENDAYAGUNAAN UMAT (Rapi & Pas) -->
-    <div class="row g-3 mb-4">
-        <div class="col-12">
-            <div class="card card-panel border-0 shadow-sm p-4 bg-white">
-                <div class="mb-3">
-                    <h5 class="fw-bold text-dark mb-1" style="font-size: 16px;">Progres Pendayagunaan Dana Proyek Umat</h5>
-                    <p class="text-muted small mb-0">Pemantauan target donasi vs realisasi pengerjaan fisik di lapangan</p>
-                </div>
-                
-                <div class="row g-3">
-                    <!-- Proyek 1 -->
-                    <div class="col-md-4">
-                        <div class="project-box rounded-3 p-3 h-100">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="text-dark fw-semibold" style="font-size: 13px;">Renovasi & Perluasan Poliklinik</span>
-                                <span class="text-primary fw-bold" style="font-size: 14px;">85%</span>
-                            </div>
-                            <div class="progress my-2">
-                                <div class="progress-bar bg-primary rounded-pill" style="width: 85%"></div>
-                            </div>
-                            <div class="d-flex justify-content-between text-muted mt-2" style="font-size: 11.5px;">
-                                <span>Terkumpul: <strong class="text-dark">Rp 85jt</strong></span>
-                                <span>Target: Rp 100jt</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Proyek 2 -->
-                    <div class="col-md-4">
-                        <div class="project-box rounded-3 p-3 h-100">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="text-dark fw-semibold" style="font-size: 13px;">Bantuan Beasiswa Santun</span>
-                                <span class="text-success fw-bold" style="font-size: 14px;">60%</span>
-                            </div>
-                            <div class="progress my-2">
-                                <div class="progress-bar bg-success rounded-pill" style="width: 60%"></div>
-                            </div>
-                            <div class="d-flex justify-content-between text-muted mt-2" style="font-size: 11.5px;">
-                                <span>Terkumpul: <strong class="text-dark">Rp 30jt</strong></span>
-                                <span>Target: Rp 50jt</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Proyek 3 -->
-                    <div class="col-md-4">
-                        <div class="project-box rounded-3 p-3 h-100">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="text-dark fw-semibold" style="font-size: 13px;">Pengadaan Sound System</span>
-                                <span class="text-warning fw-bold" style="font-size: 14px;">42%</span>
-                            </div>
-                            <div class="progress my-2">
-                                <div class="progress-bar bg-warning rounded-pill" style="width: 42%"></div>
-                            </div>
-                            <div class="d-flex justify-content-between text-muted mt-2" style="font-size: 11.5px;">
-                                <span>Terkumpul: <strong class="text-dark">Rp 10.5jt</strong></span>
-                                <span>Target: Rp 25jt</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
 </div>
 {% endblock %}
 
@@ -270,6 +114,7 @@
     document.addEventListener("DOMContentLoaded", function () {
         const ctx = document.getElementById('financeChart').getContext('2d');
         
+        // Setup Gradients
         const profitGradient = ctx.createLinearGradient(0, 0, 0, 300);
         profitGradient.addColorStop(0, 'rgba(34, 197, 94, 0.25)');
         profitGradient.addColorStop(1, 'rgba(34, 197, 94, 0.0)');
@@ -278,14 +123,18 @@
         lossGradient.addColorStop(0, 'rgba(239, 68, 68, 0.25)');
         lossGradient.addColorStop(1, 'rgba(239, 68, 68, 0.0)');
 
+        // Mengambil data langsung (passing dari Jinja2) saat inisialisasi pertama kali
+        const initialPemasukan = {{ chart_pemasukan | tojson }};
+        const initialPengeluaran = {{ chart_pengeluaran | tojson }};
+
         financeChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'],
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
                 datasets: [
                     {
-                        label: 'Pemasukan/Infaq (Rp)',
-                        data: [14200000, 18500000, 22100000, 16800000, 25400000, 31200000],
+                        label: 'Pemasukan (Rp)',
+                        data: initialPemasukan,
                         borderColor: '#22c55e',
                         backgroundColor: profitGradient,
                         fill: true,
@@ -294,8 +143,8 @@
                         pointRadius: 4
                     },
                     {
-                        label: 'Pengeluaran/Program (Rp)',
-                        data: [9100000, 12400000, 19500000, 11200000, 14800000, 13100000],
+                        label: 'Pengeluaran (Rp)',
+                        data: initialPengeluaran,
                         borderColor: '#ef4444',
                         backgroundColor: lossGradient,
                         fill: true,
@@ -315,13 +164,7 @@
                 plugins: {
                     legend: {
                         position: 'top',
-                        labels: {
-                            boxWidth: 12,
-                            font: {
-                                family: 'Inter',
-                                size: 12
-                            }
-                        }
+                        labels: { boxWidth: 12, font: { family: 'Inter', size: 12 } }
                     }
                 },
                 scales: {
@@ -332,69 +175,58 @@
         });
 
         // ==========================================================
-        // LOGIKA BARU: EFEK RIPPLE DINAMIS UNTUK CARD KAS
+        // LOGIKA EFEK RIPPLE PADA 3 STATS-CARD BARU
         // ==========================================================
-        document.querySelectorAll('.card-metric').forEach(card => {
+        document.querySelectorAll('.stats-card').forEach(card => {
             card.addEventListener('click', function (e) {
-                // 1. Hitung koordinat klik mouse relatif terhadap posisi card
                 const rect = this.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
 
-                // 2. Buat elemen span untuk riak gelombang
                 const ripple = document.createElement('span');
                 ripple.classList.add('click-ripple');
                 ripple.style.left = `${x}px`;
                 ripple.style.top = `${y}px`;
 
-                // 3. Set warna riak otomatis mengikuti tema warna icon box di dalamnya
-                if (this.querySelector('.text-primary')) {
-                    ripple.style.backgroundColor = 'rgba(13, 110, 253, 0.18)'; // Biru halus
-                } else if (this.querySelector('.text-success')) {
-                    ripple.style.backgroundColor = 'rgba(34, 197, 94, 0.18)';  // Hijau halus
-                } else if (this.querySelector('.text-warning')) {
-                    ripple.style.backgroundColor = 'rgba(245, 158, 11, 0.18)'; // Kuning halus
-                } else if (this.querySelector('.text-info')) {
-                    ripple.style.backgroundColor = 'rgba(6, 182, 212, 0.18)';   // Cyan halus
+                // Cek tipe card melalui hidden input penanda tipe
+                const detector = this.querySelector('.card-type-detector')?.value;
+                if (detector === 'success') {
+                    ripple.style.backgroundColor = 'rgba(34, 197, 94, 0.18)';
+                } else if (detector === 'danger') {
+                    ripple.style.backgroundColor = 'rgba(239, 68, 68, 0.18)';
+                } else if (detector === 'warning') {
+                    ripple.style.backgroundColor = 'rgba(211, 99, 52, 0.18)';
                 } else {
-                    ripple.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';       // Default fallback
+                    ripple.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
                 }
 
-                // 4. Masukkan ripple ke dalam card
                 this.appendChild(ripple);
-
-                // 5. Hapus elemen setelah animasi selesai (0.55 detik) biar DOM tetep bersih
-                setTimeout(() => {
-                    ripple.remove();
-                }, 550);
+                setTimeout(() => { ripple.remove(); }, 550);
             });
         });
     });
 
     // ==========================================================
-    // LOGIKA LAMA KOSIDEN: DROPDOWN TAHUN BUKU
+    // LOGIKA DINAMIS FETCH DATA GRAFIK BERDASARKAN TAHUN (AJAX)
     // ==========================================================
-    const yearlyData = {
-        '2026': {
-            pemasukan: [14200000, 18500000, 22100000, 16800000, 25400000, 31200000],
-            pengeluaran: [9100000, 12400000, 19500000, 11200000, 14800000, 13100000]
-        },
-        '2025': {
-            pemasukan: [11000000, 13400000, 15000000, 21000000, 18000000, 22000000],
-            pengeluaran: [7000000, 8500000, 11000000, 16000000, 12500000, 14000000]
-        }
-    };
-
     function changeYear(year) {
-        event.preventDefault();
-        document.getElementById('yearDropdownBtn').innerText = 'Tahun Buku ' + year;
-        const newData = yearlyData[year];
+        if(event) event.preventDefault();
         
-        if (newData && financeChart) {
-            financeChart.data.datasets[0].data = newData.pemasukan;
-            financeChart.data.datasets[1].data = newData.pengeluaran;
-            financeChart.update();
-        }
+        document.getElementById('yearDropdownBtn').innerHTML = `<i class="bi bi-calendar3 me-1"></i> Tahun Buku ${year}`;
+        
+        // Panggil controller secara internal menggunakan AJAX Fetch API tanpa reload halaman
+        fetch(`?tahun=${year}`, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (financeChart) {
+                financeChart.data.datasets[0].data = data.pemasukan;
+                financeChart.data.datasets[1].data = data.pengeluaran;
+                financeChart.update();
+            }
+        })
+        .catch(error => console.error('Error fetching data:', error));
     }
 </script>
 {% endblock %}

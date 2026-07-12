@@ -9,12 +9,7 @@
         <a href="/admin-keuangan/finance?jenis=PENGELUARAN" class="finance-tab pb-2 text-decoration-none {% if request.args.get('jenis') == 'PENGELUARAN' %}active{% endif %}">
             Pengeluaran <span class="finance-tab-badge">{{ total_pengeluaran }}</span>
         </a>
-        <a href="/admin-keuangan/finance?status=perlu_verifikasi" class="finance-tab pb-2 text-decoration-none {% if request.args.get('status') == 'perlu_verifikasi' %}active{% endif %}">
-            Perlu Verifikasi <span class="finance-tab-badge">0</span>
-        </a>
-        <a href="/admin-keuangan/finance?status=draft" class="finance-tab pb-2 text-decoration-none {% if request.args.get('status') == 'draft' %}active{% endif %}">
-            Draft <span class="finance-tab-badge">0</span>
-        </a>
+     
     </div>
 </div>
 

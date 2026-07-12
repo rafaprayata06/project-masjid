@@ -9,6 +9,9 @@ from models.berita_model import Berita
 from routes.public_routes import public
 from models.kategori_model import Kategori
 from models.transaksi_model import Transaksi
+from models.ustadz_model import Ustadz
+from models.jadwal_khutbah_model import JadwalKhutbah
+from models.activity_log_model import ActivityLog
 
 # TAMBAHAN BARU
 import os
@@ -31,7 +34,7 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 # ================= INIT DB =================
 db.init_app(app)
-
+import database.listeners
 # ================= MIGRATE =================
 migrate = Migrate(app, db)
 # ================= FLASK-LOGIN =================

@@ -236,7 +236,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const targetForm = document.getElementById('mainFormBerita');
         if (targetForm) {
             if(document.getElementById('formTitle')) document.getElementById('formTitle').innerText = 'Tulis Artikel Baru';
-            targetForm.action = '/admin-humas/news';
+            targetForm.action = '/admin-humas/news/store';
             targetForm.reset();
             targetForm.classList.remove('was-validated');
         }

@@ -20,19 +20,15 @@
         font-family: 'Plus Jakarta Sans', Arial, sans-serif;
     }
 
-    
-
-    /* ANIMASI HALUS MUNCULNYA HALAMAN (STAGGERED) */
     @keyframes fadeSlideUp {
         from { opacity: 0; transform: translateY(30px); }
         to { opacity: 1; transform: translateY(0); }
     }
     .animate-entry {
-        opacity: 0; /* Mulai dari tembus pandang */
+        opacity: 0;
         animation: fadeSlideUp 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
     }
 
-    /* ANIMASI GRAFIK MENGGAMBAR SENDIRI */
     @keyframes drawLine {
         to { stroke-dashoffset: 0; }
     }
@@ -42,7 +38,6 @@
         animation: drawLine 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
     }
 
-    /* Card Utama (Bawah - Panel Besar) */
     .card-custom {
         background: #ffffff;
         border-radius: 20px;
@@ -56,13 +51,12 @@
         border-color: #E0DBD3;
     }
 
-    /* Card Stats (Atas) - Compact & Bouncy */
     .card-stats {
         border-radius: 18px;
         padding: 20px; 
         display: flex;
         flex-direction: column;
-        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); /* Efek Membal */
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         transform-origin: center;
         cursor: pointer;
         position: relative;
@@ -73,7 +67,6 @@
     .card-stats.bg-galeri { background-color: var(--green-light); border: 1px solid rgba(16, 185, 129, 0.15); }
     .card-stats.bg-kunjungan { background-color: var(--blue-light); border: 1px solid rgba(79, 70, 229, 0.15); }
 
-    /* Efek Hover & Click Kartu Statistik */
     .card-stats:hover {
         transform: translateY(-6px) scale(1.02); 
         box-shadow: 0 15px 30px rgba(0, 0, 0, 0.06);
@@ -83,12 +76,11 @@
     .card-stats.bg-kunjungan:hover { border-color: rgba(79, 70, 229, 0.4); }
 
     .card-stats:active {
-        transform: scale(0.96); /* Efek tertekan saat di-klik */
+        transform: scale(0.96);
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
         transition: all 0.1s ease; 
     }
 
-    /* Header dalam card (Icon & Line) */
     .card-stats-header {
         display: flex;
         justify-content: space-between;
@@ -96,7 +88,6 @@
         margin-bottom: 16px; 
     }
 
-    /* Badge Ikon */
     .icon-box {
         width: 40px;
         height: 40px;
@@ -114,14 +105,12 @@
         transform: scale(1.15) rotate(5deg);
     }
 
-    /* Stats Card Metrics */
     .stats-title { font-size: 11px; letter-spacing: 0.5px; margin-bottom: 6px; display: block; font-weight: 800; }
     .stats-value { font-size: 28px; font-weight: 800; color: #1A1A1A; margin: 0 0 4px 0; line-height: 1; letter-spacing: -0.5px;}
     .stats-desc { font-size: 12px; margin: 0; font-weight: 500; }
     
     .sparkline-container { width: 75px; height: 32px; }
 
-    /* === TOMBOL KELOLA & LIHAT SEMUA === */
     .btn-action-link {
         display: inline-flex;
         align-items: center;
@@ -138,58 +127,32 @@
     
     .btn-action-link:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
     .btn-action-link:hover i { transform: translateX(4px); }
-    .btn-action-link:active { transform: scale(0.92); box-shadow: none; transition: all 0.1s ease; }
     
     .btn-action-orange { color: var(--alby-orange); background-color: var(--alby-orange-light); }
     .btn-action-orange:hover { background-color: var(--alby-orange); color: #ffffff; box-shadow: 0 6px 15px rgba(226, 107, 48, 0.3); }
 
-    .btn-action-muted { color: #6B7280; background-color: #F3F4F6; }
-    .btn-action-muted:hover { background-color: #E5E7EB; color: #374151; }
-
-    
-    .table-jadwal {
-    width: 100%;
-    }
-    /* Table Styling */
+    .table-jadwal { width: 100%; }
     .table-jadwal th {
         font-size: 11px; text-transform: uppercase; color: #8D8D8D; font-weight: 800;
         letter-spacing: 0.5px; border-bottom: 2px solid var(--border-tegas); padding-bottom: 12px;
     }
     .table-jadwal tbody tr { transition: all 0.2s ease; cursor: pointer; }
-    .table-jadwal tbody tr:hover { background-color: #FAFAFA; transform: scale(1.01); }
+    .table-jadwal tbody tr:hover { background-color: #FAFAFA; transform: scale(1.005); }
     .table-jadwal tbody tr:hover td:first-child { color: var(--alby-orange); }
     
     .table-jadwal td {
         padding: 14px 8px; font-size: 13.5px; color: #2D2D2D; vertical-align: middle; border-bottom: 1px dashed var(--border-tegas);
-        transition: color 0.2s ease;
     }
     
     .badge-next { background-color: var(--alby-orange); color: white; font-size: 10px; padding: 4px 10px; border-radius: 8px; font-weight: 700; }
     .badge-jumat { background-color: #E0E7FF; color: var(--blue-accent); font-size: 10px; padding: 4px 10px; border-radius: 8px; font-weight: 700; }
-
-    /* Activity Feed Timeline */
-    .activity-item {
-        display: flex; gap: 16px; padding-bottom: 20px; border-left: 2px dashed var(--border-tegas);
-        position: relative; padding-left: 20px; margin-left: 10px;
-        transition: all 0.3s ease;
-    }
-    .activity-item:hover { border-left-color: var(--alby-orange); }
-    .activity-item:last-child { border-left: 2px solid transparent; padding-bottom: 0; }
-    
-    .activity-icon {
-        width: 32px; height: 32px; border-radius: 50%; background: #F3F4F6;
-        display: flex; align-items: center; justify-content: center; position: absolute;
-        left: -17px; top: 0; border: 4px solid #FFF; color: #6B7280;
-        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .activity-item:hover .activity-icon { transform: scale(1.2); box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
-    
-    .activity-icon.humas-action { background: #FFF; border: 2px solid var(--alby-orange); color: var(--alby-orange); }
 </style>
 
 <div class="dashboard-humas container-fluid px-0">
 
-    <div class="row g-4 mb-5 mt-2">
+    <!-- BARIS KARTU STATISTIK METRIK (ATAS) -->
+    <div class="row g-4 mb-4 mt-2">
+        <!-- Card 1: Total Semua Berita -->
         <div class="col-md-4 animate-entry" style="animation-delay: 0.1s;">
             <div class="card-stats bg-berita">
                 <div class="card-stats-header">
@@ -203,18 +166,19 @@
                     </div>
                 </div>
                 <div>
-                    <span class="text-muted fw-bold text-uppercase stats-title">Berita Terdaftar</span>
-                    <h3 class="stats-value">{{ total_berita or '4' }}</h3>
-                    <p class="text-muted stats-desc">Total arsip info publikasi</p>
+                    <span class="text-muted fw-bold text-uppercase stats-title">Total Info Berita</span>
+                    <h3 class="stats-value">{{ total_berita }}</h3>
+                    <p class="text-muted stats-desc">Keseluruhan arsip publikasi</p>
                 </div>
             </div>
         </div>
 
+        <!-- Card 2: Berita Berstatus Publish vs Draft -->
         <div class="col-md-4 animate-entry" style="animation-delay: 0.2s;">
             <div class="card-stats bg-galeri">
                 <div class="card-stats-header">
                     <div class="icon-box" style="color: var(--green-accent);">
-                        <i class="bi bi-images"></i>
+                        <i class="bi bi-journal-check"></i>
                     </div>
                     <div class="sparkline-container">
                         <svg viewBox="0 0 100 30" width="100%" height="100%">
@@ -223,18 +187,21 @@
                     </div>
                 </div>
                 <div>
-                    <span class="text-muted fw-bold text-uppercase stats-title">Foto Galeri</span>
-                    <h3 class="stats-value">142</h3>
-                    <p class="text-success fw-semibold stats-desc"><i class="bi bi-arrow-up-right-circle-fill me-1"></i> +18 foto baru</p>
+                    <span class="text-muted fw-bold text-uppercase stats-title">Status Integrasi</span>
+                    <h3 class="stats-value">{{ berita_publish }} <span style="font-size: 16px; color: #8D8D8D; font-weight: 500;">Publikasi</span></h3>
+                    <p class="text-success fw-semibold stats-desc">
+                        <span class="badge bg-secondary bg-opacity-10 text-dark px-2 py-1" style="font-size: 11px;">{{ berita_draft }} Draft Kliping</span>
+                    </p>
                 </div>
             </div>
         </div>
 
+        <!-- Card 3: Jumlah Total Ustadz Tanpa Duplikasi -->
         <div class="col-md-4 animate-entry" style="animation-delay: 0.3s;">
             <div class="card-stats bg-kunjungan">
                 <div class="card-stats-header">
                     <div class="icon-box" style="color: var(--blue-accent);">
-                        <i class="bi bi-eye-fill"></i>
+                        <i class="bi bi-people-fill"></i>
                     </div>
                     <div class="sparkline-container">
                         <svg viewBox="0 0 100 30" width="100%" height="100%">
@@ -243,24 +210,25 @@
                     </div>
                 </div>
                 <div>
-                    <span class="text-muted fw-bold text-uppercase stats-title">Estimasi Kunjungan Web</span>
-                    <h3 class="stats-value">1,2rb</h3>
-                    <p class="text-muted stats-desc">Aktivitas jemaah bulan ini</p>
+                    <span class="text-muted fw-bold text-uppercase stats-title">Khatib & Ustadz Terdaftar</span>
+                    <h3 class="stats-value">{{ total_ustadz }}</h3>
+                    <p class="text-muted stats-desc">Entitas ustadz unik (No-Redundansi)</p>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- PANEL MATRIKS UTAMA JADWAL IMAM BULANAN (DINAMIS) -->
     <div class="row g-4">
-        <div class="col-lg-7 animate-entry" style="animation-delay: 0.4s;">
-            <div class="card-custom h-100">
+        <div class="col-lg-12 animate-entry" style="animation-delay: 0.4s;">
+            <div class="card-custom">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
-                        <h5 class="fw-bold mb-1 text-dark" style="letter-spacing: -0.5px;">Jadwal Imam Minggu Ini</h5>
-                        <span class="text-muted small fw-medium">Pekan aktif operasional masjid</span>
+                        <h5 class="fw-bold mb-1 text-dark" style="letter-spacing: -0.5px;">Agenda Penugasan Khutbah — Bulan {{ label_bulan_aktif }}</h5>
+                        <span class="text-muted small fw-medium">Menampilkan jadwal penugasan aktif sepanjang periode bulan berjalan saat ini.</span>
                     </div>
                     <a href="/admin-humas/schedules" class="btn-action-link btn-action-orange">
-                        Kelola <i class="bi bi-arrow-right"></i>
+                        Kelola Jadwal <i class="bi bi-arrow-right"></i>
                     </a>
                 </div>
 
@@ -268,88 +236,37 @@
                     <table class="table table-borderless table-jadwal mb-0">
                         <thead>
                             <tr>
-                                <th style="width: 25%;">Hari</th>
-                                <th style="width: 25%;">Sholat</th>
-                                <th style="width: 50%;">Imam</th>
+                                <th style="width: 25%;">Hari & Tanggal</th>
+                                <th style="width: 25%;">Jenis Penugasan</th>
+                                <th style="width: 50%;">Imam / Khatib Bertugas</th>
                             </tr>
                         </thead>
                         <tbody>
+                            {% for agenda in list_jadwal_tabel %}
                             <tr>
-                                <td class="fw-bold">Kam, 14 Mei</td>
-                                <td>Ashar</td>
+                                <td class="fw-bold">{{ agenda.hari_label }}</td>
+                                <td>{{ agenda.sholat }}</td>
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
-                                        <span class="fw-semibold">Ust. Abdul Karim</span>
-                                        <span class="badge-next">Berikutnya</span>
+                                        <span class="fw-semibold">{{ agenda.ustadz }}</span>
+                                        {% if agenda.is_next %}
+                                            <span class="badge-next">Mendatang</span>
+                                        {% else %}
+                                            <span class="badge-jumat">Selesai</span>
+                                        {% endif %}
                                     </div>
                                 </td>
                             </tr>
+                            {% else %}
                             <tr>
-                                <td class="fw-bold">Kam, 14 Mei</td>
-                                <td>Maghrib</td>
-                                <td class="fw-semibold">Ust. Yusuf Mansur</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Kam, 14 Mei</td>
-                                <td>Isya</td>
-                                <td class="fw-semibold">Ust. Ahmad Syahril</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Jum, 15 Mei</td>
-                                <td>Dzuhur - Khotib</td>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span class="fw-semibold">Ust. Muh. Fauzi, Lc.</span>
-                                        <span class="badge-jumat">Jumat</span>
-                                    </div>
+                                <td colspan="3" class="text-center py-5 text-muted">
+                                    <div class="mb-2"><i class="bi bi-calendar-x" style="font-size: 24px;"></i></div>
+                                    Belum ada penugasan khutbah yang dikonfigurasi untuk bulan {{ label_bulan_aktif }}.
                                 </td>
                             </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-5 animate-entry" style="animation-delay: 0.5s;">
-            <div class="card-custom h-100">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h5 class="fw-bold mb-0 text-dark" style="letter-spacing: -0.5px;">Aktivitas Terbaru</h5>
-                    <a href="#" class="btn-action-link btn-action-muted">
-                        Lihat Semua <i class="bi bi-arrow-right"></i>
-                    </a>
-                </div>
-
-                <div class="activity-container position-relative mt-2">
-                    {% for log in log_aktivitas %}
-                    <div class="activity-item">
-                        <div class="activity-icon humas-action">
-                            {% if log.tipe == 'news' %}
-                                <i class="bi bi-megaphone-fill small"></i>
-                            {% elif log.tipe == 'gallery' %}
-                                <i class="bi bi-image-fill small"></i>
-                            {% elif log.tipe == 'schedule' %}
-                                <i class="bi bi-calendar-check-fill small"></i>
-                            {% else %}
-                                <i class="bi bi-info-circle-fill small"></i>
-                            {% endif %}
-                        </div>
-                        <div>
-                            <p class="mb-1 text-dark fw-medium" style="font-size: 13.5px; line-height: 1.4;">
-                                {{ log.konten | safe }}
-                            </p>
-                            <span class="text-muted d-block fw-medium" style="font-size: 11px;">
-                                <i class="bi bi-clock me-1"></i> {{ log.waktu }}
-                            </span>
-                        </div>
-                    </div>
-                    {% else %}
-                    <div class="text-center py-5">
-                        <div style="background: #F9FAFB; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
-                            <i class="bi bi-clock-history text-muted" style="font-size: 28px;"></i>
-                        </div>
-                        <p class="text-muted fw-semibold mb-0">Belum ada riwayat aktivitas terbaru.</p>
-                    </div>
-                    {% endfor %}
                 </div>
             </div>
         </div>

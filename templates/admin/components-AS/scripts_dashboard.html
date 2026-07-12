@@ -1,73 +1,62 @@
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // 1. SETTINGAN GRAFIK ARUS KAS (BAR CHART)
-    var optionsArusKas = {
-        series: [{
-            name: 'Pemasukan',
-            data: [110, 120, 135, 125, 140, 155]
-        }, {
-            name: 'Pengeluaran',
-            data: [80, 85, 100, 95, 110, 105]
-        }],
-        chart: {
+    document.addEventListener("DOMContentLoaded", function () {
+        const canvasEl = document.getElementById('arusKasChart');
+        if (!canvasEl) {
+            console.error("Elemen dengan ID 'arusKasChart' tidak ditemukan di halaman.");
+            return;
+        }
+
+        // Ambil data kiriman dari Flask secara dinamis
+        const chartLabels = {{ chart.labels | tojson }};
+        const dataPemasukan = {{ chart.pemasukan | tojson }};
+        const dataPengeluaran = {{ chart.pengeluaran | tojson }};
+
+        const ctx = canvasEl.getContext('2d');
+        new Chart(ctx, {
             type: 'bar',
-            height: 350,
-            toolbar: { show: false }
-        },
-        colors: ['#E8631C', '#D1D5DB'], 
-        plotOptions: {
-            bar: { borderRadius: 6, columnWidth: '45%' }
-        },
-        dataLabels: { enabled: false },
-        stroke: { show: true, width: 2, colors: ['transparent'] },
-        xaxis: {
-            categories: ['Des', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei'],
-            axisBorder: { show: false }
-        },
-        fill: { opacity: 1 },
-        legend: { position: 'top', horizontalAlign: 'left' }
-    };
-    new ApexCharts(document.querySelector("#chart-arus-kas"), optionsArusKas).render();
-
-    // 2. SETTINGAN MINI GRAPH (SPARKLINE COKOT DI POJOK CARD STATS)
-    var sparkOptions = {
-        series: [{ data: [30, 40, 35, 50, 49, 60, 70, 91] }],
-        chart: { type: 'line', width: 90, height: 40, sparkline: { enabled: true } },
-        stroke: { curve: 'smooth', width: 2 },
-        colors: ['#E8631C'],
-        tooltip: { enabled: false }
-    };
-    
-    new ApexCharts(document.querySelector("#chart-spark-1"), sparkOptions).render();
-    new ApexCharts(document.querySelector("#chart-spark-2"), sparkOptions).render();
-    new ApexCharts(document.querySelector("#chart-spark-3"), sparkOptions).render();
-    new ApexCharts(document.querySelector("#chart-spark-4"), sparkOptions).render();
-
-    // 3. DONUT CHART SUMBER PEMASUKAN
-    var optionsDonut = {
-        series: [62, 22, 11, 5],
-        chart: { type: 'donut', height: 200 },
-        colors: ['#E8631C', '#F4A06A', '#B8962E', '#D1D5DB'],
-        labels: ['Donasi Tetap', 'Infaq Jamaah', 'Kotak Amal', 'Lainnya'],
-        dataLabels: { enabled: false },
-        legend: { show: false },
-        plotOptions: {
-            pie: {
-                donut: {
-                    size: '70%',
-                    labels: {
-                        show: true,
-                        total: {
-                            show: true,
-                            label: 'Total',
-                            fontSize: '12px',
-                            color: '#8C8375',
-                            formatter: () => 'Rp 142jt'
+            data: {
+                labels: chartLabels,
+                datasets: [
+                    {
+                        label: 'Pemasukan',
+                        data: dataPemasukan,
+                        backgroundColor: '#E8631C',
+                        borderRadius: 6
+                    },
+                    {
+                        label: 'Pengeluaran',
+                        data: dataPengeluaran,
+                        backgroundColor: '#CBD5E1',
+                        borderRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { 
+                        position: 'top',
+                        labels: {
+                            boxWidth: 12,
+                            font: { family: 'Plus Jakarta Sans, sans-serif', weight: '500' }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                if (value >= 1000000) return 'Rp ' + (value / 1000000) + 'jt';
+                                if (value >= 1000) return 'Rp ' + (value / 1000) + 'rb';
+                                return 'Rp ' + value;
+                            }
                         }
                     }
                 }
             }
-        }
-    };
-    new ApexCharts(document.querySelector("#chart-donut"), optionsDonut).render();
+        });
+    });
 </script>

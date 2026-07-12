@@ -45,19 +45,15 @@
                     <a href="/admin-super/news" class="menu-item {{ 'active' if '/news' in request.path else '' }}">
                         <i class="bi bi-newspaper"></i> Kelola Berita
                     </a>
-                    <a href="/admin-super/gallery" class="menu-item {{ 'active' if '/gallery' in request.path else '' }}">
-                        <i class="bi bi-images"></i> Kelola Galeri
-                    </a>
-                    <a href="/admin-super/activities" class="menu-item {{ 'active' if '/activities' in request.path else '' }}">
+                   
+                    <a href="/admin-super/activity-logs" class="menu-item {{ 'active' if '/activities' in request.path else '' }}">
                         <i class="bi bi-clock-history"></i> Aktivitas
                     </a>
 
                     <div class="menu-section-label">Administrasi</div>
                     <a href="{{ url_for('admin.admin_super_kelola_admin') }}" class="menu-item {{ 'active' if '/kelola-admin' in request.path else '' }}"><i class="bi bi-people"></i> Kelola Admin
                      </a>
-                    <a href="/admin-super/settings" class="menu-item {{ 'active' if '/settings' in request.path else '' }}">
-                        <i class="bi bi-gear"></i> Pengaturan
-                    </a>
+                  
 
                 {% elif current_user.role == 'AH' %}
                     <div class="menu-section-label">Menu Utama</div>
@@ -70,9 +66,7 @@
                     <a href="{{ url_for('admin.admin_humas_news') }}" class="menu-item {{ 'active' if request.path == '/admin-humas/news' else '' }}">
                         <i class="bi bi-newspaper"></i> Kelola Berita
                     </a>
-                    <a href="/admin-humas/gallery" class="menu-item {{ 'active' if '/gallery' in request.path else '' }}">
-                        <i class="bi bi-images"></i> Kelola Galeri
-                    </a>
+                    
 
                 {% elif current_user.role == 'AK' %}
                     <div class="menu-section-label">Menu Utama</div>

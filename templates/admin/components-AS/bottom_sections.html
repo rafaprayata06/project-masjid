@@ -1,90 +1,68 @@
-<div class="row">
-    <div class="col-lg-8 mb-4">
-        <div class="stats-card">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <div>
-                    <h6 class="fw-bold mb-0">Jadwal Imam Minggu Ini</h6>
-                    <small class="text-muted">Pekan ke-20 · 11–17 Mei 2026</small>
-                </div>
-                <a href="#" class="kelola-link">Kelola →</a>
+<div class="row g-4">
+    <!-- Kolom Kiri: Agenda Penugasan Khutbah -->
+    <div class="col-lg-7">
+        <div class="card p-4 border-0 shadow-sm rounded-4 h-100">
+            <h5 class="fw-bold mb-1">Agenda Penugasan Khutbah — Bulan {{ label_bulan_aktif }}</h5>
+            <p class="text-muted small mb-4">Menampilkan jadwal penugasan aktif sepanjang periode bulan berjalan saat ini.</p>
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead>
+                        <tr class="text-muted small">
+                            <th>HARI & TANGGAL</th>
+                            <th>JENIS PENUGASAN</th>
+                            <th>IMAM / KHATIB BERTUGAS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for jadwal in schedules %}
+                        <tr>
+                            <td><strong class="text-dark">{{ jadwal.hari_label }}</strong></td>
+                            <td class="text-muted">{{ jadwal.sholat }}</td>
+                            <td>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span class="fw-medium text-dark">{{ jadwal.ustadz }}</span>
+                                    {% if jadwal.is_next %}
+                                    <span class="badge bg-warning text-dark rounded-pill px-2" style="font-size: 11px;">Mendatang</span>
+                                    {% else %}
+                                    <span class="badge bg-light text-muted border rounded-pill px-2" style="font-size: 11px;">Selesai</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="3" class="text-center text-muted small py-4">Belum ada jadwal pada bulan ini.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
-            <table class="jadwal-imam-mini">
-                <thead>
-                    <tr>
-                        <th>Hari</th>
-                        <th>Sholat</th>
-                        <th>Imam</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="row-berikutnya">
-                        <td class="fw-semibold">Kam, 14 Mei</td>
-                        <td>Ashar</td>
-                        <td>Ust. Abdul Karim</td>
-                        <td><span class="badge-berikutnya">Berikutnya</span></td>
-                    </tr>
-                    <tr>
-                        <td class="fw-semibold">Kam, 14 Mei</td>
-                        <td>Maghrib</td>
-                        <td>Ust. Yusuf Mansur</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td class="fw-semibold">Kam, 14 Mei</td>
-                        <td>Isya</td>
-                        <td>Ust. Ahmad Syahril</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td class="fw-semibold">Jum, 15 Mei</td>
-                        <td>Dzuhur · Khotib</td>
-                        <td>Ust. Muh. Fauzi, Lc.</td>
-                        <td><span class="badge-jumat">Jumat</span></td>
-                    </tr>
-                    <tr>
-                        <td class="fw-semibold">Jum, 15 Mei</td>
-                        <td>Maghrib</td>
-                        <td>Ust. Muh. Fauzi, Lc.</td>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table>
         </div>
     </div>
 
-    <div class="col-lg-4 mb-4">
-        <div class="stats-card">
-            <div class="mb-3">
-                <h6 class="fw-bold mb-0">Sumber Pemasukan Bulan Ini</h6>
-                <small class="text-muted">Distribusi total Rp 142,8jt</small>
+    <!-- Kolom Kanan: Aktivitas Admin Terbaru -->
+    <div class="col-lg-5">
+        <div class="card p-4 border-0 shadow-sm rounded-4 h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0">⏱️ Aktivitas Admin Terbaru</h5>
+                <a href="/admin-super/activity-logs" class="text-primary text-decoration-none small fw-semibold">
+                    Lihat Semua <i class="bi bi-arrow-right"></i>
+                </a>
             </div>
-            <div id="chart-donut" class="mb-4"></div>
-            <div class="donut-legend">
-                <div class="donut-legend-item">
-                    <span class="donut-legend-label">
-                        <span class="donut-dot" style="background:#E8631C;"></span> Donasi Tetap
-                    </span>
-                    <span class="donut-legend-value">Rp 88,5jt · 62%</span>
+            <div class="timeline-container">
+                {% for log in logs %}
+                <div class="d-flex mb-3 align-items-start gap-3">
+                    <div class="p-2 bg-light border rounded-circle text-center" style="width: 38px; height: 38px; flex-shrink: 0;">
+                        <i class="bi {% if log.action == 'CREATE' %}bi-plus-circle text-info{% elif log.action == 'UPDATE' %}bi-pencil text-warning{% else %}bi-trash text-danger{% endif %}"></i>
+                    </div>
+                    <div>
+                        <p class="mb-0 text-dark fw-medium" style="font-size: 14px;">
+                            <strong>{{ log.user.name }}</strong> ({{ log.action }})
+                        </p>
+                        <small class="text-muted d-block" style="font-size: 12px;">{{ log.deskripsi }}</small>
+                    </div>
                 </div>
-                <div class="donut-legend-item">
-                    <span class="donut-legend-label">
-                        <span class="donut-dot" style="background:#F4A06A;"></span> Infaq Jamaah
-                    </span>
-                    <span class="donut-legend-value">Rp 31,4jt · 22%</span>
-                </div>
-                <div class="donut-legend-item">
-                    <span class="donut-legend-label">
-                        <span class="donut-dot" style="background:#B8962E;"></span> Kotak Amal
-                    </span>
-                    <span class="donut-legend-value">Rp 15,7jt · 11%</span>
-                </div>
-                <div class="donut-legend-item">
-                    <span class="donut-legend-label">
-                        <span class="donut-dot" style="background:#D1D5DB;"></span> Lainnya
-                    </span>
-                    <span class="donut-legend-value">Rp 7,2jt · 5%</span>
-                </div>
+                {% else %}
+                <p class="text-center text-muted small py-4">Belum ada aktivitas terekam.</p>
+                {% endfor %}
             </div>
         </div>
     </div>

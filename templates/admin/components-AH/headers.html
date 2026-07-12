@@ -6,8 +6,10 @@
         <a href="/#berita" target="_blank" class="btn-buka-web">
             <i class="bi bi-box-arrow-up-right me-1"></i> Buka di Website
         </a>
+        {% if current_user.role != "AS" %}
         <button class="btn-tulis-berita" data-bs-toggle="collapse" data-bs-target="#formBeritaSection" onclick="resetFormBerita()">
             <i class="bi bi-plus me-1"></i> Tulis Berita Baru
         </button>
+         {% endif %}
     </div>
 </div>

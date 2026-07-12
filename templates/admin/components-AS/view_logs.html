@@ -1,0 +1,140 @@
+{% extends 'layouts/admin_base.html' %}
+
+{% block title %}Log Aktivitas Admin - Al-Bayan Hub{% endblock %}
+
+{% block breadcrumb %}Aktivitas Admin{% endblock %}
+
+{% block admin_content %}
+<div class="card border-0 shadow-sm" style="border-radius: 16px;">
+    <div class="card-body p-4">
+        <h4 class="fw-bold text-dark mb-4">📋 Jurnal Log Aktivitas Admin (AH & AK)</h4>
+
+        <!-- BAR FORM FILTER & SEARCH -->
+        <form method="GET" action="/admin-super/activity-logs" class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                    <input type="text" name="search" class="form-control border-start-0" placeholder="Cari Nama, NIM atau deskripsi..." value="{{ search }}">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select name="action" class="form-select">
+                    <option value="">-- Semua Aksi --</option>
+                    <option value="CREATE" {{ 'selected' if selected_action == 'CREATE' else '' }}>CREATE (Tambah)</option>
+                    <option value="UPDATE" {{ 'selected' if selected_action == 'UPDATE' else '' }}>UPDATE (Ubah)</option>
+                    <option value="DELETE" {{ 'selected' if selected_action == 'DELETE' else '' }}>DELETE (Hapus)</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="table" class="form-select">
+                    <option value="">-- Semua Modul/Tabel --</option>
+                    {% for table in available_tables %}
+                    <option value="{{ table }}" {{ 'selected' if selected_table == table else '' }}>{{ table }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2 d-grid">
+                <button type="submit" class="btn text-white" style="background: #E8631C; border-radius: 8px;">
+                    <i class="bi bi-funnel"></i> Filter
+                </button>
+            </div>
+        </form>
+
+        <!-- TABEL DATA -->
+        <div class="table-responsive">
+            <table class="table table-hover align-middle" style="min-width: 900px;">
+                <thead class="table-light text-secondary" style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">
+                    <tr>
+                        <th style="border-radius: 8px 0 0 8px;">Waktu (WIB)</th>
+                        <th>Pelaku Admin</th>
+                        <th>Role</th>
+                        <th>Aksi</th>
+                        <th>Modul</th>
+                        <th>ID Target</th>
+                        <th style="border-radius: 0 8px 8px 0;">Keterangan</th>
+                    </tr>
+                </thead>
+                <tbody style="font-size: 14px;">
+                    {% for log in logs %}
+                    <tr class="border-bottom">
+                        <td class="text-muted" style="white-space: nowrap;">
+                            {{ log.created_at.strftime('%d %b %Y, %H:%M') }}
+                        </td>
+                        <td>
+                            <div class="fw-semibold text-dark">{{ log.user.name }}</div>
+                            <div class="text-muted" style="font-size: 12px;">{{ log.user_nim }}</div>
+                        </td>
+                        <td>
+                            {% if log.user.role == 'AH' %}
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1">Humas (AH)</span>
+                            {% else %}
+                                <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">Keuangan (AK)</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if log.action == 'CREATE' %}
+                                <span class="badge bg-info text-dark px-2 py-1"><i class="bi bi-plus-circle-fill"></i> CREATE</span>
+                            {% elif log.action == 'UPDATE' %}
+                                <span class="badge bg-warning text-dark px-2 py-1"><i class="bi bi-pencil-square"></i> UPDATE</span>
+                            {% else %}
+                                <span class="badge bg-danger text-white px-2 py-1"><i class="bi bi-trash3-fill"></i> DELETE</span>
+                            {% endif %}
+                        </td>
+                        <td><code class="text-dark bg-light px-2 py-1 border rounded" style="font-size: 13px;">{{ log.target_table }}</code></td>
+                        <td class="text-muted">{{ log.target_id or '-' }}</td>
+                        <td class="text-dark" style="max-width: 300px; word-wrap: break-word;">{{ log.deskripsi }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center py-5 text-muted">
+                            <i class="bi bi-clipboard-x d-block mb-2" style="font-size: 40px; color: #ccc;"></i>
+                            Tidak ada log aktivitas ditemukan yang cocok dengan kriteria.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- PAGINATION NAVIGASI (Hanya tampil jika total halaman > 1) -->
+        {% if pagination.pages > 1 %}
+        <nav class="d-flex justify-content-between align-items-center mt-4">
+            <span class="text-muted small">
+                Menampilkan data {{ logs|length }} dari total {{ pagination.total }} aktivitas.
+            </span>
+            <ul class="pagination pagination-sm mb-0 gap-1">
+                <!-- Tombol Prev -->
+                <li class="page-item {{ 'disabled' if not pagination.has_prev else '' }}">
+                    <a class="page-link border-0 rounded" href="{{ url_for('humas.view_activity_logs', page=pagination.prev_num, search=search, action=selected_action, table=selected_table) }}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+
+                <!-- Nomor Halaman -->
+                {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                    {% if page_num %}
+                        <li class="page-item {{ 'active' if page_num == pagination.page else '' }}">
+                            <a class="page-link border-0 rounded fw-medium" 
+                               style="{{ 'background-color: #E8631C; color: white;' if page_num == pagination.page else 'color: #333;' }}"
+                               href="{{ url_for('humas.view_activity_logs', page=page_num, search=search, action=selected_action, table=selected_table) }}">
+                                {{ page_num }}
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link border-0">...</span></li>
+                    {% endif %}
+                {% endfor %}
+
+                <!-- Tombol Next -->
+                <li class="page-item {{ 'disabled' if not pagination.has_next else '' }}">
+                    <a class="page-link border-0 rounded" href="{{ url_for('humas.view_activity_logs', page=pagination.next_num, search=search, action=selected_action, table=selected_table) }}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

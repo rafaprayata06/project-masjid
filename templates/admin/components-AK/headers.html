@@ -4,17 +4,15 @@
     </div>
 
     <div class="d-flex align-items-center gap-2">
-        
-        <button class="btn btn-action-pill pill-secondary" data-bs-toggle="modal" data-bs-target="#modalImportExcel">
-            <i class="bi bi-file-earmark-arrow-down me-1"></i> Import data
-        </button>
-
         <a id="btnExport" href="/admin-keuangan/finance/export?{{ request.query_string.decode() }}" class="btn btn-action-pill pill-secondary">
             <i class="bi bi-file-earmark-arrow-up me-1"></i> Export Excel
         </a>
 
+        {# Sembunyikan tombol Tambah Transaksi jika user adalah Super Admin (SA) #}
+        {% if current_user.role != "AS" %}
         <button class="btn btn-action-pill pill-primary" data-bs-toggle="modal" data-bs-target="#modalTambahTransaksi">
             + Tambah Transaksi
         </button>
+        {% endif %}
     </div>
 </div>

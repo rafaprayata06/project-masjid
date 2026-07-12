@@ -287,11 +287,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     // ===================================================================================
-    // 3. AUTO-SUBMIT DENGAN FETCH AJAX
+    // 3. AUTO-SUBMIT DENGAN FETCH AJAX (UPGRADED!)
     // ===================================================================================
     const searchInput = document.querySelector('#filterFormAK input[name="q"]');
     const filterForm = document.getElementById('filterFormAK');
     let debounceTimer = null;
+
+    // Tambahkan event global ke filter input lainnya (select bulan, tanggal awal, dll) jika ada di form Anda
+    if (filterForm) {
+        filterForm.querySelectorAll('select, input[type="date"]').forEach(inputField => {
+            inputField.addEventListener('change', function() {
+                triggerAjaxFilter();
+            });
+        });
+    }
 
     if (searchInput && filterForm) {
         searchInput.addEventListener('input', function() {
@@ -306,25 +315,42 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             debounceTimer = setTimeout(() => {
-                const formData = new FormData(filterForm);
-                const params = new URLSearchParams(formData).toString();
-
-                fetch(`/admin-keuangan/finance/partial?${params}`)
-                    .then(response => response.text())
-                    .then(htmlData => {
-                        const tableContainer = document.getElementById('tableContainerAK') || document.querySelector('.table-responsive');
-                        
-                        if (tableContainer) {
-                            tableContainer.innerHTML = htmlData;
-                            // PENTING: Pasang ulang event listener ke modal-modal hasil AJAX baru!
-                            attachModalListeners();
-                        } else {
-                            console.warn("Kontainer pembungkus tabel tidak ditemukan.");
-                        }
-                    })
-                    .catch(err => console.error("Gagal mengambil data search:", err));
+                triggerAjaxFilter();
             }, 500); 
         });
+    }
+
+    function triggerAjaxFilter() {
+        if (!filterForm) return;
+        const formData = new FormData(filterForm);
+        const params = new URLSearchParams(formData).toString();
+
+        fetch(`/admin-keuangan/finance/partial?${params}`)
+            .then(response => response.text())
+            .then(htmlData => {
+                // Parser text string HTML menjadi objek DOM Node
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(htmlData, 'text/html');
+
+                // 1. Update Tabel Utama
+                const tableContainer = document.getElementById('tableContainerAK') || document.querySelector('.table-responsive');
+                const newTableContent = doc.getElementById('tableContainerAK');
+                if (tableContainer && newTableContent) {
+                    tableContainer.innerHTML = newTableContent.innerHTML;
+                    attachModalListeners();
+                } else if (tableContainer) {
+                    tableContainer.innerHTML = htmlData;
+                    attachModalListeners();
+                }
+
+                // 2. Update Bagian Komponen Card Dinamis (Sesuai Upgrade Request)
+                const cardsContainer = document.getElementById('statsCardsContainer');
+                const newCardsContent = doc.getElementById('statsCardsContainer');
+                if (cardsContainer && newCardsContent) {
+                    cardsContainer.innerHTML = newCardsContent.innerHTML;
+                }
+            })
+            .catch(err => console.error("Gagal mengambil data search:", err));
     }
 
 }); // <-- INI DIA KURUNG TUTUP DOMContentLoaded YANG TADI HILANG

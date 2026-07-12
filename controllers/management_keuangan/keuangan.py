@@ -480,6 +480,9 @@ def search_transaksi_partial():
     if current_user.role not in ["AK", "AS"]:
         return jsonify({"error": "Unauthorized"}), 403
 
+    # ======================================================
+    # PARAMETER FILTER
+    # ======================================================
     page = request.args.get('page', 1, type=int)
     q = request.args.get("q", "").strip()
     jenis = request.args.get("jenis", "")
@@ -488,9 +491,15 @@ def search_transaksi_partial():
     tanggal_awal = request.args.get("tanggal_awal", "")
     tanggal_akhir = request.args.get("tanggal_akhir", "")
 
+    # ======================================================
+    # QUERY DASAR
+    # ======================================================
     kategori_list = Kategori.query.order_by(Kategori.nama).all()
     query = Transaksi.query.join(Kategori)
 
+    # ======================================================
+    # FILTER
+    # ======================================================
     if q:
         query = query.filter(
             db.or_(
@@ -498,32 +507,93 @@ def search_transaksi_partial():
                 Kategori.nama.ilike(f"%{q}%")
             )
         )
+
     if jenis:
         query = query.filter(Kategori.jenis == jenis)
+
     if kategori_id:
-        query = query.filter(Transaksi.kategori_id == int(kategori_id))
+        query = query.filter(
+            Transaksi.kategori_id == int(kategori_id)
+        )
+
     if bulan:
-        query = query.filter(db.extract("month", Transaksi.created_at) == int(bulan))
+        query = query.filter(
+            db.extract("month", Transaksi.created_at) == int(bulan)
+        )
+
     if tanggal_awal:
         query = query.filter(
-            Transaksi.created_at >= datetime.strptime(tanggal_awal, "%Y-%m-%d")
+            Transaksi.created_at >= datetime.strptime(
+                tanggal_awal,
+                "%Y-%m-%d"
+            )
         )
+
     if tanggal_akhir:
         from datetime import time as dtime
-        tgl_akhir_dt = datetime.strptime(tanggal_akhir, "%Y-%m-%d")
-        query = query.filter(
-            Transaksi.created_at <= datetime.combine(tgl_akhir_dt, dtime.max)
+
+        tgl_akhir_dt = datetime.strptime(
+            tanggal_akhir,
+            "%Y-%m-%d"
         )
 
-    pagination = query.order_by(Transaksi.created_at.desc()).paginate(
-        page=page, per_page=10, error_out=False
+        query = query.filter(
+            Transaksi.created_at <= datetime.combine(
+                tgl_akhir_dt,
+                dtime.max
+            )
+        )
+
+    # ======================================================
+    # PAGINATION
+    # ======================================================
+    pagination = query.order_by(
+        Transaksi.created_at.desc()
+    ).paginate(
+        page=page,
+        per_page=10,
+        error_out=False
     )
+
     transaksi_list = pagination.items
 
+    # ======================================================
+    # RINGKASAN HASIL FILTER
+    # ======================================================
+    summary_query = query.order_by(None).all()
+
+    total_pemasukan_filter = 0
+    total_pengeluaran_filter = 0
+
+    for trx in summary_query:
+
+        if trx.kategori.jenis == "PEMASUKAN":
+            total_pemasukan_filter += trx.jumlah
+
+        elif trx.kategori.jenis == "PENGELUARAN":
+            total_pengeluaran_filter += trx.jumlah
+
+    saldo_filter = (
+        total_pemasukan_filter -
+        total_pengeluaran_filter
+    )
+
+    jumlah_transaksi_filter = len(summary_query)
+
+    # ======================================================
+    # RENDER TABLE
+    # ======================================================
     html = render_template(
         "admin/components-AK/table.html",
+
         transaksi_list=transaksi_list,
         pagination=pagination,
-        kategori_list=kategori_list
+        kategori_list=kategori_list,
+
+        total_pemasukan_filter=total_pemasukan_filter,
+        total_pengeluaran_filter=total_pengeluaran_filter,
+        saldo_filter=saldo_filter,
+        jumlah_transaksi_filter=jumlah_transaksi_filter
     )
+
     return html
