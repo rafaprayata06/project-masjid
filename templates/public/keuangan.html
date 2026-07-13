@@ -1,171 +1,174 @@
 {% extends 'layouts/public_base.html' %}
 
-{% block title %}Laporan Keuangan Lengkap - Al-Bayan Hub{% endblock %}
+{% block title %}Laporan Transparansi Keuangan - Al-Bayan Hub{% endblock %}
 
 {% block content %}
-<div style="background-color: #F7F4EB; min-height: 100vh; padding-top: 120px; padding-bottom: 100px; font-family: 'Poppins', sans-serif;">
-    <div class="container">
-
-        <div class="text-center mb-5 animate-fade-up">
-    <nav aria-label="breadcrumb" class="d-flex justify-content-center mb-3">
-    <ol class="breadcrumb m-0 px-3 py-1.5" style="background-color: rgba(232, 99, 28, 0.08); border-radius: 50px; font-size: 13.5px;">
-        <li class="breadcrumb-item" style="font-weight: normal !important;">
-            <a href="/" style="color: #4A4A4A !important; text-decoration: none; transition: color 0.2s ease;">Beranda</a>
+<!-- HERO HEADER MENGIKUTI GAYA BERITA -->
+<section class="news-hero-header">
+  <div class="container text-center animated-hero">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb justify-content-center mb-2">
+        <li class="breadcrumb-item">
+          <a href="/" class="text-decoration-none text-white-50 small">Beranda</a>
         </li>
-        <li class="breadcrumb-item active" aria-current="page" style="color: #E8631C !important; font-weight: normal !important;">Keuangan</li>
-    </ol>
-</nav>
+        <li class="breadcrumb-item active text-white small" aria-current="page">
+          Keuangan
+        </li>
+      </ol>
+    </nav>
 
-    <small class="text-uppercase fw-bold" style="color: #E8631C; letter-spacing: 3px; font-size: 13px;">TRANSPARANSI DANA</small>
-    <h1 class="fw-bold mt-2 mb-1" style="font-family: 'Playfair Display', Georgia, serif; color: #2B2A2A; font-size: 40px;">Laporan Keuangan Lengkap</h1>
-    <p class="text-muted small">Periode Aktif: Maret 2026</p>
-</div>
+    <span class="badge-premium">TRANSPARANSI KAS</span>
+    <h1 class="mt-3">
+      Arus Dana & <span class="text-gradient">Keuangan</span>
+    </h1>
 
-        <div class="card border-0 shadow-sm p-4 mb-4 bg-white animate-fade-up delay-1" style="border-radius: 24px;">
-            <form method="GET" action="/keuangan" class="row g-3 align-items-center">
-                
-                <div class="col-lg-7 col-md-12">
-                    <div class="d-flex flex-column flex-sm-row align-items-sm-end gap-3">
-                        
-                        <div class="flex-grow-1 w-100">
-                            <label class="form-label small fw-medium text-muted mb-1.5">Pilih Bulan</label>
-                            <select name="bulan" class="form-select border-0 px-3 py-2.5 text-dark" style="background-color: #F8F9FA; font-size: 14px; border-radius: 12px; font-weight: 500;">
-                                <option value="1">Januari</option>
-                                <option value="2">Februari</option>
-                                <option value="3" selected>Maret</option>
-                                <option value="4">April</option>
-                                <option value="5">Mei</option>
-                            </select>
-                        </div>
+    <p class="mx-auto text-light opacity-75 mt-2"
+       style="max-width: 550px; font-size: 15px;">
+      Informasi pembukuan arus dana masuk dan keluar secara berkala untuk jamaah.
+    </p>
+  </div>
+</section>
 
-                        <div class="flex-grow-1 w-100">
-                            <label class="form-label small fw-medium text-muted mb-1.5">Pilih Tahun</label>
-                            <select name="tahun" class="form-select border-0 px-3 py-2.5 text-dark" style="background-color: #F8F9FA; font-size: 14px; border-radius: 12px; font-weight: 500;">
-                                <option value="2026" selected>2026</option>
-                                <option value="2025">2025</option>
-                            </select>
-                        </div>
+<!-- MAIN CONTENT KEUANGAN ASLI TANPA PERUBAHAN LOGIKA -->
+<div style="background-color: #F8F9FA; min-height: 100vh; padding-top: 50px; padding-bottom: 100px; font-family: 'Poppins', sans-serif;">
+    <div class="container-fluid px-4">
 
-                        <div class="w-100" style="max-width: 160px;">
-                            <button type="submit" class="btn btn-tampilkan text-white w-100 fw-semibold py-2.5 d-flex align-items-center justify-content-center gap-2">
-                                <i class="bi bi-search" style="font-size: 12px;"></i> Tampilkan
-                            </button>
-                        </div>
-                        
+        <!-- FORM FILTER SEPERTI VERSI ADMIN -->
+        <div class="card border-0 shadow-sm p-3 mb-4 bg-white" style="border-radius: 12px;">
+            <form method="GET" action="/keuangan" class="row g-2 align-items-center">
+                <!-- Tab Jenis Transaksi -->
+                <div class="col-12 col-md-auto">
+                    <div class="btn-group btn-group-sm" role="group">
+                        <a href="{{ url_for('public.halaman_keuangan', jenis='Semua', q=q, kategori=kat_id, start_date=start_date, end_date=end_date) }}" class="btn {% if jenis == 'Semua' %}btn-warning text-white{% else %}btn-outline-secondary{% endif %}">Semua</a>
+                        <a href="{{ url_for('public.halaman_keuangan', jenis='PEMASUKAN', q=q, kategori=kat_id, start_date=start_date, end_date=end_date) }}" class="btn {% if jenis == 'PEMASUKAN' %}btn-warning text-white{% else %}btn-outline-secondary{% endif %}">Pemasukan</a>
+                        <a href="{{ url_for('public.halaman_keuangan', jenis='PENGELUARAN', q=q, kategori=kat_id, start_date=start_date, end_date=end_date) }}" class="btn {% if jenis == 'PENGELUARAN' %}btn-warning text-white{% else %}btn-outline-secondary{% endif %}">Pengeluaran</a>
                     </div>
+                    <input type="hidden" name="jenis" value="{{ jenis }}">
                 </div>
 
-                <div class="col-lg-5 col-md-12 text-lg-end d-flex align-items-center justify-content-start justify-content-lg-end gap-3 pt-2 pt-lg-4">
-                    <a href="/keuangan/export?type=pdf" class="btn btn-pdf-modern d-flex align-items-center gap-2 py-2.5 px-3.5 fw-semibold">
-                        <i class="bi bi-file-earmark-pdf-fill" style="font-size: 16px;"></i> Cetak PDF
-                    </a>
-                    
-                    <a href="/keuangan/export?type=excel" class="btn btn-excel-modern d-flex align-items-center gap-2 py-2.5 px-3.5 fw-semibold">
-                        <i class="bi bi-file-earmark-excel-fill" style="font-size: 16px;"></i> Export Excel
-                    </a>
+                <!-- Cari Deskripsi -->
+                <div class="col-12 col-md-2">
+                    <input type="text" name="q" value="{{ q }}" class="form-control form-control-sm" placeholder="Cari keterangan...">
                 </div>
 
+                <!-- Dropdown Kategori -->
+                <div class="col-6 col-md-2">
+                    <select name="kategori" class="form-select form-select-sm">
+                        <option value="">Semua Kategori</option>
+                        {% for k in list_kategori %}
+                        <option value="{{ k.id }}" {% if kat_id|string == k.id|string %}selected{% endif %}>{{ k.nama }} ({{ k.jenis }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Range Tanggal Mulai -->
+                <div class="col-6 col-md-2">
+                    <input type="date" name="start_date" value="{{ start_date }}" class="form-control form-control-sm" title="Tanggal Mulai">
+                </div>
+
+                <!-- Range Tanggal Selesai -->
+                <div class="col-6 col-md-2">
+                    <input type="date" name="end_date" value="{{ end_date }}" class="form-control form-control-sm" title="Tanggal Akhir">
+                </div>
+
+                <!-- Tombol Aksi Filter -->
+                <div class="col-6 col-md-auto d-flex gap-1">
+                    <button type="submit" class="btn btn-sm btn-dark px-3">Filter</button>
+                    <a href="/keuangan" class="btn btn-sm btn-light border text-secondary"><i class="bi bi-arrow-clockwise"></i> Reset</a>
+                </div>
             </form>
         </div>
 
-        <div class="row g-4 mb-5 animate-fade-up delay-2">
-            <div class="col-md-4">
-                <div class="card card-saldo-modern border-0 shadow-sm p-4 bg-white" style="border-radius: 24px;">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; background-color: #FFF2EB; color: #E8631C; font-size: 18px;">
-                            <i class="bi bi-arrow-up-right-circle-fill"></i>
-                        </div>
-                        <div>
-                            <small class="text-muted d-block fw-medium mb-1" style="font-size: 11px;">Total Pemasukan</small>
-                            <h3 class="fw-bold m-0" style="color: #C85A17;">Rp 33.500.000</h3>
-                        </div>
+        <!-- PANEL RINGKASAN HASIL FILTER SEPERTI VERSI ADMIN -->
+        <div class="mb-4">
+            <p class="fw-semibold text-secondary small mb-2">Ringkasan Hasil Filter</p>
+            <div class="row g-3">
+                <div class="col-12 col-md-4">
+                    <div class="bg-white p-3 rounded shadow-sm border-start border-success border-4">
+                        <small class="text-muted d-block small" style="font-size: 11px;">Total Pemasukan Terfilter</small>
+                        <h5 class="fw-bold text-success m-0 mt-1">Rp {{ "{:,.0f}".format(total_masuk).replace(',', '.') }}</h5>
                     </div>
                 </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="card card-saldo-modern border-0 shadow-sm p-4 bg-white" style="border-radius: 24px;">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; background-color: #FCE8E6; color: #D93025; font-size: 18px;">
-                            <i class="bi bi-arrow-down-left-circle-fill"></i>
-                        </div>
-                        <div>
-                            <small class="text-muted d-block fw-medium mb-1" style="font-size: 11px;">Total Pengeluaran</small>
-                            <h3 class="fw-bold m-0" style="color: #B83227;">Rp 18.000.000</h3>
-                        </div>
+                <div class="col-12 col-md-4">
+                    <div class="bg-white p-3 rounded shadow-sm border-start border-danger border-4">
+                        <small class="text-muted d-block small" style="font-size: 11px;">Total Pengeluaran Terfilter</small>
+                        <h5 class="fw-bold text-danger m-0 mt-1">Rp {{ "{:,.0f}".format(total_keluar).replace(',', '.') }}</h5>
                     </div>
                 </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="card card-saldo-modern border-0 shadow-sm p-4 bg-white" style="border-radius: 24px;">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="rounded-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px; background-color: #FDF4E7; color: #B38600; font-size: 18px;">
-                            <i class="bi bi-wallet2"></i>
-                        </div>
-                        <div>
-                            <small class="text-muted d-block fw-medium mb-1" style="font-size: 11px;">Sisa Saldo Kas</small>
-                            <h3 class="fw-bold m-0" style="color: #A37A00;">Rp 15.500.000</h3>
-                        </div>
+                <div class="col-12 col-md-4">
+                    <div class="bg-white p-3 rounded shadow-sm border-start border-dark border-4">
+                        <small class="text-muted d-block small" style="font-size: 11px;">Total Baris Data</small>
+                        <h5 class="fw-bold text-dark m-0 mt-1">{{ total_data }} Transaksi</h5>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="card border-0 shadow-sm bg-white p-4 animate-fade-up delay-3" style="border-radius: 24px;">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 class="fw-bold m-0" style="color: #2B2A2A; font-family: 'Playfair Display', Georgia, serif; font-size: 22px;">Detail Transaksi Kas</h4>
-                <span class="badge px-3 py-2 text-secondary bg-light rounded-pill border-0" style="font-size: 11px; font-weight: 500;">Maret 2026</span>
-            </div>
-            
+        <!-- DATA TABEL MUTASI TRANSAKSI -->
+        <div class="card border-0 shadow-sm bg-white p-3" style="border-radius: 12px;">
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0" style="border-color: #F8F9FA;">
-                    <thead style="background-color: #FAFAFA; color: #8A8A8A; font-size: 11px; letter-spacing: 0.5px;" class="text-uppercase fw-bold">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light text-secondary small" style="font-size: 12px;">
                         <tr>
-                            <th class="py-3 ps-3">No</th>
-                            <th class="py-3">Tanggal</th>
-                            <th class="py-3" style="width: 40%;">Keterangan Transaksi</th>
-                            <th class="py-3">Kategori</th>
-                            <th class="py-3 text-end">Pemasukan (+)</th>
-                            <th class="py-3 text-end pe-3">Pengeluaran (-)</th>
+                            <th class="py-2">TANGGAL</th>
+                            <th class="py-2">TIPE</th>
+                            <th class="py-2">KETERANGAN / DESKRIPSI</th>
+                            <th class="py-2">KATEGORI</th>
+                            <th class="py-2 text-end pe-3">NOMINAL</th>
                         </tr>
                     </thead>
-                    <tbody style="color: #4A4A4A; font-size: 13px;">
+                    <tbody style="font-size: 13.5px; color: #444;">
+                        {% for t in transaksi %}
                         <tr>
-                            <td class="py-3 ps-3 text-muted">1</td>
-                            <td class="fw-medium">05 Maret 2026</td>
-                            <td>Infaq Jumat Berkah Jamaah</td>
-                            <td><span class="badge bg-light text-muted px-2.5 py-1.5 rounded-pill border-0" style="font-size: 10px; font-weight: 500; background-color: #F4F5F7 !important;">Infaq</span></td>
-                            <td class="text-end fw-bold text-success">+ Rp 8.500.000</td>
-                            <td class="text-end text-muted pe-3">-</td>
+                            <td>
+                                <span class="fw-medium text-dark">{{ t.created_at.strftime('%d %b %Y') }}</span><br>
+                                <small class="text-muted" style="font-size: 11px;">{{ t.created_at.strftime('%H:%M') }} WIB</small>
+                            </td>
+                            <td>
+                                {% if t.kategori.jenis == 'PEMASUKAN' %}
+                                <span class="badge bg-success-subtle text-success border-0 px-2 py-1">Pemasukan</span>
+                                {% else %}
+                                <span class="badge bg-danger-subtle text-danger border-0 px-2 py-1">Pengeluaran</span>
+                                {% endif %}
+                            </td>
+                            <td class="fw-semibold text-dark">{{ t.keterangan if t.keterangan else '-' }}</td>
+                            <td><span class="text-secondary">{{ t.kategori.nama }}</span></td>
+                            <td class="text-end fw-bold pe-3 {% if t.kategori.jenis == 'PEMASUKAN' %}text-success{% else %}text-danger{% endif %}">
+                                {% if t.kategori.jenis == 'PEMASUKAN' %}+{% else %}-{% endif %} Rp {{ "{:,.0f}".format(t.jumlah).replace(',', '.') }}
+                            </td>
                         </tr>
+                        {% else %}
                         <tr>
-                            <td class="py-3 ps-3 text-muted">2</td>
-                            <td class="fw-medium">10 Maret 2026</td>
-                            <td>Donasi Bulanan Hamba Allah</td>
-                            <td><span class="badge bg-light text-muted px-2.5 py-1.5 rounded-pill border-0" style="font-size: 10px; font-weight: 500; background-color: #F4F5F7 !important;">Donasi</span></td>
-                            <td class="text-end fw-bold text-success">+ Rp 15.000.000</td>
-                            <td class="text-end text-muted pe-3">-</td>
+                            <td colspan="5" class="text-center text-muted py-4">Data mutasi kas tidak ditemukan berdasarkan kriteria pencarian filter Anda.</td>
                         </tr>
-                        <tr>
-                            <td class="py-3 ps-3 text-muted">3</td>
-                            <td class="fw-medium">12 Maret 2026</td>
-                            <td>Pembayaran Listrik & Air Bulanan</td>
-                            <td><span class="badge bg-light text-muted px-2.5 py-1.5 rounded-pill border-0" style="font-size: 10px; font-weight: 500; background-color: #F4F5F7 !important;">Operasional</span></td>
-                            <td class="text-end text-muted">-</td>
-                            <td class="text-end fw-bold text-danger pe-3">- Rp 2.800.000</td>
-                        </tr>
-                        <tr>
-                            <td class="py-3 ps-3 text-muted">4</td>
-                            <td class="fw-medium">15 Maret 2026</td>
-                            <td>Gaji Pengurus & Marbot Masjid</td>
-                            <td><span class="badge bg-light text-muted px-2.5 py-1.5 rounded-pill border-0" style="font-size: 10px; font-weight: 500; background-color: #F4F5F7 !important;">Gaji</span></td>
-                            <td class="text-end text-muted">-</td>
-                            <td class="text-end fw-bold text-danger pe-3">- Rp 7.500.000</td>
-                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
+
+            <!-- PAGINATION -->
+            {% if pagination.pages > 1 %}
+            <nav class="mt-4 d-flex justify-content-between align-items-center">
+                <span class="text-muted small">Menampilkan {{ transaksi|length }} data dari {{ total_data }}</span>
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                        <a class="page-link" href="{{ url_for('public.halaman_keuangan', page=pagination.prev_num, jenis=jenis, q=q, kategori=kat_id, start_date=start_date, end_date=end_date) }}" style="color: #666;">Sebelumnya</a>
+                    </li>
+                    {% for page_num in pagination.iter_pages() %}
+                        {% if page_num %}
+                            <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
+                                <a class="page-link {% if page_num == pagination.page %}bg-warning border-warning text-white{% endif %}" href="{{ url_for('public.halaman_keuangan', page=page_num, jenis=jenis, q=q, kategori=kat_id, start_date=start_date, end_date=end_date) }}">{{ page_num }}</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        {% endif %}
+                    {% endfor %}
+                    <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                        <a class="page-link" href="{{ url_for('public.halaman_keuangan', page=pagination.next_num, jenis=jenis, q=q, kategori=kat_id, start_date=start_date, end_date=end_date) }}" style="color: #666;">Selanjutnya</a>
+                    </li>
+                </ul>
+            </nav>
+            {% endif %}
         </div>
 
     </div>

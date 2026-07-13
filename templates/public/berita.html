@@ -28,14 +28,65 @@
   </div>
 </section>
 
+<!-- BAR FILTER & PENCARIAN -->
+<section class="filter-section py-4 border-bottom" style="background: #fffbf4;">
+  <div class="container">
+    <form method="GET" action="/berita" class="row g-3 align-items-center">
+      <!-- Input Search -->
+      <div class="col-lg-5 col-md-12">
+        <div class="input-group">
+          <span class="input-group-text bg-white border-end-0 text-muted">
+            <i class="bi bi-search"></i>
+          </span>
+          <input type="text" name="q" class="form-control border-start-0 shadow-none" 
+                 placeholder="Cari judul atau isi berita..." value="{{ search_query }}">
+        </div>
+      </div>
+      
+      <!-- Dropdown Kategori -->
+      <div class="col-lg-3 col-md-6">
+        <select name="kategori" class="form-select shadow-none" onchange="this.form.submit()">
+          <option value="">Semua Kategori</option>
+          <option value="kegiatan" {% if kategori_filter == 'Kegiatan' %}selected{% endif %}>Kegiatan</option>
+          <option value="pengumuman" {% if kategori_filter == 'Pengumuman' %}selected{% endif %}>Pengumuman</option>
+          <option value="kajian" {% if kategori_filter == 'Kajian' or kategori_filter == 'Artikel' %}selected{% endif %}>Kajian / Artikel</option>
+        </select>
+      </div>
+
+      <!-- Dropdown Urutan -->
+      <div class="col-lg-3 col-md-6">
+        <select name="sort" class="form-select shadow-none" onchange="this.form.submit()">
+          <option value="terbaru" {% if sort_by == 'terbaru' %}selected{% endif %}>Urutan: Terbaru</option>
+          <option value="populer" {% if sort_by == 'populer' %}selected{% endif %}>Urutan: Paling Populer</option>
+        </select>
+      </div>
+
+      <!-- Tombol Filter -->
+      <div class="col-lg-1 col-md-12 text-end">
+        <button type="submit" class="btn btn-warning w-100 text-white fw-medium shadow-sm" style="background-color: #f97316; border-color: #f97316;">
+          Cari
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+
 <!-- LIST ARSIP BERITA -->
 <section class="berita-list-section py-5" style="background: #fdfbf7;">
-  <div class="container py-4">
+  <div class="container py-2">
+    
+    <!-- Info Hasil Pencarian -->
+    {% if search_query or kategori_filter %}
+    <div class="mb-4 text-muted small">
+      Ditemukan <strong>{{ pagination.total }}</strong> berita memenuhi kriteria pencarian.
+      <a href="/berita" class="text-decoration-none ms-2 text-danger"><i class="bi bi-x-circle"></i> Reset Filter</a>
+    </div>
+    {% endif %}
+
     <div class="row g-4 fade-in-up">
 
+      <!-- Iterasi Data Berita -->
       {% for b in berita %}
-      {% if b.status != 'draft' %}
-
       <div class="col-lg-4 col-md-6 col-sm-12">
         <div class="card berita-card shadow-sm h-100 border-0">
           <div class="position-relative overflow-hidden card-img-wrapper"
@@ -91,11 +142,59 @@
           </div>
         </div>
       </div>
-
-      {% endif %}
+      {% else %}
+      <!-- Fallback Jika Data Kosong -->
+      <div class="col-12 text-center py-5">
+        <i class="bi bi-newspaper text-muted opacity-50" style="font-size: 3.5rem;"></i>
+        <h5 class="mt-3 fw-bold text-secondary">Tidak Ada Berita Ditemukan</h5>
+        <p class="text-muted small">Silakan cari dengan kata kunci lain atau periksa kembali kategori filter Anda.</p>
+      </div>
       {% endfor %}
 
     </div>
+
+    <!-- STRUKTUR NAVIGASI PAGINATION -->
+    {% if pagination.pages > 1 %}
+    <nav aria-label="Page navigation" class="mt-5">
+      <ul class="pagination justify-content-center">
+        
+        <!-- Tombol Previous -->
+        <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+          <a class="page-link rounded-start shadow-none" 
+             href="{{ url_for('public.berita', page=pagination.prev_num, q=search_query, kategori=kategori_filter, sort=sort_by) }}" 
+             style="color: #1B1714;">
+            &larr; <span class="d-none d-sm-inline">Sebelumnya</span>
+          </a>
+        </li>
+
+        <!-- Angka Halaman Dinamis -->
+        {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+          {% if page_num %}
+            <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
+              <a class="page-link shadow-none fw-medium" 
+                 href="{{ url_for('public.berita', page=page_num, q=search_query, kategori=kategori_filter, sort=sort_by) }}"
+                 style="{% if page_num == pagination.page %}background-color: #f97316; border-color: #f97316; color: #fff;{% else %}color: #1B1714;{% endif %}">
+                {{ page_num }}
+              </a>
+            </li>
+          {% else %}
+            <li class="page-item disabled"><span class="page-link border-0">...</span></li>
+          {% endif %}
+        {% endfor %}
+
+        <!-- Tombol Next -->
+        <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+          <a class="page-link rounded-end shadow-none" 
+             href="{{ url_for('public.berita', page=pagination.next_num, q=search_query, kategori=kategori_filter, sort=sort_by) }}" 
+             style="color: #1B1714;">
+            <span class="d-none d-sm-inline">Selanjutnya</span> &rarr;
+          </a>
+        </li>
+
+      </ul>
+    </nav>
+    {% endif %}
+
   </div>
 </section>
 {% endblock %}

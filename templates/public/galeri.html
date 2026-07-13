@@ -1,57 +1,110 @@
 {% extends 'layouts/public_base.html' %}
-{% block title %}Galeri Lengkap - Masjid Al-Bayan{% endblock %}
+
+{% block title %}Semua Dokumentasi - Al-Bayan Hub{% endblock %}
 
 {% block content %}
-<section class="galeri-header" style="background-image: url('{{ url_for('static', filename='img/header-albayan.png') }}');">
-  <div class="container reveal-galeri">
+<!-- HERO HEADER MENGIKUTI GAYA BERITA -->
+<section class="news-hero-header">
+  <div class="container text-center animated-hero">
     <nav aria-label="breadcrumb">
-      <ol class="breadcrumb justify-content-center mb-3">
-        <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-white-50 small">Beranda</a></li>
-        <li class="breadcrumb-item active text-white small" aria-current="page">Galeri</li>
+      <ol class="breadcrumb justify-content-center mb-2">
+        <li class="breadcrumb-item">
+          <a href="/" class="text-decoration-none text-white-50 small">Beranda</a>
+        </li>
+        <li class="breadcrumb-item active text-white small" aria-current="page">
+          Galeri
+        </li>
       </ol>
     </nav>
 
     <span class="badge-premium">ARSIP VISUAL</span>
-    <h1 style="font-family: 'Playfair Display', serif; font-size: clamp(32px, 5vw, 52px); font-weight: 800; margin: 10px 0;">Semua Dokumentasi</h1>
-    <div style="width: 60px; height: 4px; background: #E8631C; margin: 20px auto; border-radius: 2px;"></div>
+    <h1 class="mt-3">
+      Semua <span class="text-gradient">Dokumentasi</span>
+    </h1>
+
+    <p class="mx-auto text-light opacity-75 mt-2"
+       style="max-width: 550px; font-size: 15px;">
+      Kumpulan dokumentasi foto runtutan aktivitas dan program Masjid Al-Bayan
+    </p>
   </div>
 </section>
 
-<section style="background: #fcfcfc; padding: 60px 0 100px;">
-  <div class="container">
-    {% set fotos = [
-      {'judul': 'Interior Masjid Al-Bayan', 'kategori': 'Masjid', 'img': 'default.jpg'},
-      {'judul': 'Keindahan Malam', 'kategori': 'Masjid', 'img': 'default.jpg'},
-      {'judul': 'Sholat Berjamaah', 'kategori': 'Ibadah', 'img': 'default.jpg'},
-      {'judul': 'Kaligrafi Al-Quran', 'kategori': 'Seni', 'img': 'default.jpg'},
-      {'judul': 'Buka Puasa Bersama', 'kategori': 'Ramadan', 'img': 'default.jpg'},
-      {'judul': 'Taman Masjid', 'kategori': 'Masjid', 'img': 'default.jpg'}
-    ] %}
+<!-- MAIN CONTENT GALERI -->
+<div style="background-color: #FDFBF7; min-height: 100vh; padding-top: 50px; padding-bottom: 100px; font-family: 'Poppins', sans-serif;">
+    <div class="container">
 
-    <div class="d-flex justify-content-center gap-2 mb-5 flex-wrap reveal-galeri" style="animation-delay: 0.2s;">
-        <button class="btn" style="background: #E8631C; color: white; border-radius: 50px; padding: 8px 25px; border: none;">Semua</button>
-        <button class="btn" style="background: white; color: #1B1714; border: 1px solid #eee; border-radius: 50px; padding: 8px 25px;">Ibadah</button>
-        <button class="btn" style="background: white; color: #1B1714; border: 1px solid #eee; border-radius: 50px; padding: 8px 25px;">Sosial</button>
-        <button class="btn" style="background: white; color: #1B1714; border: 1px solid #eee; border-radius: 50px; padding: 8px 25px;">Bangunan</button>
-    </div>
-
-    <div class="row g-4">
-      {% for f in fotos %}
-      <div class="col-6 col-md-4 reveal-galeri" style="animation-delay: {{ loop.index0 * 0.05 }}s;">
-        <div class="galeri-card" 
-             onclick="bukaLightbox(this)" 
-             data-judul="{{ f.judul }}" 
-             data-kategori="{{ f.kategori }}" 
-             data-img="{{ url_for('static', filename='img/' ~ f.img) }}">
-           <img src="{{ url_for('static', filename='img/' ~ f.img) }}" alt="{{ f.judul }}" loading="lazy">
-           <div class="galeri-overlay">
-              <span class="galeri-kategori-tag">{{ f.kategori }}</span>
-              <p class="galeri-judul-text">{{ f.judul }}</p>
-           </div>
+        <!-- FILTER TAB KATEGORI HURUF KAPITAL DENGAN ILIKE -->
+        <div class="d-flex justify-content-center flex-wrap gap-2 mb-5">
+            <a href="{{ url_for('public.galeri', kategori='') }}" class="btn px-4 py-2 rounded-pill fw-medium btn-sm {% if not kategori_filter %}btn-warning text-white shadow-sm{% else %}btn-white bg-white border text-secondary{% endif %}" style="{% if not kategori_filter %}background-color: #f97316; border-color: #f97316;{% endif %}">
+                Semua
+            </a>
+            <a href="{{ url_for('public.galeri', kategori='KEGIATAN') }}" class="btn px-4 py-2 rounded-pill fw-medium btn-sm {% if kategori_filter.upper() == 'KEGIATAN' %}btn-warning text-white shadow-sm{% else %}btn-white bg-white border text-secondary{% endif %}" style="{% if kategori_filter.upper() == 'KEGIATAN' %}background-color: #f97316; border-color: #f97316;{% endif %}">
+                Kegiatan
+            </a>
+            <a href="{{ url_for('public.galeri', kategori='KAJIAN') }}" class="btn px-4 py-2 rounded-pill fw-medium btn-sm {% if kategori_filter.upper() == 'KAJIAN' %}btn-warning text-white shadow-sm{% else %}btn-white bg-white border text-secondary{% endif %}" style="{% if kategori_filter.upper() == 'KAJIAN' %}background-color: #f97316; border-color: #f97316;{% endif %}">
+                Kajian
+            </a>
+            <a href="{{ url_for('public.galeri', kategori='SOSIAL') }}" class="btn px-4 py-2 rounded-pill fw-medium btn-sm {% if kategori_filter.upper() == 'SOSIAL' %}btn-warning text-white shadow-sm{% else %}btn-white bg-white border text-secondary{% endif %}" style="{% if kategori_filter.upper() == 'SOSIAL' %}background-color: #f97316; border-color: #f97316;{% endif %}">
+                Sosial
+            </a>
+            <a href="{{ url_for('public.galeri', kategori='PENDIDIKAN') }}" class="btn px-4 py-2 rounded-pill fw-medium btn-sm {% if kategori_filter.upper() == 'PENDIDIKAN' %}btn-warning text-white shadow-sm{% else %}btn-white bg-white border text-secondary{% endif %}" style="{% if kategori_filter.upper() == 'PENDIDIKAN' %}background-color: #f97316; border-color: #f97316;{% endif %}">
+                Pendidikan
+            </a>
         </div>
-      </div>
-      {% endfor %}
+
+        <!-- GRID IMAGES ONLY -->
+        <div class="row g-4">
+            {% for b in galeri %}
+            <div class="col-12 col-md-4">
+                <div class="position-relative overflow-hidden shadow-sm card-img-wrapper" style="border-radius: 16px; height: 260px; aspect-ratio: 16/9;">
+                    {% if b.thumbnail %}
+                        <img src="{{ url_for('static', filename=b.thumbnail) }}" class="w-100 h-100 object-fit-cover" style="border-radius: 16px; transition: transform 0.5s ease;" alt="{{ b.judul }}">
+                    {% else %}
+                        <img src="{{ url_for('static', filename='img/default.jpg') }}" class="w-100 h-100 object-fit-cover" style="border-radius: 16px; transition: transform 0.5s ease;" alt="Default Image">
+                    {% endif %}
+                    
+                    <span class="badge-kategori text-uppercase">{{ b.kategori }}</span>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12 text-center py-5">
+                <i class="bi bi-image text-muted opacity-50" style="font-size: 3.5rem;"></i>
+                <h5 class="mt-3 fw-bold text-secondary">Tidak Ada Dokumentasi Ditemukan</h5>
+                <p class="text-muted small">Silakan pilih kategori filter lainnya.</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- STRUKTUR NAVIGASI PAGINATION -->
+        {% if pagination.pages > 1 %}
+        <nav aria-label="Page navigation" class="mt-5">
+            <ul class="pagination justify-content-center">
+                <li class="page-item {% if not pagination.has_prev %}disabled{% endif %}">
+                    <a class="page-link rounded-start shadow-none" href="{{ url_for('public.galeri', page=pagination.prev_num, kategori=kategori_filter) }}" style="color: #1B1714;">
+                        &larr; <span class="d-none d-sm-inline">Sebelumnya</span>
+                    </a>
+                </li>
+                {% for page_num in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                    {% if page_num %}
+                        <li class="page-item {% if page_num == pagination.page %}active{% endif %}">
+                            <a class="page-link shadow-none fw-medium" href="{{ url_for('public.galeri', page=page_num, kategori=kategori_filter) }}"
+                               style="{% if page_num == pagination.page %}background-color: #f97316; border-color: #f97316; color: #fff;{% else %}color: #1B1714;{% endif %}">
+                                {{ page_num }}
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link border-0">...</span></li>
+                    {% endif %}
+                {% endfor %}
+                <li class="page-item {% if not pagination.has_next %}disabled{% endif %}">
+                    <a class="page-link rounded-end shadow-none" href="{{ url_for('public.galeri', page=pagination.next_num, kategori=kategori_filter) }}" style="color: #1B1714;">
+                        <span class="d-none d-sm-inline">Selanjutnya</span> &rarr;
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+
     </div>
-  </div>
-</section>
+</div>
 {% endblock %}

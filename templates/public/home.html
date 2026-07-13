@@ -56,141 +56,152 @@
 </section>
 
 <!-- ===== JADWAL IMAM ===== -->
-<section id="jadwal-imam" style="background:#fff; padding-bottom: 80px;">
-
+<!-- ===== AGENDA PENUGASAN KHUTBAH BULANAN ===== -->
+<section id="jadwal-imam" style="background:#fff; padding: 60px 0 80px 0;">
   <div class="container">
     
-    <div class="text-center mb-5" style="margin-top: 150px !important;">
-      <p class="section-label">PENJADWALAN</p>
-      <h2 class="section-title">Jadwal Imam Sholat</h2>
-      <p class="section-sub"><i class="bi bi-calendar3"></i> Jadwal imam bergilir mingguan</p>
+    <!-- Header Agenda -->
+    <div class="d-flex justify-content-between align-items-start mb-2" style="margin-top: 100px !important;">
+      <div>
+        <h3 style="font-family: 'Playfair Display', serif; font-weight: 700; color: #1B1714; margin-bottom: 6px;">
+          Agenda Penugasan Khutbah — Bulan {{ bulan_aktif }}
+        </h3>
+        <p class="text-muted small" style="font-size: 14px;">
+          Menampilkan jadwal penugasan aktif sepanjang periode bulan berjalan saat ini.
+        </p>
+      </div>
     </div>
 
-    <div class="table-responsive">
-      <table class="table jadwal-imam-table">
+    <!-- Tabel Tanpa Border Kotak (Clean & Minimalis) -->
+    <div class="table-responsive mt-4">
+      <table class="table align-middle" style="border-collapse: collapse;">
         <thead>
-          <tr>
-            <th>Hari</th>
-            <th>Subuh</th>
-            <th>Dzuhur</th>
-            <th>Ashar</th>
-            <th>Maghrib</th>
-            <th>Isya</th>
+          <tr class="text-secondary small fw-bold" style="border-bottom: 2px solid #ece5dc; font-size: 12px; letter-spacing: 0.5px;">
+            <th class="py-3 text-uppercase" style="width: 25%;">Hari & Tanggal</th>
+            <th class="py-3 text-uppercase" style="width: 35%;">Jenis Penugasan</th>
+            <th class="py-3 text-uppercase" style="width: 40%;">Imam / Khatib Bertugas</th>
           </tr>
         </thead>
         <tbody>
-          {% set jadwal_imam = [
-            {'hari': 'Senin',  'subuh': 'Ust. Ahmad',  'dzuhur': 'Ust. Ibrahim', 'ashar': 'Ust. Yusuf',  'maghrib': 'Ust. Ali',     'isya': 'Ust. Umar'},
-            {'hari': 'Selasa', 'subuh': 'Ust. Yusuf',  'dzuhur': 'Ust. Ahmad',   'ashar': 'Ust. Ali',    'maghrib': 'Ust. Umar',    'isya': 'Ust. Ibrahim'},
-            {'hari': 'Rabu',   'subuh': 'Ust. Ali',    'dzuhur': 'Ust. Yusuf',   'ashar': 'Ust. Ibrahim','maghrib': 'Ust. Ahmad',   'isya': 'Ust. Umar'},
-            {'hari': 'Kamis',  'subuh': 'Ust. Umar',   'dzuhur': 'Ust. Ali',     'ashar': 'Ust. Ahmad',  'maghrib': 'Ust. Ibrahim', 'isya': 'Ust. Yusuf'},
-            {'hari': 'Jumat',  'subuh': 'Ust. Ibrahim','dzuhur': 'Ust. Umar',    'ashar': 'Ust. Yusuf',  'maghrib': 'Ust. Ali',     'isya': 'Ust. Ahmad'},
-            {'hari': 'Sabtu',  'subuh': 'Ust. Ahmad',  'dzuhur': 'Ust. Yusuf',   'ashar': 'Ust. Umar',   'maghrib': 'Ust. Ibrahim', 'isya': 'Ust. Ali'},
-            {'hari': 'Minggu', 'subuh': 'Ust. Ali',    'dzuhur': 'Ust. Ibrahim', 'ashar': 'Ust. Ahmad',  'maghrib': 'Ust. Yusuf',   'isya': 'Ust. Umar'},
-          ] %}
-          {% for row in jadwal_imam %}
-          <tr {% if loop.last %}class="hari-ini"{% endif %}>
-            <td class="fw-semibold">
-              {{ row.hari }}
-              {% if loop.last %}<span class="badge-hari-ini ms-2">Hari ini</span>{% endif %}
-            </td>
-            <td><i class="bi bi-person"></i> {{ row.subuh }}</td>
-            <td><i class="bi bi-person"></i> {{ row.dzuhur }}</td>
-            <td><i class="bi bi-person"></i> {{ row.ashar }}</td>
-            <td><i class="bi bi-person"></i> {{ row.maghrib }}</td>
-            <td><i class="bi bi-person"></i> {{ row.isya }}</td>
-          </tr>
+          {% for t in jadwal_khutbah %}
+            {% set is_past = t.tanggal < hari_ini %}
+            <tr style="border-bottom: 1px dashed #e0dcd5;">
+              <!-- Kolom Hari & Tanggal (Format: Jum, 03 Jul) -->
+              <td class="py-3 fw-semibold text-dark" style="font-size: 14px;">
+                {% if t.tanggal.strftime('%a') == 'Fri' %}Jum{% else %}{{ t.tanggal.strftime('%a') }}{% endif %}, 
+                {{ t.tanggal.strftime('%d %b') }}
+              </td>
+              
+              <!-- Kolom Jenis Penugasan -->
+              <td class="py-3 text-secondary" style="font-size: 14px;">
+                Shalat Jumat - Pekan {{ loop.index }}
+              </td>
+              
+              <!-- Kolom Nama Ustadz + Status Badge -->
+              <td class="py-3">
+                <span class="fw-semibold text-dark" style="font-size: 14px; margin-right: 8px;">
+                  {{ t.ustadz.nama }}
+                </span>
+                {% if is_past %}
+                  <span class="badge rounded-pill px-2 py-1 text-primary-emphasis bg-primary-subtle" style="font-size: 11px; font-weight: 500;">
+                    Selesai
+                  </span>
+                {% else %}
+                  <span class="badge rounded-pill px-2 py-1 text-light bg-orange" style="font-size: 11px; font-weight: 500; background-color: #E8631C;">
+                    Mendatang
+                  </span>
+                {% endif %}
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="3" class="text-center py-5 text-muted" style="font-size: 14px;">
+                Tidak ada jadwal penugasan khutbah untuk bulan ini.
+              </td>
+            </tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
-    <p class="text-center text-muted mt-3" style="font-size:12px;">
-      * Jadwal dapat berubah sewaktu-waktu. Hubungi sekretariat untuk konfirmasi.
-    </p>
+
   </div>
 </section>
 
 <!-- ===== TRANSPARANSI KEUANGAN ===== -->
-<section id="keuangan" style="background: var(--surface-3);">
+<!-- ===== TRANSPARANSI KEUANGAN HOME ===== -->
+<section id="keuangan" style="background: var(--surface-3); padding: 60px 0;">
   <div class="container">
     <div class="text-center mb-5">
-      <p class="section-label">TRANSPARANSI</p>
-      <h2 class="section-title">Laporan Keuangan</h2>
-      <p class="section-sub">Periode: Maret 2026</p>
+      <p class="section-label">TRANSPARANSI KAS</p>
+      <h2 class="section-title">Kondisi Keuangan Masjid</h2>
+      <p class="section-sub">Informasi saldo riil dan mutasi dana terupdate yang dikelola dewan kemakmuran.</p>
     </div>
 
-    <!-- SUMMARY CARDS -->
-    <div class="row g-3 justify-content-center mb-4">
+    <!-- TIGA CARD RINGKASAN UTAMA -->
+    <div class="row g-3 justify-content-center mb-5">
       <div class="col-12 col-md-4">
-        <div class="keu-card">
-          <div class="keu-card-icon" style="background:#fff7ed;">
-            <i class="bi bi-graph-up-arrow" style="color:#E8631C;"></i>
-          </div>
+        <div class="keu-card" style="background:#fff; border-left: 4px solid #E8631C; padding:20px; border-radius:16px; box-shadow:0 2px 8px rgba(0,0,0,0.04); display:flex; gap:15px; align-items:center;">
+          <div style="background:#fff7ed; width:48px; height:48px; display:flex; align-items:center; justify-content:center; border-radius:50%; color:#E8631C;"><i class="bi bi-graph-up-arrow"></i></div>
           <div>
-            <p class="keu-label">Total Pemasukan</p>
-            <h4 class="keu-angka" style="color:#E8631C;">Rp 33.500.000</h4>
+            <p style="margin:0; font-size:12px; color:#666;">Total Pemasukan</p>
+            <h4 style="margin:0; font-weight:700; color:#E8631C;">Rp {{ "{:,.0f}".format(total_masuk).replace(',', '.') }}</h4>
           </div>
         </div>
       </div>
       <div class="col-12 col-md-4">
-        <div class="keu-card">
-          <div class="keu-card-icon" style="background:#fef2f2;">
-            <i class="bi bi-graph-down-arrow" style="color:#C0392B;"></i>
-          </div>
+        <div class="keu-card" style="background:#fff; border-left: 4px solid #C0392B; padding:20px; border-radius:16px; box-shadow:0 2px 8px rgba(0,0,0,0.04); display:flex; gap:15px; align-items:center;">
+          <div style="background:#fef2f2; width:48px; height:48px; display:flex; align-items:center; justify-content:center; border-radius:50%; color:#C0392B;"><i class="bi bi-graph-down-arrow"></i></div>
           <div>
-            <p class="keu-label">Total Pengeluaran</p>
-            <h4 class="keu-angka" style="color:#C0392B;">Rp 18.000.000</h4>
+            <p style="margin:0; font-size:12px; color:#666;">Total Pengeluaran</p>
+            <h4 style="margin:0; font-weight:700; color:#C0392B;">Rp {{ "{:,.0f}".format(total_keluar).replace(',', '.') }}</h4>
           </div>
         </div>
       </div>
       <div class="col-12 col-md-4">
-        <div class="keu-card">
-          <div class="keu-card-icon" style="background:#fffbeb;">
-            <i class="bi bi-wallet2" style="color:#B8962E;"></i>
-          </div>
+        <div class="keu-card" style="background:#fff; border-left: 4px solid #B8962E; padding:20px; border-radius:16px; box-shadow:0 2px 8px rgba(0,0,0,0.04); display:flex; gap:15px; align-items:center;">
+          <div style="background:#fffbeb; width:48px; height:48px; display:flex; align-items:center; justify-content:center; border-radius:50%; color:#B8962E;"><i class="bi bi-wallet2"></i></div>
           <div>
-            <p class="keu-label">Saldo</p>
-            <h4 class="keu-angka" style="color:#B8962E;">Rp 15.500.000</h4>
+            <p style="margin:0; font-size:12px; color:#666;">Saldo Aktif Saat Ini</p>
+            <h4 style="margin:0; font-weight:700; color:#B8962E;">Rp {{ "{:,.0f}".format(saldo_aktif).replace(',', '.') }}</h4>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- DETAIL PEMASUKAN & PENGELUARAN -->
-    <div class="row g-3 justify-content-center mb-4">
-      <div class="col-12 col-md-6">
-        <div class="keu-detail-card">
-          <h6 class="keu-detail-title">
-            <i class="bi bi-graph-up-arrow" style="color:#E8631C;"></i> Pemasukan
-          </h6>
-          <div class="keu-row"><span>Infaq Jumat</span><span style="color:#E8631C;font-weight:600;">Rp 8.500.000</span></div>
-          <div class="keu-row"><span>Donasi Bulanan</span><span style="color:#E8631C;font-weight:600;">Rp 15.000.000</span></div>
-          <div class="keu-row"><span>Infaq Harian</span><span style="color:#E8631C;font-weight:600;">Rp 3.200.000</span></div>
-          <div class="keu-row"><span>Zakat & Sedekah</span><span style="color:#E8631C;font-weight:600;">Rp 6.800.000</span></div>
-        </div>
-      </div>
-      <div class="col-12 col-md-6">
-        <div class="keu-detail-card">
-          <h6 class="keu-detail-title">
-            <i class="bi bi-graph-down-arrow" style="color:#C0392B;"></i> Pengeluaran
-          </h6>
-          <div class="keu-row"><span>Listrik & Air</span><span style="color:#C0392B;font-weight:600;">Rp 2.800.000</span></div>
-          <div class="keu-row"><span>Gaji Pengurus</span><span style="color:#C0392B;font-weight:600;">Rp 7.500.000</span></div>
-          <div class="keu-row"><span>Perawatan Masjid</span><span style="color:#C0392B;font-weight:600;">Rp 4.200.000</span></div>
-          <div class="keu-row"><span>Kegiatan Dakwah</span><span style="color:#C0392B;font-weight:600;">Rp 3.500.000</span></div>
-        </div>
+    <!-- PREVIEW 5 TRANSAKSI TERBARU -->
+    <div class="card border-0 shadow-sm p-4 bg-white mb-4" style="border-radius: 20px;">
+      <h6 class="fw-bold mb-3 text-dark"><i class="bi bi-clock-history text-warning me-2"></i> 5 Aktivitas Transaksi Terbaru</h6>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <tbody style="font-size: 13.5px;">
+            {% for t in transaksi_terbaru %}
+            <tr>
+              <td class="text-muted" style="width: 15%;">{{ t.created_at.strftime('%d %b %Y') }}</td>
+              <td>
+                <span class="fw-semibold text-dark">{{ t.keterangan if t.keterangan else '-' }}</span>
+                <span class="d-block text-muted small">{{ t.kategori.nama }}</span>
+              </td>
+              <td class="text-end fw-bold {% if t.kategori.jenis == 'PEMASUKAN' %}text-success{% else %}text-danger{% endif %}" style="width: 25%;">
+                {% if t.kategori.jenis == 'PEMASUKAN' %}+{% else %}-{% endif %} Rp {{ "{:,.0f}".format(t.jumlah).replace(',', '.') }}
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="3" class="text-center text-muted py-3">Belum ada riwayat transaksi.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
     </div>
 
     <div class="text-center mt-4">
-    <a href="/keuangan" class="btn-lihat-lengkap">
-        Lihat Laporan Lengkap <span class="panah-animasi">→</span>
-    </a>
-</div>
-
+      <a href="/keuangan" class="btn text-white px-4 py-2 fw-semibold" style="background-color: #E8631C; border-radius: 50px; font-size: 14px; text-decoration: none;">
+          Lihat Mutasi Laporan Lengkap →
+      </a>
+    </div>
   </div>
 </section>
-
 <!-- ===== BERITA & KEGIATAN ===== -->
 <section id="berita" style="background:#fdfbf7; padding: 60px 0;"> <!-- Background diganti cream halus biar gak flat putih -->
   <div class="container">
@@ -239,49 +250,44 @@
      </div>
 </section>
 
-<!-- ===== GALERI ===== -->
-<section id="galeri" style="background: var(--surface-3); padding: 100px 0;">
+<!-- ===== GALERI KEGIATAN HOME ===== -->
+<!-- ===== GALERI KEGIATAN HOME ===== -->
+<section id="galeri" style="background-color: #FDFBF7; padding: 60px 0; font-family: 'Poppins', sans-serif;">
   <div class="container">
-     {% set fotos = [
-      {'judul': 'Interior Masjid Al-Bayan', 'kategori': 'Masjid', 'img': 'default.jpg'},
-      {'judul': 'Keindahan Malam', 'kategori': 'Masjid', 'img': 'default.jpg'},
-      {'judul': 'Sholat Berjamaah', 'kategori': 'Ibadah', 'img': 'default.jpg'},
-      {'judul': 'Kaligrafi Al-Quran', 'kategori': 'Seni', 'img': 'default.jpg'},
-      {'judul': 'Buka Puasa Bersama', 'kategori': 'Ramadan', 'img': 'default.jpg'},
-      {'judul': 'Taman Masjid', 'kategori': 'Masjid', 'img': 'default.jpg'}
-    ] %}
-    <div class="text-center mb-5 reveal-galeri">
-      <p class="badge-kategori-detail">DOKUMENTASI</p>
-      <h2 class="section-title" style="font-family: 'Playfair Display', serif; font-size: 40px; font-weight: 800;">Galeri Kegiatan</h2>
-      <p class="section-sub" style="color: #666;">Menyimpan kenangan dan semangat ukhuwah di Masjid Al-Bayan</p>
+    <div class="text-center mb-5">
+      <h2 class="fw-bold" style="font-family: 'Playfair Display', Georgia, serif; color: #2B2A2A;">Galeri Kegiatan</h2>
+      <p class="text-muted small">Menyimpan kenangan dan semangat ukhuwah di Masjid Al-Bayan</p>
     </div>
 
     <div class="row g-4 justify-content-center">
-      {% for f in fotos %}
-      <div class="col-6 col-md-4 reveal-galeri" style="animation-delay: {{ loop.index0 * 0.1 }}s;">
-        <div class="galeri-card position-relative"
-             data-judul="{{ f.judul }}"
-             data-kategori="{{ f.kategori }}"
-             data-img="{{ url_for('static', filename='img/' ~ f.img) }}"
-             onclick="bukaLightbox(this)">
-          <img src="{{ url_for('static', filename='img/' ~ f.img) }}" alt="{{ f.judul }}">
-          <div class="galeri-overlay">
-             <span class="galeri-kategori-tag">{{ f.kategori }}</span>
-           <p class="galeri-judul-text">{{ f.judul }}</p>
-          </div>
+      {% for b in galeri %}
+      <div class="col-12 col-sm-6 col-md-4">
+        <div class="position-relative overflow-hidden shadow-sm" style="border-radius: 20px; height: 240px;">
+          <!-- FIX URL PATH: Mengikuti format halaman berita yang berhasil -->
+          {% if b.thumbnail %}
+            <img src="{{ url_for('static', filename=b.thumbnail) }}" class="w-100 h-100 object-fit-cover" style="border-radius: 20px;" alt="{{ b.judul }}">
+          {% else %}
+            <img src="{{ url_for('static', filename='img/default.jpg') }}" class="w-100 h-100 object-fit-cover" style="border-radius: 20px;" alt="Default Image">
+          {% endif %}
+          
+          <!-- Label Kategori Float di atas Gambar -->
+          <span class="position-absolute top-0 start-0 m-3 badge bg-dark bg-opacity-75 px-3 py-2 rounded-pill text-uppercase" style="font-size: 11px; letter-spacing: 1px;">
+            {{ b.kategori }}
+          </span>
         </div>
       </div>
+      {% else %}
+      <div class="col-12 text-center py-4 text-muted">Belum ada dokumentasi foto kegiatan.</div>
       {% endfor %}
     </div>
 
-    <div class="text-center mt-5 reveal-galeri" style="animation-delay: 0.6s;">
-  <a href="/galeri" class="btn-galeri-modern">
-    <span>Lihat Semua Foto</span>
-    <i class="bi bi-arrow-right"></i>
-  </a>
-</div>
+    <div class="text-center mt-5">
+      <a href="/galeri" class="btn text-white px-4 py-2.5 fw-semibold shadow-sm" style="background-color: #E8631C; border-radius: 50px; font-size: 14px; text-decoration: none;">
+        Lihat Semua Foto <i class="bi bi-arrow-right ms-1"></i>
+      </a>
+    </div>
+  </div>
 </section>
-
 <!-- ===== TENTANG ===== -->
 <section id="tentang" style="background:#fff;">
   <div class="container">
