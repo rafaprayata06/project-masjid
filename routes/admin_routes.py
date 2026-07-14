@@ -28,14 +28,46 @@ def handle_unauthorized():
 # ====================================================================
 # BAGIAN ADMIN SUPER (Hanya Role 'AS' yang boleh masuk)
 # ====================================================================
-
 @admin.route("/admin-super/kelola-admin", methods=["GET"])
 @login_required
 def admin_super_kelola_admin():
+    # Proteksi rute khusus Admin Super
     if current_user.role != 'AS':
         return handle_unauthorized()
-    return admin_super()
-
+    
+    # 1. Ambil data semua user untuk tabel (diurutkan berdasarkan yang terbaru dibuat)
+    users = User.query.order_by(User.created_at.desc()).all()
+    
+    # 2. Logika Perhitungan Statistik (Stat Cards)
+    total_admin = User.query.count()
+    
+    # Sedang Aktif: Menghitung akun dengan status active = 1 (Aktif)
+    # Catatan: Jika Anda memiliki kolom pelacak online khusus seperti 'is_online', ganti filternya ke kolom tersebut
+    sedang_aktif = User.query.filter_by(active=1).count()
+    
+    # Menunggu Aktivasi: Menghitung akun dengan status active = 0 (Belum Verifikasi/Pending)
+    menunggu_aktivasi = User.query.filter_by(active=0).count()
+    
+    # Admin Super: Menghitung akun dengan role 'AS'
+    total_admin_super = User.query.filter_by(role='AS').count()
+    
+    # 3. Hitung Jumlah Akun per Detail Role (Role Cards)
+    count_as = User.query.filter_by(role='AS').count()
+    count_ak = User.query.filter_by(role='AK').count()
+    count_ah = User.query.filter_by(role='AH').count()
+    
+    # Kirim semua data hasil hitungan ke Frontend
+    return render_template(
+        'admin/components-KelolaAdmin/AS-users.html', 
+        users=users,
+        total_admin=total_admin,
+        sedang_aktif=sedang_aktif,
+        menunggu_aktivasi=menunggu_aktivasi,
+        total_admin_super=total_admin_super,
+        count_as=count_as,
+        count_ak=count_ak,
+        count_ah=count_ah
+    )
 @admin.route("/admin-super/dashboard", methods=["GET"])
 @login_required
 def admin_dashboard_show():

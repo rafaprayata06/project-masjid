@@ -149,8 +149,8 @@
     <h1>Kelola Admin</h1>
   </div>
 
-  <!-- Stat Cards -->
-<div class="ka-stats">
+  <!-- Dynamic Stat Cards[cite: 2] -->
+  <div class="ka-stats">
     <div class="stat-card">
       <div class="stat-card-label">Total Admin</div>
       <div class="stat-card-icon red">👥</div>
@@ -158,7 +158,7 @@
         <span class="stat-card-number">{{ total_admin }}</span>
         <span class="stat-card-unit">akun</span>
       </div>
-      </div>
+    </div>
     
     <div class="stat-card">
       <div class="stat-card-label">Sedang Aktif</div>
@@ -167,7 +167,7 @@
         <span class="stat-card-number">{{ sedang_aktif }}</span>
         <span class="stat-card-unit">online</span>
       </div>
-      </div>
+    </div>
     
     <div class="stat-card">
       <div class="stat-card-label">Menunggu Aktivasi</div>
@@ -176,7 +176,7 @@
         <span class="stat-card-number">{{ menunggu_aktivasi }}</span>
         <span class="stat-card-unit">undangan</span>
       </div>
-      </div>
+    </div>
     
     <div class="stat-card">
       <div class="stat-card-label">Admin Super</div>
@@ -185,17 +185,17 @@
         <span class="stat-card-number">{{ total_admin_super }}</span>
         <span class="stat-card-unit">akun</span>
       </div>
-      </div>
+    </div>
   </div>
 
-  <!-- Role Cards -->
+  <!-- Dynamic Role Cards[cite: 2] -->
   <div class="ka-roles">
     <div class="role-card">
       <div class="role-card-head">
         <div class="role-icon orange">★</div>
         <div>
           <div class="role-card-title">Admin Super</div>
-          <div class="role-card-count">1 akun</div>
+          <div class="role-card-count">{{ count_as }} akun</div>
         </div>
       </div>
       <ul class="role-card-perms">
@@ -209,7 +209,7 @@
         <div class="role-icon teal">💳</div>
         <div>
           <div class="role-card-title">Admin Keuangan</div>
-          <div class="role-card-count">2 akun</div>
+          <div class="role-card-count">{{ count_ak }} akun</div>
         </div>
       </div>
       <ul class="role-card-perms">
@@ -223,7 +223,7 @@
         <div class="role-icon lavender">📋</div>
         <div>
           <div class="role-card-title">Admin Humas</div>
-          <div class="role-card-count">2 akun</div>
+          <div class="role-card-count">{{ count_ah }} akun</div>
         </div>
       </div>
       <ul class="role-card-perms">
@@ -234,7 +234,7 @@
     </div>
   </div>
 
-  <!-- Filter Bar -->
+  <!-- Filter Bar[cite: 2] -->
   <div class="ka-filter">
     <div class="ka-filter-search">
       <span class="icon">🔍</span>
@@ -256,7 +256,7 @@
     <span class="ka-filter-count" id="filterCount">5 admin terdaftar</span>
   </div>
 
-  <!-- Table -->
+  <!-- Table[cite: 2] -->
   <div class="ka-table-wrap">
     <table class="ka-table">
       <thead>
@@ -267,6 +267,7 @@
           <th>Jenis Kelamin</th>
           <th>Role</th>
           <th>Status Akun</th>
+          <th>Dibuat Pada</th>
           <th>Aksi</th>
         </tr>
       </thead>
@@ -284,24 +285,33 @@
 
           <td>
             {% if user.role == "AS" %}
-                <span class="badge bg-primary">Admin Super</span>
+                <span class="badge badge-super">Admin Super</span>
             {% elif user.role == "AK" %}
-                <span class="badge bg-success">Admin Keuangan</span>
+                <span class="badge badge-keuangan">Admin Keuangan</span>
             {% elif user.role == "AH" %}
-                <span class="badge bg-info text-dark">Admin Humas</span>
+                <span class="badge badge-humas">Admin Humas</span>
             {% else %}
-                <span class="badge bg-secondary">Belum Ada Role</span>
+                <span class="badge badge-none">Belum Ada Role</span>
             {% endif %}
           </td>
 
           <td>
             {% if user.active == 1 %}
-                <span class="badge bg-success">Aktif</span>
+                <span class="status-badge status-aktif">Aktif</span>
             {% elif user.active == 0 %}
-                <span class="badge bg-warning text-dark">Belum Verifikasi</span>
+                <span class="status-badge status-pending">Belum Verifikasi</span>
             {% elif user.active == 2 %}
-                <span class="badge bg-danger">Nonaktif</span>
+                <span class="status-badge status-nonaktif">Nonaktif</span>
             {% endif %}
+          </td>
+
+          <td>
+            <span class="login-time">
+              {{ user.created_at.strftime('%d-%m-%Y') if user.created_at else '-' }}
+            </span>
+            <div class="login-sub">
+              {{ user.created_at.strftime('%H:%M') if user.created_at else '' }}
+            </div>
           </td>
 
           <td>
@@ -325,7 +335,7 @@
   </div>
 </div>
 
-<!-- Modal Edit User (Diletakkan di luar perulangan tabel agar aman dari duplikasi ID HTML) -->
+<!-- Modal Edit User (Diletakkan di luar perulangan tabel agar aman dari duplikasi ID HTML)[cite: 2] -->
 <div class="modal fade" id="modalEditUser" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="border-radius:24px;border:none;box-shadow:0 10px 40px rgba(0,0,0,.1);">
@@ -366,7 +376,7 @@
     </div>
 </div>
 
-<!-- Tooltip Script -->
+<!-- Tooltip Script[cite: 2] -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
@@ -374,7 +384,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
-<!-- Modal Setup & Interaction Script -->
+<!-- Modal Setup & Interaction Script[cite: 2] -->
 <script>
 const modalEditUser = document.getElementById('modalEditUser');
 if (modalEditUser) {
@@ -400,7 +410,7 @@ if (modalEditUser) {
 }
 </script>
 
-<!-- Real-time Filter Script -->
+<!-- Real-time Filter Script[cite: 2] -->
 <script>
   function filterTable() {
     const search = document.getElementById('searchInput').value.toLowerCase();
